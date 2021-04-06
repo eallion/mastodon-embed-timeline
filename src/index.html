@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<title>Mastodon timeline</title>
+	<meta name="author" content="i.j">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  	<!-- <base href="https://www.idotj.com/" /> -->
+  	<meta name="keywords" content="" />
+	<meta name="description" content="" />			
+  	<link rel="stylesheet" href="mastodon-timeline.css">
+	<style>
+	*{
+	margin:0;
+	padding:0;
+	}
+	html{
+		height:100%
+	}
+	body{
+		height:100%;
+		background: lightslategray;
+		font-size:16px;
+		font-family: Arial, Helvetica;
+		margin:0;
+		padding:0;
+	}
+	.dummy-container {
+		height:calc(100% - 4rem);
+		margin: 0 auto;
+		max-width: 30rem;
+		padding: 2rem;
+	}
+	</style>
+</head>
+
+<body>
+	<div class="dummy-container">
+		<div id="mt-timeline" class="mt-timeline">
+			<div class="mt-body">
+				<div class="loading-spinner"></div>
+			</div>
+		</div>
+	</div>
+	
+
+	<script src='mastodon-timeline.js'>
+	</script>
+
+</body>
+
+</html>
