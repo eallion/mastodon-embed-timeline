@@ -2,7 +2,7 @@
 
 Embed a mastodon feed timeine in your page, with just html, css and js.
 
-Working version used at:
+Working version running at:
 https://www.idotj.com
 
 ## User guide
