@@ -20,7 +20,6 @@ let MastodonApi = function (params_) {
 
 	// Endpoint access settings
 	this.INSTANCE_URI = params_.instance_uri;
-	this.ACCESS_TOKEN = params_.access_token;
 	this.ACCOUNT_ID = params_.account_id;
 	this.PROFILE_NAME = params_.profile_name;
 	this.TOOTS_LIMIT = params_.toots_limit || 20;
@@ -71,6 +70,7 @@ MastodonApi.prototype.getToots = function () {
 		let allHashtags = document.querySelectorAll("#mt-timeline .hashtag");
 		for(let j=0; j<allHashtags.length; j++) {
 			allHashtags[j].target = "_blank";
+			allHashtags[j].rel = "tag noopener noreferrer";
 		}
 		
 		// Insert button to visit account page, after last toot

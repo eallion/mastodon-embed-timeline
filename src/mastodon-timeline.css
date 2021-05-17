@@ -1,5 +1,5 @@
 /* Mastodon embed timeline */
-/* main container */
+/* Main container */
 .mt-timeline {
   height: calc(100% - 4rem);
   padding: 2rem 3rem;
@@ -25,7 +25,7 @@
   display: none;
 }
 
-/* toots messages */
+/* Toot container */
 .mt-toot {
   margin: 0 0.5rem 0 0;
   padding: 1rem 0 2rem 65px;
@@ -34,21 +34,19 @@
   background-color: transparent;
   border-bottom: 1px solid #dee2e6;
 }
-
 .mt-toot:hover {
   cursor: pointer;
   background-color: rgba(124, 124, 124, 0.2);
 }
-
 .mt-toot p:last-child {
   margin-bottom: 0;
 }
 
+/* User icon */
 .mt-user {
   display: table;
   font-weight: 600;
 }
-
 .mt-avatar {
   position: absolute;
   top: 20px;
@@ -62,12 +60,10 @@
   background-color: #fff;
   border-radius: 5px;
 }
-
 .mt-avatar-boosted {
   width: 40px;
   height: 40px;
 }
-
 .mt-avatar-booster {
   width: 25px;
   height: 25px;
@@ -75,10 +71,13 @@
   left: 25px;
 }
 
+/* Message */
 .toot-text {
   margin-bottom: 0.25rem;
 }
-
+.toot-text .ellipsis::after{
+  content:'...';
+}
 .mt-error {
   color: darkred;
   background: lightpink;
@@ -86,7 +85,7 @@
   padding: 10px;
 }
 
-/* poll */
+/* Poll */
 .toot-poll {
   margin-bottom: 0.25rem;
 }
@@ -103,7 +102,7 @@
   padding-right: 0.5rem;
 }
 
-/* medias */
+/* Medias */
 .toot-media {
   overflow: hidden;
   margin-bottom: 0.25rem;
@@ -141,13 +140,13 @@ transform: translate(-50%, -50%);
 text-align: center;
 }  
 
-/* date */
+/* Date */
 .toot-date {
   font-size: 0.75rem;
   opacity: 0.5;
 }
 
-/* loading-spinner */
+/* Loading-spinner */
 .loading-spinner {
 	height: 100%;
     background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' viewBox='0 0 128 128' %3E%3Cg%3E%3Cpath d='M64 128A64 64 0 0 1 18.34 19.16L21.16 22a60 60 0 1 0 52.8-17.17l.62-3.95A64 64 0 0 1 64 128z' fill='%23404040'/%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 64 64' to='360 64 64' dur='1000ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
@@ -157,7 +156,7 @@ text-align: center;
     background-size: min(2.5rem, calc(100% - 0.5rem));
 }
 
-/* see more btn */
+/* See more btn */
 .mt-seeMore{
 	margin: 2rem auto;
 	padding: 0 2rem;
