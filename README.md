@@ -13,7 +13,4 @@ https://www.idotj.com
 
 ## Improve me
 
-Feel free to add a chaching layer, improve the styles and add more features.
-
-
-
+Feel free to add/improve the styles and add more features.
