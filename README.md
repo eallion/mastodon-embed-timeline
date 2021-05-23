@@ -5,6 +5,9 @@ Embed a mastodon feed timeine in your page, only with a css and js file.
 Working version running at:
 https://www.idotj.com
 
+Source code running at:
+https://codepen.io/ipuntoj/pen/MWppNGL
+
 ## User guide
 
 Just copy both files (.css and .js) in your project 
@@ -29,11 +32,10 @@ and add the following structure in your html page:
 
 At the beginning of the JS file *mastodon-timeline.js* replace the following values:
 ```
-    instance_uri: '',
-    account_id: '',
-    profile_name: '',
+    instance_uri: 'The Mastodon instance',
+    account_id: 'Your user ID on Mastodon instance',
+    profile_name: 'Your user name on Mastodon instance',
 ```
-
 
 ## Improve me
 
