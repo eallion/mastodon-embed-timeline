@@ -106,7 +106,7 @@ MastodonApi.prototype.getToots = function () {
 				+ '</div>';
 
 			// Date
-			date = formatDate(status_.reblog.created_at);				
+			date = this.formatDate(status_.reblog.created_at);				
 		} else {
 			// STANDARD toot
 			// Toot url
@@ -129,7 +129,7 @@ MastodonApi.prototype.getToots = function () {
 				+ '</div>';
 
 			// Date
-			date = formatDate(status_.created_at);				
+			date = this.formatDate(status_.created_at);				
 		}
 
 		// Main content
