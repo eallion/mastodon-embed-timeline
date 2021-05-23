@@ -1,13 +1,11 @@
-// Timeline JS (Mastodon)
+// Mastodon embed timeline
 // Forked from: https://github.com/AzetJP/mastodon-timeline-widget
-
-// TODO: optimize selectors and add first the #id (target_selector)
 
 // Account settings
 document.addEventListener("DOMContentLoaded", () => {
 	let mapi = new MastodonApi({
 		container_id: 'mt-timeline',
-		container_body_css: '.mt-body',
+		container_body_id: 'mt-body',
 		instance_uri: 'https://mastodon.online',
 		account_id: '180745',
 		profile_name: '@idotj',
@@ -27,7 +25,7 @@ let MastodonApi = function (params_) {
 
 	// Target selectors
 	this.mtIdContainer = document.getElementById(params_.container_id);
-	this.mtBodyContainer = document.querySelector(params_.container_body_css);
+	this.mtBodyContainer = document.getElementById(params_.container_body_id);
 
 	// Get the toots
 	this.getToots();
@@ -94,6 +92,9 @@ MastodonApi.prototype.getToots = function () {
 				'<a href="' + status_.reblog.account.url + '" class="mt-avatar mt-avatar-boosted" style="background-image:url(' + status_.reblog.account.avatar + ');" rel="noopener noreferrer" tabindex="-1" target="_blank">'
 					+ '<div class="mt-avatar mt-avatar-booster" style="background-image:url(' + status_.account.avatar + ');">'
 					+ '</div>'
+					+ '<span class="visually-hidden">'
+						+ status_.account.username
+					+ '</span>'						
 				+ '</a>';
 
 			// User name and url
@@ -104,8 +105,8 @@ MastodonApi.prototype.getToots = function () {
 					+ '</a>'
 				+ '</div>';
 
-			// Toot date
-			date = prepareDateDisplay(status_.reblog.created_at);				
+			// Date
+			date = formatDate(status_.reblog.created_at);				
 		} else {
 			// STANDARD toot
 			// Toot url
@@ -114,6 +115,9 @@ MastodonApi.prototype.getToots = function () {
 			// Avatar
 			avatar =
 				'<a href="' + status_.account.url + '" class="mt-avatar" style="background-image:url(' + status_.account.avatar + ');" rel="noopener noreferrer" tabindex="-1" target="_blank">'
+					+ '<span class="visually-hidden">'
+						+ status_.account.username
+					+ '</span>'				
 				+ '</a>';
 
 			// User name and url
@@ -124,8 +128,8 @@ MastodonApi.prototype.getToots = function () {
 					+ '</a>'
 				+ '</div>';
 
-			// Toot date
-			date = prepareDateDisplay(status_.created_at);				
+			// Date
+			date = formatDate(status_.created_at);				
 		}
 
 		// Main content
@@ -168,7 +172,7 @@ MastodonApi.prototype.getToots = function () {
 				+'</div>';
 		}
 
-		// Format date
+		// Date
 		let timestamp =
 			'<div class="toot-date">'
 				+ '<a href="' + url + '" rel="noopener noreferrer" tabindex="-1" target="_blank">'
@@ -190,33 +194,7 @@ MastodonApi.prototype.getToots = function () {
 		this.mtBodyContainer.insertAdjacentHTML('beforeend', toot);
 	};
 
-	// Display toot date
-	let prepareDateDisplay = function (date_) {
-		let displayDate = "";
-		const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-			"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-		];
-
-		let date = new Date(date_);
-
-		displayDate = monthNames[date.getMonth()]
-			+ " " + date.getDate()
-			+ ", " + date.getFullYear();
-
-		return displayDate;
-	};
-
 };
-
-// Loading spinner
-function removeSpinner(element) {
-	const spinnerCSS = 'loading-spinner';
-	// Find closest parent container (1st, 2nd or 3rd level)
-	let spinnerContainer = element.closest('.' + spinnerCSS);
-	if(spinnerContainer){
-		spinnerContainer.classList.remove(spinnerCSS);
-	}
-}
 
 // Place media
 MastodonApi.prototype.replaceMedias = function (media_, spoiler_) {
@@ -229,3 +207,27 @@ MastodonApi.prototype.replaceMedias = function (media_, spoiler_) {
 	return pic;
 };
 
+// Format date
+MastodonApi.prototype.formatDate = function (date_) {
+	const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	];
+
+	let date = new Date(date_);
+
+	let displayDate = monthNames[date.getMonth()]
+		+ " " + date.getDate()
+		+ ", " + date.getFullYear();
+
+	return displayDate;
+};
+
+// Loading spinner
+function removeSpinner(element) {
+	const spinnerCSS = 'loading-spinner';
+	// Find closest parent container (1st, 2nd or 3rd level)
+	let spinnerContainer = element.closest('.' + spinnerCSS);
+	if(spinnerContainer){
+		spinnerContainer.classList.remove(spinnerCSS);
+	}
+}
