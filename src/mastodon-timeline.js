@@ -89,19 +89,19 @@ MastodonApi.prototype.getToots = function () {
 
 			// Boosted avatar
 			avatar =
-				'<a href="' + status_.reblog.account.url + '" class="mt-avatar mt-avatar-boosted" style="background-image:url(' + status_.reblog.account.avatar + ');" rel="noopener noreferrer" tabindex="-1" target="_blank">'
+				'<a href="' + status_.reblog.account.url + '" class="mt-avatar mt-avatar-boosted" style="background-image:url(' + status_.reblog.account.avatar + ');" rel="noopener noreferrer" target="_blank">'
 					+ '<div class="mt-avatar mt-avatar-booster" style="background-image:url(' + status_.account.avatar + ');">'
 					+ '</div>'
 					+ '<span class="visually-hidden">'
-						+ status_.account.username
+						+ status_.account.username + ' avatar'
 					+ '</span>'						
 				+ '</a>';
 
 			// User name and url
 			user = 
 				'<div class="mt-user">'
-					+ '<a href="' + status_.reblog.account.url + '" rel="noopener noreferrer" tabindex="-1" target="_blank">'
-						+ status_.reblog.account.username
+					+ '<a href="' + status_.reblog.account.url + '" rel="noopener noreferrer" target="_blank">'
+						+ status_.reblog.account.username + '<span class="visually-hidden"> post</span>'
 					+ '</a>'
 				+ '</div>';
 
@@ -114,17 +114,17 @@ MastodonApi.prototype.getToots = function () {
 
 			// Avatar
 			avatar =
-				'<a href="' + status_.account.url + '" class="mt-avatar" style="background-image:url(' + status_.account.avatar + ');" rel="noopener noreferrer" tabindex="-1" target="_blank">'
+				'<a href="' + status_.account.url + '" class="mt-avatar" style="background-image:url(' + status_.account.avatar + ');" rel="noopener noreferrer" target="_blank">'
 					+ '<span class="visually-hidden">'
-						+ status_.account.username
+						+ status_.account.username + ' avatar'
 					+ '</span>'				
 				+ '</a>';
 
 			// User name and url
 			user =
 				'<div class="mt-user">'
-					+ '<a href="' + status_.account.url + '" rel="noopener noreferrer" tabindex="-1" target="_blank">'
-						+ status_.account.username
+					+ '<a href="' + status_.account.url + '" rel="noopener noreferrer" target="_blank">'
+						+ status_.account.username + '<span class="visually-hidden"> post</span>'
 					+ '</a>'
 				+ '</div>';
 
