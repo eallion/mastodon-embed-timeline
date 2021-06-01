@@ -40,3 +40,7 @@ At the beginning of the JS file *mastodon-timeline.js* replace the following val
 ## Improve me
 
 Feel free to add/improve the styles and add more features.
+
+## License
+
+GNU Affero General Public License v3.0
