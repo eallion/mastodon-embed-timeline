@@ -1,6 +1,6 @@
 # Mastodon embed timeline
 
-Embed a mastodon feed timeine in your page, only with a css and js file.
+Embed a mastodon feed timeline in your page, only with a css and js file.
 
 Working version running at:
 https://www.idotj.com
