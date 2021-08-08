@@ -1,4 +1,4 @@
-# Mastodon embed timeline
+# 🐘 Mastodon embed timeline
 
 Embed a mastodon feed timeline in your page, only with a css and js file.
 
@@ -8,7 +8,7 @@ https://www.idotj.com
 Source code running at:
 https://codepen.io/ipuntoj/pen/MWppNGL
 
-## User guide
+## 🗂️ User guide
 
 Just copy both files (.css and .js) in your project 
 ```
@@ -28,8 +28,7 @@ and add the following structure in your html page:
 </div>
 ```
 
-## Changing the profile
-
+Then you just need to change the profile info.
 At the beginning of the JS file *mastodon-timeline.js* replace the following values:
 ```
     instance_uri: 'The Mastodon instance',
@@ -37,10 +36,10 @@ At the beginning of the JS file *mastodon-timeline.js* replace the following val
     profile_name: 'Your user name on Mastodon instance',
 ```
 
-## Improve me
+## 🚀 Improve me
 
 Feel free to add/improve the styles and add more features.
 
-## License
+## ⚖️ License
 
 GNU Affero General Public License v3.0
