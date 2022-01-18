@@ -35,6 +35,9 @@ At the beginning of the JS file *mastodon-timeline.js* replace the following val
     account_id: 'Your user ID on Mastodon instance',
     profile_name: 'Your user name on Mastodon instance',
 ```
+If you don't have your account_id, a quick search here will do the job:  
+https://prouser123.me/mastodon-userid-lookup/
+
 
 ## 🚀 Improve me
 
