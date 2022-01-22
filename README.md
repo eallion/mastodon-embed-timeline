@@ -40,7 +40,7 @@ At the beginning of the JS file *mastodon-timeline.js* replace the following val
 ```
 
 If you don't find your user_id, just copy your @profile_name and @instance_uri here:  
-[https://prouser123.me/mastodon-userid-lookup/](https://prouser123.me/mastodon-userid-lookup/){:target="_blank"}
+<a href="https://prouser123.me/mastodon-userid-lookup/" target="_blank" rel="noopener">https://prouser123.me/mastodon-userid-lookup/</a>
 
 ## 🚀 Improve me
 
