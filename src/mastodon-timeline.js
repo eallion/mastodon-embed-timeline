@@ -148,11 +148,16 @@ MastodonApi.prototype.getToots = function () {
 
 		// Media attachments
 		let media = '';
-		if (status_.media_attachments.length > 0) {
+		if (status_.media_attachments.length > 0 ) {
 			for (let picid in status_.media_attachments) {
 				media = this.replaceMedias(status_.media_attachments[picid], status_.sensitive);
 			}
 		}
+		if (status_.reblog && status_.reblog.media_attachments.length > 0 ) {
+			for (let picid in status_.reblog.media_attachments) {
+				media = this.replaceMedias(status_.reblog.media_attachments[picid], status_.sensitive);
+			}
+		}		
 
 		// Poll
 		let poll = '';
