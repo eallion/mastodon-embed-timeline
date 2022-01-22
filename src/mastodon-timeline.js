@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		container_id: 'mt-timeline',
 		container_body_id: 'mt-body',
 		instance_uri: 'https://mastodon.online',
-		account_id: '180745',
+		user_id: '180745',
 		profile_name: '@idotj',
 		toots_limit: 13,
 		btn_see_more: 'See more posts at Mastodon'
