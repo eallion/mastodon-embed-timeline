@@ -35,7 +35,7 @@ At the beginning of the JS file *mastodon-timeline.js* replace the following val
 
 ```
     instance_uri: 'The Mastodon instance',
-    account_id: 'Your user ID on Mastodon instance',
+    user_id: 'Your user ID on Mastodon instance',
     profile_name: 'Your user name on Mastodon instance',
 ```
 
