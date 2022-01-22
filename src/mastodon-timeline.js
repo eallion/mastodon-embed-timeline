@@ -18,7 +18,7 @@ let MastodonApi = function (params_) {
 
 	// Endpoint access settings
 	this.INSTANCE_URI = params_.instance_uri;
-	this.ACCOUNT_ID = params_.account_id;
+	this.USER_ID = params_.user_id;
 	this.PROFILE_NAME = params_.profile_name;
 	this.TOOTS_LIMIT = params_.toots_limit || 20;
 	this.BTN_SEE_MORE = params_.btn_see_more || 'See more'
@@ -46,7 +46,7 @@ MastodonApi.prototype.getToots = function () {
 	let mapi = this;
 
 	// Get request
-	fetch(this.INSTANCE_URI + '/api/v1/accounts/' + this.ACCOUNT_ID + '/statuses?limit=' + this.TOOTS_LIMIT, {
+	fetch(this.INSTANCE_URI + '/api/v1/accounts/' + this.USER_ID + '/statuses?limit=' + this.TOOTS_LIMIT, {
         method: 'get',
     })
     .then(response => response.json())
