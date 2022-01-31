@@ -26,7 +26,7 @@ and add the following structure in your html page:
 <div id="mt-timeline" class="mt-timeline">
     <div id="mt-body" class="mt-body">
         <div class="loading-spinner"></div>
- </div>
+    </div>
 </div>
 ```
 
