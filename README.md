@@ -10,8 +10,9 @@ Source code running at:
 
 ## 🗂️ User guide
 
-Just copy both files (.css and .js) in your project
+Just copy both files (*mastodon-timeline.css* and *mastodon-timeline.js*) in your project folder.
 
+Now call each one in your page using the `<link>` and `<script>` tag:
 ```
 <link rel="stylesheet" href="mastodon-timeline.css">
 ```
@@ -20,7 +21,7 @@ Just copy both files (.css and .js) in your project
 <script src='mastodon-timeline.js'></script>
 ```
 
-and add the following structure in your html page:
+Then copy the following structure:
 
 ```
 <div id="mt-timeline" class="mt-timeline">
@@ -30,7 +31,7 @@ and add the following structure in your html page:
 </div>
 ```
 
-Now you have a Mastodon timeline running in your page.
+Great, you have a Mastodon timeline running in your page.
 
 The next step will be to setup the timeline with your account info.
 For that, edit the the JS file *mastodon-timeline.js*  and at the beginning replace the following values:
