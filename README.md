@@ -30,13 +30,15 @@ and add the following structure in your html page:
 </div>
 ```
 
-Then you just need to change the profile info.
-At the beginning of the JS file *mastodon-timeline.js* replace the following values:
+Now you have a Mastodon timeline running in your page.
+
+The next step will be to setup the timeline with your account info.
+For that, edit the the JS file *mastodon-timeline.js*  and at the beginning replace the following values:
 
 ```
-    instance_uri: 'The Mastodon instance',
-    user_id: 'Your user ID on Mastodon instance',
-    profile_name: 'Your user name on Mastodon instance',
+    instance_uri:   'Your Mastodon instance',
+    user_id:        'Your user ID on Mastodon instance',
+    profile_name:   'Your user name on Mastodon instance',
 ```
 
 If you don't find your user_id, just copy your @profile_name and @instance_uri here:  
