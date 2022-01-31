@@ -21,7 +21,7 @@ Now call each one in your page using the `<link>` and `<script>` tag:
 <script src='mastodon-timeline.js'></script>
 ```
 
-Then copy the following structure:
+Then copy the following html structure:
 
 ```
 <div id="mt-timeline" class="mt-timeline">
