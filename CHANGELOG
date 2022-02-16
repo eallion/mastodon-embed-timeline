@@ -9,15 +9,15 @@
 - Improve avatar + user name for a11y
 
 23/05/2021
-- Create codepen demo
+- Create a codepen demo
 
 22/05/2021
 - Add avatar name
-- Use id instead of css for js selectors
+- Use id instead of css class for js selectors
 - Rearrange functions in js
 
 17/05/2021
-- Add ellipses to long messages
+- Add ellipses for long messages
 - Remove access token
 - Add rel="tag noopener noreferrer" for hashtag links
 
