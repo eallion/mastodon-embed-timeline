@@ -34,9 +34,9 @@ let MastodonApi = function (params_) {
 	this.mtIdContainer.addEventListener('click', function (event) {
 		let urlToot = event.target.closest('.mt-toot').dataset.location;
 		// Open Toot in new page avoiding any other natural link
- 		if(event.target.localName != 'a' && event.target.localName != 'span' && urlToot){
+		if (event.target.localName != 'a' && event.target.localName != 'span' && urlToot) {
 			window.open(urlToot, '_blank');
-		} 
+		}
 	});
 
 }
@@ -47,36 +47,36 @@ MastodonApi.prototype.getToots = function () {
 
 	// Get request
 	fetch(this.INSTANCE_URI + '/api/v1/accounts/' + this.USER_ID + '/statuses?limit=' + this.TOOTS_LIMIT, {
-        method: 'get',
-    })
-    .then(response => response.json())
-    .then(jsonData => {
-		// console.log('jsonData: ', jsonData);
-
-		// Clear the loading message
-		this.mtBodyContainer.innerHTML = '';
-
-		// Add toots
-		for (let i in jsonData) {
-			if (jsonData[i].visibility == 'public') {
-				// List only public toots
-				appendToot.call(mapi, jsonData[i]);
-			}
-		}
-
-		// Add target="_blank" to all hashtags
-		let allHashtags = document.querySelectorAll("#mt-timeline .hashtag");
-		for(let j=0; j<allHashtags.length; j++) {
-			allHashtags[j].target = "_blank";
-			allHashtags[j].rel = "tag noopener noreferrer";
-		}
-		
-		// Insert button to visit account page, after last toot
-		this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
+		method: 'get',
 	})
-    .catch(err => {
-		this.mtBodyContainer.innerHTML = '<div class="d-flex h-100"><div class="w-100 my-auto text-center">✖️<br/>Request Failed:<br/>' + err + '</div></div>';
-    });
+		.then(response => response.json())
+		.then(jsonData => {
+			console.log('jsonData: ', jsonData);
+
+			// Clear the loading message
+			this.mtBodyContainer.innerHTML = '';
+
+			// Add toots
+			for (let i in jsonData) {
+				if (jsonData[i].visibility == 'public') {
+					// List only public toots
+					appendToot.call(mapi, jsonData[i]);
+				}
+			}
+
+			// Add target="_blank" to all hashtags
+			let allHashtags = document.querySelectorAll("#mt-timeline .hashtag");
+			for (let j = 0; j < allHashtags.length; j++) {
+				allHashtags[j].target = "_blank";
+				allHashtags[j].rel = "tag noopener noreferrer";
+			}
+
+			// Insert button to visit account page, after last toot
+			this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
+		})
+		.catch(err => {
+			this.mtBodyContainer.innerHTML = '<div class="d-flex h-100"><div class="w-100 my-auto text-center">✖️<br/>Request Failed:<br/>' + err + '</div></div>';
+		});
 
 	// Inner function to add each toot content in container
 	let appendToot = function (status_) {
@@ -90,23 +90,23 @@ MastodonApi.prototype.getToots = function () {
 			// Boosted avatar
 			avatar =
 				'<a href="' + status_.reblog.account.url + '" class="mt-avatar mt-avatar-boosted" style="background-image:url(' + status_.reblog.account.avatar + ');" rel="noopener noreferrer" target="_blank">'
-					+ '<div class="mt-avatar mt-avatar-booster" style="background-image:url(' + status_.account.avatar + ');">'
-					+ '</div>'
-					+ '<span class="visually-hidden">'
-						+ status_.account.username + ' avatar'
-					+ '</span>'						
+				+ '<div class="mt-avatar mt-avatar-booster" style="background-image:url(' + status_.account.avatar + ');">'
+				+ '</div>'
+				+ '<span class="visually-hidden">'
+				+ status_.account.username + ' avatar'
+				+ '</span>'
 				+ '</a>';
 
 			// User name and url
-			user = 
+			user =
 				'<div class="mt-user">'
-					+ '<a href="' + status_.reblog.account.url + '" rel="noopener noreferrer" target="_blank">'
-						+ status_.reblog.account.username + '<span class="visually-hidden"> post</span>'
-					+ '</a>'
+				+ '<a href="' + status_.reblog.account.url + '" rel="noopener noreferrer" target="_blank">'
+				+ status_.reblog.account.username + '<span class="visually-hidden"> post</span>'
+				+ '</a>'
 				+ '</div>';
 
 			// Date
-			date = this.formatDate(status_.reblog.created_at);				
+			date = this.formatDate(status_.reblog.created_at);
 		} else {
 			// STANDARD toot
 			// Toot url
@@ -115,49 +115,54 @@ MastodonApi.prototype.getToots = function () {
 			// Avatar
 			avatar =
 				'<a href="' + status_.account.url + '" class="mt-avatar" style="background-image:url(' + status_.account.avatar + ');" rel="noopener noreferrer" target="_blank">'
-					+ '<span class="visually-hidden">'
-						+ status_.account.username + ' avatar'
-					+ '</span>'				
+				+ '<span class="visually-hidden">'
+				+ status_.account.username + ' avatar'
+				+ '</span>'
 				+ '</a>';
 
 			// User name and url
 			user =
 				'<div class="mt-user">'
-					+ '<a href="' + status_.account.url + '" rel="noopener noreferrer" target="_blank">'
-						+ status_.account.username + '<span class="visually-hidden"> post</span>'
-					+ '</a>'
+				+ '<a href="' + status_.account.url + '" rel="noopener noreferrer" target="_blank">'
+				+ status_.account.username + '<span class="visually-hidden"> post</span>'
+				+ '</a>'
 				+ '</div>';
 
 			// Date
-			date = this.formatDate(status_.created_at);				
+			date = this.formatDate(status_.created_at);
 		}
 
 		// Main content
-		if(status_.spoiler_text != '') {
-			content = 
-			'<div class="toot-text">'
+		if (status_.spoiler_text != '') {
+			content =
+				'<div class="toot-text">'
 				+ status_.spoiler_text
 				+ ' [Show more...]'
-			+ '</div>';				
+				+ '</div>';
+		} else if (status_.reblog && status_.reblog.content != '') {
+			content =
+				'<div class="toot-text">'
+				+ status_.reblog.content
+				+ '</div>';
 		} else {
-			content = 
-			'<div class="toot-text">'
+			content =
+				'<div class="toot-text">'
 				+ status_.content
-			+ '</div>';	
+				+ '</div>';
 		}
 
 		// Media attachments
 		let media = '';
-		if (status_.media_attachments.length > 0 ) {
+		if (status_.media_attachments.length > 0) {
 			for (let picid in status_.media_attachments) {
 				media = this.replaceMedias(status_.media_attachments[picid], status_.sensitive);
 			}
 		}
-		if (status_.reblog && status_.reblog.media_attachments.length > 0 ) {
+		if (status_.reblog && status_.reblog.media_attachments.length > 0) {
 			for (let picid in status_.reblog.media_attachments) {
 				media = this.replaceMedias(status_.reblog.media_attachments[picid], status_.sensitive);
 			}
-		}		
+		}
 
 		// Poll
 		let poll = '';
@@ -166,34 +171,34 @@ MastodonApi.prototype.getToots = function () {
 			for (let i in status_.poll.options) {
 				pollOption +=
 					'<li>'
-						+ status_.poll.options[i].title
+					+ status_.poll.options[i].title
 					+ '</li>';
 			}
-			poll = 
+			poll =
 				'<div class="toot-poll">'
-					+ '<ul>'
-						+ pollOption
-					+ '</ul>'
-				+'</div>';
+				+ '<ul>'
+				+ pollOption
+				+ '</ul>'
+				+ '</div>';
 		}
 
 		// Date
 		let timestamp =
 			'<div class="toot-date">'
-				+ '<a href="' + url + '" rel="noopener noreferrer" tabindex="-1" target="_blank">'
-				+ date
-				+ '</a>'
+			+ '<a href="' + url + '" rel="noopener noreferrer" tabindex="-1" target="_blank">'
+			+ date
+			+ '</a>'
 			+ '</div>';
 
 		// Add all to main toot container
 		let toot =
 			'<div class="mt-toot border-bottom" data-location="' + url + '">'
-				+ avatar
-				+ user
-				+ content
-				+ media
-				+ poll
-				+ timestamp
+			+ avatar
+			+ user
+			+ content
+			+ media
+			+ poll
+			+ timestamp
 			+ '</div>';
 
 		this.mtBodyContainer.insertAdjacentHTML('beforeend', toot);
@@ -204,10 +209,10 @@ MastodonApi.prototype.getToots = function () {
 // Place media
 MastodonApi.prototype.replaceMedias = function (media_, spoiler_) {
 	let spoiler = spoiler_ || false;
-	let pic = 
-	'<div class="toot-media ' + (spoiler ? 'toot-media-spoiler' : '') + ' img-ratio14_7 loading-spinner">'
+	let pic =
+		'<div class="toot-media ' + (spoiler ? 'toot-media-spoiler' : '') + ' img-ratio14_7 loading-spinner">'
 		+ '<img onload="removeSpinner(this)" onerror="removeSpinner(this)" src="' + media_.preview_url + '" alt="" loading="lazy" />'
-	+ '</div>';
+		+ '</div>';
 
 	return pic;
 };
@@ -232,7 +237,7 @@ function removeSpinner(element) {
 	const spinnerCSS = 'loading-spinner';
 	// Find closest parent container (1st, 2nd or 3rd level)
 	let spinnerContainer = element.closest('.' + spinnerCSS);
-	if(spinnerContainer){
+	if (spinnerContainer) {
 		spinnerContainer.classList.remove(spinnerCSS);
 	}
 }
