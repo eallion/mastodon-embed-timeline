@@ -51,7 +51,7 @@ MastodonApi.prototype.getToots = function () {
 	})
 		.then(response => response.json())
 		.then(jsonData => {
-			console.log('jsonData: ', jsonData);
+			// console.log('jsonData: ', jsonData);
 
 			// Clear the loading message
 			this.mtBodyContainer.innerHTML = '';
