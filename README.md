@@ -10,7 +10,7 @@ Source code running at:
 
 ## 🗂️ User guide
 
-Just copy both files (*mastodon-timeline.css* and *mastodon-timeline.js*) in your project folder.
+Just copy both files (*mastodon-timeline.css* and *mastodon-timeline.js* from /src folder) in your project folder.
 
 Now call each one in your page using the `<link>` and `<script>` tag:
 ```
