@@ -49,16 +49,16 @@ Also you can customize some parameters such as:
 
 ```
     // The maximun amount of toots to get from the user
-	toots_limit: 13
+    toots_limit: 13
 
     // Hide the boosted toots
     hide_reblog: false
 
     // Hide the replies from the user
-	hide_replies: true
+    hide_replies: true
 
     // Customize the text of the button after the last toot
-	btn_see_more: 'See more posts at Mastodon'
+    btn_see_more: 'See more posts at Mastodon'
 
 ```
 
