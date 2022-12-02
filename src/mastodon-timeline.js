@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
 		user_id: '180745',
 		profile_name: '@idotj',
 		toots_limit: 13,
+		hide_reblog: false,
+		hide_replies: true,		
 		btn_see_more: 'See more posts at Mastodon'
 	});
 });
@@ -21,6 +23,8 @@ let MastodonApi = function (params_) {
 	this.USER_ID = params_.user_id;
 	this.PROFILE_NAME = params_.profile_name;
 	this.TOOTS_LIMIT = params_.toots_limit || 20;
+	this.HIDE_REBLOG = typeof params_.hide_reblog !== 'undefined' ? params_.hide_reblog : false;
+	this.HIDE_REPLIES = typeof params_.hide_replies !== 'undefined' ? params_.hide_replies : false;		
 	this.BTN_SEE_MORE = params_.btn_see_more || 'See more'
 
 	// Target selectors
@@ -58,9 +62,13 @@ MastodonApi.prototype.getToots = function () {
 
 			// Add toots
 			for (let i in jsonData) {
+				// List only public toots
 				if (jsonData[i].visibility == 'public') {
-					// List only public toots
-					appendToot.call(mapi, jsonData[i]);
+					if(mapi.HIDE_REBLOG && jsonData[i].reblog || mapi.HIDE_REPLIES && jsonData[i].in_reply_to_id){
+						// Nothing here (Don't append boosts and/or replies toots)
+					}else{
+						appendToot.call(mapi, jsonData[i]);
+					}
 				}
 			}
 
