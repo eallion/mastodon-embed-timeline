@@ -45,6 +45,23 @@ For that, edit the the JS file *mastodon-timeline.js*  and at the beginning repl
 If you don't find your user_id, just copy your @profile_name and @instance_uri here:  
 <a href="https://prouser123.me/mastodon-userid-lookup/" target="_blank" rel="noopener">https://prouser123.me/mastodon-userid-lookup/</a>
 
+Also you can customize some parameters such as:
+
+```
+    // The maximun amount of toots to get from the user
+	toots_limit: 13
+
+    // Hide the boosted toots
+    hide_reblog: false
+
+    // Hide the replies from the user
+	hide_replies: true
+
+    // Customize the text of the button after the last toot
+	btn_see_more: 'See more posts at Mastodon'
+
+```
+
 ## 🚀 Improve me
 
 Feel free to add/improve the styles and add more features.
