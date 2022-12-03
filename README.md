@@ -62,6 +62,8 @@ Also you can customize some parameters such as:
 
 ```
 
+*Project forked from: https://github.com/AzetJP/mastodon-timeline-widget
+
 ## 🚀 Improve me
 
 Feel free to add/improve the styles and add more features.
