@@ -52,7 +52,7 @@ Also you can customize some parameters such as:
     toots_limit: 13
 
     // Hide the boosted toots
-    hide_reblog: false
+    hide_reblog: true
 
     // Hide the replies from the user
     hide_replies: true
