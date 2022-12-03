@@ -1,7 +1,8 @@
-// Mastodon embed timeline
-// Forked from: https://github.com/AzetJP/mastodon-timeline-widget
+// Mastodon embed feed timeline
+// More info at:
+// https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
-// Account settings
+// Timeline settings
 document.addEventListener("DOMContentLoaded", () => {
 	let mapi = new MastodonApi({
 		container_id: 'mt-timeline',
@@ -11,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		profile_name: '@idotj',
 		toots_limit: 13,
 		hide_reblog: false,
-		hide_replies: true,		
+		hide_replies: false,		
 		btn_see_more: 'See more posts at Mastodon'
 	});
 });
@@ -79,7 +80,7 @@ MastodonApi.prototype.getToots = function () {
 				allHashtags[j].rel = "tag noopener noreferrer";
 			}
 
-			// Insert button to visit account page, after last toot
+			// Insert button after last toot to visit account page
 			this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
 		})
 		.catch(err => {
