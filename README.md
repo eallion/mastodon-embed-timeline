@@ -42,10 +42,17 @@ For that, edit the the JS file *mastodon-timeline.js*  and at the beginning repl
     profile_name:   'Your user name on Mastodon instance',
 ```
 
-If you don't find your user_id, just copy your @profile_name and @instance_uri here:  
+If you don't know your user_id, you have two ways to get it:
+
+- Right click on your avatar image and inspect the element. You will see in your html code a line like this one:  
+`<img src="https://files.xxxxxxxx.xx/accounts/avatars/000/180/745/original/xxxxxxxxxx.png" alt="xxxx">`  
+Check the `src=""` url, your user id is between `/accounts/avatars/` and `/original/`. So removing the slashs `/` you will get your user id, like in the example: `000180745`
+
+
+- Other option, just copy your @profile_name and @instance_uri here:  
 <a href="https://prouser123.me/mastodon-userid-lookup/" target="_blank" rel="noopener">https://prouser123.me/mastodon-userid-lookup/</a>
 
-Also you can customize some parameters such as:
+Also you can customize some parameters:
 
 ```
     // The maximun amount of toots to get from the user
