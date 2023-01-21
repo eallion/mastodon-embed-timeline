@@ -8,12 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		container_id: 'mt-timeline',
 		container_body_id: 'mt-body',
 		instance_uri: 'https://mastodon.online',
-		user_id: 180745,
+		user_id: '180745',
 		profile_name: '@idotj',
-		toots_limit: 20,
+		toots_limit: '20',
 		hide_reblog: false,
 		hide_replies: false,
-		text_max_lines: 0,
+		text_max_lines: '0',
 		btn_see_more: 'See more posts at Mastodon'
 	});
 });
@@ -24,10 +24,10 @@ let MastodonApi = function (params_) {
 	this.INSTANCE_URI = params_.instance_uri;
 	this.USER_ID = params_.user_id;
 	this.PROFILE_NAME = params_.profile_name;
-	this.TOOTS_LIMIT = params_.toots_limit || 20;
+	this.TOOTS_LIMIT = params_.toots_limit || '20';
 	this.HIDE_REBLOG = typeof params_.hide_reblog !== 'undefined' ? params_.hide_reblog : false;
 	this.HIDE_REPLIES = typeof params_.hide_replies !== 'undefined' ? params_.hide_replies : false;
-	this.TEXT_MAX_LINES = params_.text_max_lines || 0;
+	this.TEXT_MAX_LINES = params_.text_max_lines || '0';
 	this.BTN_SEE_MORE = params_.btn_see_more;
 
 	// Target selectors
@@ -51,10 +51,10 @@ let MastodonApi = function (params_) {
 
 			spoilerText.classList.toggle('spoiler-text');
 			if (spoilerBtnText == 'Show more') {
-				event.target.textContent = 'Show less';
+				spoilerBtnText = 'Show less';
 				event.target.setAttribute('aria-expanded', 'true');
 			} else {
-				event.target.textContent = 'Show more';
+				spoilerBtnText = 'Show more';
 				event.target.setAttribute('aria-expanded', 'false');
 			}
 		}
@@ -161,7 +161,7 @@ MastodonApi.prototype.getToots = function () {
 
 		// Main text
 		let text_css = '';
-		if (this.TEXT_MAX_LINES) {
+		if (this.TEXT_MAX_LINES !== '0') {
 			text_css = 'truncate';
 			document.documentElement.style.setProperty('--text-max-lines', this.TEXT_MAX_LINES);
 		}

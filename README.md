@@ -56,7 +56,7 @@ Here you have some parameters to customize your embed timeline:
 
 ```
     // Maximum amount of toots to get from the user (default: 20)
-    toots_limit: 20
+    toots_limit: '20'
 
     // Hide boosted toots (default: don't hide)
     hide_reblog: false
@@ -65,7 +65,7 @@ Here you have some parameters to customize your embed timeline:
     hide_replies: false
 
     // Limit the text content to a maximum number of lines (default: unlimited)
-    text_max_lines: 0
+    text_max_lines: '0'
 
     // Customize the text of the button linking to the user profile page (appears after the last toot)
     btn_see_more: 'See more posts at Mastodon'
