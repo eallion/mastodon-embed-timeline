@@ -55,7 +55,7 @@ Check the `src=""` url, your user id is between `/accounts/avatars/` and `/origi
 Here you have some parameters to customize your embed timeline:
 
 ```
-    // Maximun amount of toots to get from the user (default: 20)
+    // Maximum amount of toots to get from the user (default: 20)
     toots_limit: 20
 
     // Hide boosted toots (default: don't hide)
