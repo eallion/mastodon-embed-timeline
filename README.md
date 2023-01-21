@@ -55,19 +55,19 @@ Check the `src=""` url, your user id is between `/accounts/avatars/` and `/origi
 Here you have some parameters to customize your embed timeline:
 
 ```
-    // The maximun amount of toots to get from the user (default: 20)
+    // Maximun amount of toots to get from the user (default: 20)
     toots_limit: 20
 
-    // Hide the boosted toots (default: don't hide)
+    // Hide boosted toots (default: don't hide)
     hide_reblog: false
 
-    // Hide the replies from the user (default: don't hide)
+    // Hide replies from the user (default: don't hide)
     hide_replies: false
 
     // Limit the text content to a maximum number of lines (default: unlimited)
     text_max_lines: 0
 
-    // Customize the text of the button linking to your Mastodon profile (appears after the last toot)
+    // Customize the text of the button linking to the user profile page (appears after the last toot)
     btn_see_more: 'See more posts at Mastodon'
 
 ```
