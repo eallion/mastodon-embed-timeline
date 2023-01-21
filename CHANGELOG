@@ -1,6 +1,7 @@
 21/01/2023
 - Fix spoiler content show/hide
 - Add feature, choose a maximum number of lines of text
+- Hide button to user page if 'btn_see_more' is empty
 
 02/12/2022
 - Add feature, hide boosts toots
