@@ -52,19 +52,22 @@ Check the `src=""` url, your user id is between `/accounts/avatars/` and `/origi
 - Other option, just copy your @profile_name and @instance_uri here:  
 <a href="https://prouser123.me/mastodon-userid-lookup/" target="_blank" rel="noopener">https://prouser123.me/mastodon-userid-lookup/</a>
 
-Also you can customize some parameters:
+Here you have some parameters to customize your embed timeline:
 
 ```
-    // The maximun amount of toots to get from the user
-    toots_limit: 13
+    // The maximun amount of toots to get from the user (default: 20)
+    toots_limit: 20
 
-    // Hide the boosted toots
-    hide_reblog: true
+    // Hide the boosted toots (default: don't hide)
+    hide_reblog: false
 
-    // Hide the replies from the user
-    hide_replies: true
+    // Hide the replies from the user (default: don't hide)
+    hide_replies: false
 
-    // Customize the text of the button after the last toot
+    // Limit the text content to a maximum number of lines (default: unlimited)
+    text_max_lines: 0
+
+    // Customize the text of the button linking to your Mastodon profile (appears after the last toot)
     btn_see_more: 'See more posts at Mastodon'
 
 ```

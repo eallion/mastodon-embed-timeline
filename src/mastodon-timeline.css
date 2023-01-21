@@ -2,6 +2,10 @@
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
+:root {
+  --text-max-lines: none;
+}
+
 /* Main container */
 .mt-timeline {
   height: calc(100% - 4rem);
@@ -79,13 +83,37 @@
   left: 25px;
 }
 
-/* Message */
+/* Text */
 .toot-text {
   margin-bottom: 0.25rem;
 }
-.toot-text .ellipsis::after {
+.toot-text .spoiler-link {
+  display: inline-block;
+  border-radius: 2px;  
+  background-color: #d9e1e8;
+  border: 0;
+  color: #000;
+  font-weight: 700;
+  font-size: 11px;
+  padding: 0 6px;
+  text-transform: uppercase;
+  line-height: 20px;
+  cursor: pointer;
+  vertical-align: top;
+}
+.toot-text .spoiler-text{
+  display: none;
+}
+.toot-text.truncate {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: var(--text-max-lines);
+  -webkit-box-orient: vertical;
+}
+.toot-text:not(.truncate) .ellipsis::after {
   content: "...";
 }
+
 .mt-error {
   color: darkred;
   background: lightpink;

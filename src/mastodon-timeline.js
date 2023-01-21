@@ -8,11 +8,12 @@ document.addEventListener("DOMContentLoaded", () => {
 		container_id: 'mt-timeline',
 		container_body_id: 'mt-body',
 		instance_uri: 'https://mastodon.online',
-		user_id: '180745',
+		user_id: 180745,
 		profile_name: '@idotj',
-		toots_limit: 13,
+		toots_limit: 20,
 		hide_reblog: false,
-		hide_replies: false,		
+		hide_replies: false,
+		text_max_lines: 0,
 		btn_see_more: 'See more posts at Mastodon'
 	});
 });
@@ -25,8 +26,9 @@ let MastodonApi = function (params_) {
 	this.PROFILE_NAME = params_.profile_name;
 	this.TOOTS_LIMIT = params_.toots_limit || 20;
 	this.HIDE_REBLOG = typeof params_.hide_reblog !== 'undefined' ? params_.hide_reblog : false;
-	this.HIDE_REPLIES = typeof params_.hide_replies !== 'undefined' ? params_.hide_replies : false;		
-	this.BTN_SEE_MORE = params_.btn_see_more || 'See more'
+	this.HIDE_REPLIES = typeof params_.hide_replies !== 'undefined' ? params_.hide_replies : false;
+	this.TEXT_MAX_LINES = params_.text_max_lines || 0;
+	this.BTN_SEE_MORE = params_.btn_see_more;
 
 	// Target selectors
 	this.mtIdContainer = document.getElementById(params_.container_id);
@@ -39,8 +41,22 @@ let MastodonApi = function (params_) {
 	this.mtIdContainer.addEventListener('click', function (event) {
 		let urlToot = event.target.closest('.mt-toot').dataset.location;
 		// Open Toot in new page avoiding any other natural link
-		if (event.target.localName != 'a' && event.target.localName != 'span' && urlToot) {
+		if (event.target.localName !== 'a' && event.target.localName !== 'span' && event.target.localName !== 'button' && urlToot) {
 			window.open(urlToot, '_blank');
+		}
+		// Show/hide content if click on spoiler button
+		if (event.target.localName == 'button' && event.target.className == 'spoiler-link') {
+			let spoilerText = event.target.nextSibling;
+			let spoilerBtnText = event.target.textContent;
+
+			spoilerText.classList.toggle('spoiler-text');
+			if (spoilerBtnText == 'Show more') {
+				event.target.textContent = 'Show less';
+				event.target.setAttribute('aria-expanded', 'true');
+			} else {
+				event.target.textContent = 'Show more';
+				event.target.setAttribute('aria-expanded', 'false');
+			}
 		}
 	});
 
@@ -56,7 +72,7 @@ MastodonApi.prototype.getToots = function () {
 	})
 		.then(response => response.json())
 		.then(jsonData => {
-			// console.log('jsonData: ', jsonData);
+			console.log('jsonData: ', jsonData);
 
 			// Clear the loading message
 			this.mtBodyContainer.innerHTML = '';
@@ -65,9 +81,9 @@ MastodonApi.prototype.getToots = function () {
 			for (let i in jsonData) {
 				// List only public toots
 				if (jsonData[i].visibility == 'public') {
-					if(mapi.HIDE_REBLOG && jsonData[i].reblog || mapi.HIDE_REPLIES && jsonData[i].in_reply_to_id){
+					if (mapi.HIDE_REBLOG && jsonData[i].reblog || mapi.HIDE_REPLIES && jsonData[i].in_reply_to_id) {
 						// Nothing here (Don't append boosts and/or replies toots)
-					}else{
+					} else {
 						appendToot.call(mapi, jsonData[i]);
 					}
 				}
@@ -81,7 +97,9 @@ MastodonApi.prototype.getToots = function () {
 			}
 
 			// Insert button after last toot to visit account page
-			this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
+			if (mapi.BTN_SEE_MORE) {
+				this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
+			}
 		})
 		.catch(err => {
 			this.mtBodyContainer.innerHTML = '<div class="d-flex h-100"><div class="w-100 my-auto text-center">✖️<br/>Request Failed:<br/>' + err + '</div></div>';
@@ -141,22 +159,35 @@ MastodonApi.prototype.getToots = function () {
 			date = this.formatDate(status_.created_at);
 		}
 
-		// Main content
-		if (status_.spoiler_text != '') {
+		// Main text
+		let text_css = '';
+		if (this.TEXT_MAX_LINES) {
+			text_css = 'truncate';
+			document.documentElement.style.setProperty('--text-max-lines', this.TEXT_MAX_LINES);
+		}
+
+		if (status_.spoiler_text !== '') {
 			content =
 				'<div class="toot-text">'
 				+ status_.spoiler_text
-				+ ' [Show more...]'
+				+ ' <button type="button" class="spoiler-link" aria-expanded="false">Show more</button>'
+				+ '<div class="spoiler-text">'
+				+ status_.content
+				+ '</div>'
 				+ '</div>';
-		} else if (status_.reblog && status_.reblog.content != '') {
+		} else if (status_.reblog && status_.reblog.content !== '') {
 			content =
-				'<div class="toot-text">'
+				'<div class="toot-text' + ' ' + text_css + '">'
+				+ '<div>'
 				+ status_.reblog.content
+				+ '</div>'
 				+ '</div>';
 		} else {
 			content =
-				'<div class="toot-text">'
+				'<div class="toot-text' + ' ' + text_css + '">'
+				+ '<div>'
 				+ status_.content
+				+ '</div>'
 				+ '</div>';
 		}
 
