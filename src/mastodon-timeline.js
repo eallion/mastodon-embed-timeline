@@ -80,7 +80,7 @@ MastodonApi.prototype.getToots = function () {
 			// Add toots
 			for (let i in jsonData) {
 				// List only public toots
-				if (jsonData[i].visibility == 'public') {
+				if (jsonData[i].visibility == 'public' || jsonData[i].visibility == 'unlisted') {
 					if (mapi.HIDE_REBLOG && jsonData[i].reblog || mapi.HIDE_REPLIES && jsonData[i].in_reply_to_id) {
 						// Nothing here (Don't append boosts and/or replies toots)
 					} else {
