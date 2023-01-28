@@ -25,7 +25,7 @@ Then copy the following html structure:
 
 ```
 <div class="mt-timeline">
-    <div id="mt-body" class="mt-body">
+    <div id="mt-body" class="mt-body" role="feed">
         <div class="loading-spinner"></div>
     </div>
 </div>
