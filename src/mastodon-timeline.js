@@ -111,12 +111,12 @@ MastodonApi.prototype.getToots = function () {
 			let allHashtags = document.querySelectorAll("#mt-timeline .hashtag");
 			for (let j = 0; j < allHashtags.length; j++) {
 				allHashtags[j].target = "_blank";
-				allHashtags[j].rel = "tag noopener noreferrer";
+				allHashtags[j].rel = "tag nofollow noopener noreferrer";
 			}
 
 			// Insert button after last toot to visit account page
 			if (mapi.BTN_SEE_MORE) {
-				this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
+				this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
 			}
 		})
 		.catch(err => {
@@ -134,7 +134,7 @@ MastodonApi.prototype.getToots = function () {
 
 			// Boosted avatar
 			avatar =
-				'<a href="' + status_.reblog.account.url + '" class="mt-avatar mt-avatar-boosted" style="background-image:url(' + status_.reblog.account.avatar + ');" rel="noopener noreferrer" target="_blank">'
+				'<a href="' + status_.reblog.account.url + '" class="mt-avatar mt-avatar-boosted" style="background-image:url(' + status_.reblog.account.avatar + ');" rel="nofollow noopener noreferrer" target="_blank">'
 				+ '<div class="mt-avatar mt-avatar-booster" style="background-image:url(' + status_.account.avatar + ');">'
 				+ '</div>'
 				+ '<span class="visually-hidden">'
@@ -145,7 +145,7 @@ MastodonApi.prototype.getToots = function () {
 			// User name and url
 			user =
 				'<div class="mt-user">'
-				+ '<a href="' + status_.reblog.account.url + '" rel="noopener noreferrer" target="_blank">'
+				+ '<a href="' + status_.reblog.account.url + '" rel="nofollow noopener noreferrer" target="_blank">'
 				+ status_.reblog.account.username + '<span class="visually-hidden"> post</span>'
 				+ '</a>'
 				+ '</div>';
@@ -159,7 +159,7 @@ MastodonApi.prototype.getToots = function () {
 
 			// Avatar
 			avatar =
-				'<a href="' + status_.account.url + '" class="mt-avatar" style="background-image:url(' + status_.account.avatar + ');" rel="noopener noreferrer" target="_blank">'
+				'<a href="' + status_.account.url + '" class="mt-avatar" style="background-image:url(' + status_.account.avatar + ');" rel="nofollow noopener noreferrer" target="_blank">'
 				+ '<span class="visually-hidden">'
 				+ status_.account.username + ' avatar'
 				+ '</span>'
@@ -168,7 +168,7 @@ MastodonApi.prototype.getToots = function () {
 			// User name and url
 			user =
 				'<div class="mt-user">'
-				+ '<a href="' + status_.account.url + '" rel="noopener noreferrer" target="_blank">'
+				+ '<a href="' + status_.account.url + '" rel="nofollow noopener noreferrer" target="_blank">'
 				+ status_.account.username + '<span class="visually-hidden"> post</span>'
 				+ '</a>'
 				+ '</div>';
@@ -243,7 +243,7 @@ MastodonApi.prototype.getToots = function () {
 		// Date
 		let timestamp =
 			'<div class="toot-date">'
-			+ '<a href="' + url + '" rel="noopener noreferrer" tabindex="-1" target="_blank">'
+			+ '<a href="' + url + '" rel="nofollow noopener noreferrer" tabindex="-1" target="_blank">'
 			+ date
 			+ '</a>'
 			+ '</div>';
