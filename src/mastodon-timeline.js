@@ -7,9 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	let mapi = new MastodonApi({
 		container_body_id: 'mt-body',
 		instance_uri: 'https://mastodon.online',
-		// instance_uri: 'https://toot.io',
 		user_id: '180745',
-		// user_id: '109687697476761261',
 		profile_name: '@idotj',
 		toots_limit: '20',
 		hide_reblog: false,
