@@ -50,7 +50,6 @@ let MastodonApi = function (params_) {
 	});
 	this.mtBodyContainer.addEventListener('keydown', function (event) {
 		if (event.code === 'Enter' && event.target.localName == 'article') {
-			console.log('key event: ', event);
 			openTootURL(event);
 		}
 	});
@@ -91,7 +90,7 @@ MastodonApi.prototype.getToots = function () {
 	})
 		.then(response => response.json())
 		.then(jsonData => {
-			console.log('jsonData: ', jsonData);
+			// console.log('jsonData: ', jsonData);
 
 			// Clear the loading message
 			this.mtBodyContainer.innerHTML = '';
