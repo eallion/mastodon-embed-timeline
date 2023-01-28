@@ -5,10 +5,11 @@
 // Timeline settings
 document.addEventListener("DOMContentLoaded", () => {
 	let mapi = new MastodonApi({
-		container_id: 'mt-timeline',
 		container_body_id: 'mt-body',
 		instance_uri: 'https://mastodon.online',
+		// instance_uri: 'https://toot.io',
 		user_id: '180745',
+		// user_id: '109687697476761261',
 		profile_name: '@idotj',
 		toots_limit: '20',
 		hide_reblog: false,
@@ -30,35 +31,53 @@ let MastodonApi = function (params_) {
 	this.TEXT_MAX_LINES = params_.text_max_lines || '0';
 	this.BTN_SEE_MORE = params_.btn_see_more;
 
-	// Target selectors
-	this.mtIdContainer = document.getElementById(params_.container_id);
+	// Target selector
 	this.mtBodyContainer = document.getElementById(params_.container_body_id);
 
 	// Get the toots
 	this.getToots();
 
 	// Toot interactions
-	this.mtIdContainer.addEventListener('click', function (event) {
+	this.mtBodyContainer.addEventListener('click', function (event) {
+		// Check if clicked in a toot
+		if (event.target.localName == 'article' || event.target.offsetParent.localName == 'article') {
+			openTootURL(event);
+		}
+		// Check if clicked in Show More/Less button
+		if (event.target.localName == 'button' && event.target.className == 'spoiler-link') {
+			showTootSpoiler(event);
+		}
+	});
+	this.mtBodyContainer.addEventListener('keydown', function (event) {
+		if (event.code === 'Enter' && event.target.localName == 'article') {
+			console.log('key event: ', event);
+			openTootURL(event);
+		}
+	});
+
+	// Open Toot in a new page avoiding any other natural link
+	function openTootURL(event) {
 		let urlToot = event.target.closest('.mt-toot').dataset.location;
-		// Open Toot in new page avoiding any other natural link
 		if (event.target.localName !== 'a' && event.target.localName !== 'span' && event.target.localName !== 'button' && urlToot) {
 			window.open(urlToot, '_blank');
 		}
-		// Show/hide content if click on spoiler button
-		if (event.target.localName == 'button' && event.target.className == 'spoiler-link') {
-			let spoilerText = event.target.nextSibling;
-			let spoilerBtnText = event.target.textContent;
+	}
 
-			spoilerText.classList.toggle('spoiler-text');
-			if (spoilerBtnText == 'Show more') {
-				spoilerBtnText = 'Show less';
-				event.target.setAttribute('aria-expanded', 'true');
-			} else {
-				spoilerBtnText = 'Show more';
-				event.target.setAttribute('aria-expanded', 'false');
-			}
+	// Show/hide content if click on spoiler button
+	function showTootSpoiler(event) {
+		let spoilerText = event.target.nextSibling;
+		let spoilerBtnText = event.target.textContent;
+
+		spoilerText.classList.toggle('spoiler-text');
+		if (spoilerBtnText == 'Show more') {
+			spoilerBtnText = 'Show less';
+			event.target.setAttribute('aria-expanded', 'true');
+		} else {
+			spoilerBtnText = 'Show more';
+			event.target.setAttribute('aria-expanded', 'false');
 		}
-	});
+
+	}
 
 }
 
@@ -80,11 +99,11 @@ MastodonApi.prototype.getToots = function () {
 			// Add toots
 			for (let i in jsonData) {
 				// List only public toots
-				if (jsonData[i].visibility == 'public') {
+				if (jsonData[i].visibility == 'public' || jsonData[i].visibility == 'unlisted') {
 					if (mapi.HIDE_REBLOG && jsonData[i].reblog || mapi.HIDE_REPLIES && jsonData[i].in_reply_to_id) {
 						// Nothing here (Don't append boosts and/or replies toots)
 					} else {
-						appendToot.call(mapi, jsonData[i]);
+						appendToot.call(mapi, jsonData[i], i);
 					}
 				}
 			}
@@ -106,7 +125,7 @@ MastodonApi.prototype.getToots = function () {
 		});
 
 	// Inner function to add each toot content in container
-	let appendToot = function (status_) {
+	let appendToot = function (status_, index) {
 		let avatar, user, content, url, date;
 
 		if (status_.reblog) {
@@ -232,14 +251,14 @@ MastodonApi.prototype.getToots = function () {
 
 		// Add all to main toot container
 		let toot =
-			'<div class="mt-toot border-bottom" data-location="' + url + '">'
+			'<article class="mt-toot border-bottom" aria-posinset="' + (Number(index) + 1) + '" aria-setsize="' + this.TOOTS_LIMIT + '" data-location="' + url + '" tabindex="0">'
 			+ avatar
 			+ user
 			+ content
 			+ media
 			+ poll
 			+ timestamp
-			+ '</div>';
+			+ '</article>';
 
 		this.mtBodyContainer.insertAdjacentHTML('beforeend', toot);
 	};

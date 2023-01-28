@@ -8,17 +8,20 @@
 
 /* Main container */
 .mt-timeline {
-  height: calc(100% - 4rem);
-  padding: 2rem 3rem;
+  height: calc(100% - 2rem);
+  padding: 1rem 1.5rem;
   position: relative;
-  background: lightgray;
+  background: #fff;
 }
 
 .mt-timeline a:link,
 .mt-timeline a:active,
 .mt-timeline a {
   text-decoration: none;
-  color: darkblue;
+  color: #3a3bff;
+}
+.mt-timeline a:hover {
+  text-decoration: underline;
 }
 
 .mt-body {
@@ -39,26 +42,23 @@
 
 /* Toot container */
 .mt-toot {
-  margin: 0 0.5rem 0 0;
+  margin: 0.25rem 0.5rem 0.25rem 0.25rem;
   padding: 1rem 0 2rem 65px;
   position: relative;
   min-height: 60px;
   background-color: transparent;
   border-bottom: 1px solid #dee2e6;
 }
-.mt-toot:hover {
+.mt-toot:hover,
+.mt-toot:focus {
   cursor: pointer;
-  background-color: rgba(124, 124, 124, 0.2);
+  background-color: #d9e1e8;
 }
 .mt-toot p:last-child {
   margin-bottom: 0;
 }
 
 /* User icon */
-.mt-user {
-  display: table;
-  font-weight: 600;
-}
 .mt-avatar {
   position: absolute;
   top: 20px;
@@ -82,6 +82,13 @@
   top: 25px;
   left: 25px;
 }
+.mt-user {
+  display: table;
+  font-weight: 600;
+}
+.mt-user > a {
+  color: #000 !important;
+}
 
 /* Text */
 .toot-text {
@@ -89,7 +96,7 @@
 }
 .toot-text .spoiler-link {
   display: inline-block;
-  border-radius: 2px;  
+  border-radius: 2px;
   background-color: #d9e1e8;
   border: 0;
   color: #000;
@@ -101,7 +108,7 @@
   cursor: pointer;
   vertical-align: top;
 }
-.toot-text .spoiler-text{
+.toot-text .spoiler-text {
   display: none;
 }
 .toot-text.truncate {
@@ -115,8 +122,8 @@
 }
 
 .mt-error {
-  color: darkred;
-  background: lightpink;
+  color: #8b0000;
+  background: #f1a0ad;
   margin: 5px;
   padding: 10px;
 }
