@@ -106,7 +106,7 @@ MastodonApi.prototype.getToots = function () {
 			}
 
 			// Add target="_blank" to all hashtags
-			let allHashtags = document.querySelectorAll("#mt-timeline .hashtag");
+			let allHashtags = document.querySelectorAll("#mt-body .hashtag");
 			for (let j = 0; j < allHashtags.length; j++) {
 				allHashtags[j].target = "_blank";
 				allHashtags[j].rel = "tag nofollow noopener noreferrer";
