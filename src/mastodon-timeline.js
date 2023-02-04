@@ -1,4 +1,4 @@
-// Mastodon embed feed timeline
+// Mastodon embed feed timeline v3.2.0
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 

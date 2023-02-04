@@ -1,43 +1,46 @@
-28/01/2023
+v3.2.0 - 04/02/2023
+- Add version
+
+v3.1.1 - 28/01/2023
 - Improve Tab navigation
 - Update styles (background, link and hover colors)
 - Add 'nofollow' to external links
 
-21/01/2023
+v3.1.0 - 21/01/2023
 - Fix spoiler content show/hide
 - Add feature, choose a maximum number of lines of text
 - Hide button to user page if 'btn_see_more' is empty
 
-02/12/2022
+v2.12.0 - 02/12/2022
 - Add feature, hide boosts toots
 - Add feature, hide replies toots
 
-01/11/2022
+v2.11.0 - 01/11/2022
 - Update Readme.md (Install and setup text)
 
-22/01/2022
+v2.1.0 - 22/01/2022
 - Replace account_id terminology for user_id
 - Show retoots media in timeline
 
-01/06/2021
+v1.6.0 - 01/06/2021
 - Update Readme.md
 
-24/05/2021
+v1.5.4 - 24/05/2021
 - Improve avatar + user name for a11y
 
-23/05/2021
+v1.5.3 - 23/05/2021
 - Create a codepen demo
 
-22/05/2021
+v1.5.2 - 22/05/2021
 - Add avatar name
 - Use id instead of css class for js selectors
 - Rearrange functions in js
 
-17/05/2021
+v1.5.1 - 17/05/2021
 - Add ellipses for long messages
 - Remove access token
 - Add rel="tag noopener noreferrer" for hashtag links
 
-06/04/2021
+v1.0.0 - 06/04/2021
 - First commit
  
