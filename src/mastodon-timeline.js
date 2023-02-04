@@ -1,4 +1,4 @@
-// Mastodon embed feed timeline v3.2.0
+// Mastodon embed feed timeline v3.2.1
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		hide_reblog: false,
 		hide_replies: false,
 		text_max_lines: '0',
-		btn_see_more: 'See more posts at Mastodon'
+		link_see_more: 'See more posts at Mastodon'
 	});
 });
 
@@ -21,13 +21,13 @@ let MastodonApi = function (params_) {
 
 	// Endpoint access settings
 	this.INSTANCE_URI = params_.instance_uri;
-	this.USER_ID = params_.user_id;
-	this.PROFILE_NAME = params_.profile_name;
+	this.USER_ID = params_.user_id || '';
+	this.PROFILE_NAME = this.USER_ID ? params_.profile_name : '';
 	this.TOOTS_LIMIT = params_.toots_limit || '20';
 	this.HIDE_REBLOG = typeof params_.hide_reblog !== 'undefined' ? params_.hide_reblog : false;
 	this.HIDE_REPLIES = typeof params_.hide_replies !== 'undefined' ? params_.hide_replies : false;
 	this.TEXT_MAX_LINES = params_.text_max_lines || '0';
-	this.BTN_SEE_MORE = params_.btn_see_more;
+	this.LINK_SEE_MORE = params_.link_see_more;
 
 	// Target selector
 	this.mtBodyContainer = document.getElementById(params_.container_body_id);
@@ -81,12 +81,27 @@ let MastodonApi = function (params_) {
 // Listing toots function
 MastodonApi.prototype.getToots = function () {
 	let mapi = this;
+	let requestURL = '';
 
-	// Get request
-	fetch(this.INSTANCE_URI + '/api/v1/accounts/' + this.USER_ID + '/statuses?limit=' + this.TOOTS_LIMIT, {
-		method: 'get',
-	})
-		.then(response => response.json())
+	// Get request (user toots or local timeline toots)
+	if (this.USER_ID) {
+		requestURL = this.INSTANCE_URI + '/api/v1/accounts/' + this.USER_ID + '/statuses?limit=' + this.TOOTS_LIMIT;
+	} else {
+		requestURL = this.INSTANCE_URI + '/api/v1/timelines/public?limit=' + this.TOOTS_LIMIT;
+	}
+
+	fetch(requestURL, { method: 'get' })
+		.then(
+			response => {
+				if (response.ok) {
+					return response.json()
+				} else if (response.status === 404) {
+					throw new Error("404 Not found", { cause: response });
+				} else {
+					throw new Error(response.status);
+				}
+			}
+		)
 		.then(jsonData => {
 			// console.log('jsonData: ', jsonData);
 
@@ -112,13 +127,19 @@ MastodonApi.prototype.getToots = function () {
 				allHashtags[j].rel = "tag nofollow noopener noreferrer";
 			}
 
-			// Insert button after last toot to visit account page
-			if (mapi.BTN_SEE_MORE) {
-				this.mtBodyContainer.insertAdjacentHTML('beforeend', '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.BTN_SEE_MORE + '</a></div>');
+			// Insert link after last toot to visit Mastodon page
+			if (mapi.LINK_SEE_MORE) {
+				let linkHtml = '';
+				if (this.USER_ID) {
+					linkHtml = '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+				} else {
+					linkHtml = '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/public/local' + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+				}
+				this.mtBodyContainer.insertAdjacentHTML('beforeend', linkHtml);
 			}
 		})
 		.catch(err => {
-			this.mtBodyContainer.innerHTML = '<div class="d-flex h-100"><div class="w-100 my-auto text-center">✖️<br/>Request Failed:<br/>' + err + '</div></div>';
+			this.mtBodyContainer.innerHTML = '<div class="mt-error">✖️<br/><strong>Request Failed:</strong><br/>' + err + '</div>';
 		});
 
 	// Inner function to add each toot content in container

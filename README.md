@@ -33,14 +33,14 @@ Then copy the following html structure:
 
 Great, you have a Mastodon timeline running in your page.
 
-The next step will be to setup the timeline with your account info.
-For that, edit the the JS file *mastodon-timeline.js*  and at the beginning replace the following values:
-
+The next step will be to setup the timeline.  
+Edit the the JS file *mastodon-timeline.js* and at the beginning replace the following values:
 ```
     instance_uri:   'Your Mastodon instance',
     user_id:        'Your user ID on Mastodon instance',
     profile_name:   'Your user name on Mastodon instance',
 ```
+Leave `user_id` and `profile_name` empty if you just want to show your instance local timeline.
 
 If you don't know your user_id, you have two ways to get it:
 
