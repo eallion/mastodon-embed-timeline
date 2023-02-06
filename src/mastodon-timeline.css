@@ -1,8 +1,14 @@
-/* Mastodon embed feed timeline  v3.2.1 */
+/* Mastodon embed feed timeline  v3.2.2 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
+/* Variables */
 :root {
+  --bg-color: #fff;
+  --bg-hover-color: #d9e1e8;
+  --line-gray-color: #c0cdd9;
+  --content-text: #000;
+  --link-color: #3a3bff;
   --text-max-lines: none;
 }
 
@@ -11,14 +17,14 @@
   height: calc(100% - 2rem);
   padding: 1rem 1.5rem;
   position: relative;
-  background: #fff;
+  background: var(--bg-color);
 }
 
 .mt-timeline a:link,
 .mt-timeline a:active,
 .mt-timeline a {
   text-decoration: none;
-  color: #3a3bff;
+  color: var(--link-color);
 }
 .mt-timeline a:hover {
   text-decoration: underline;
@@ -47,12 +53,12 @@
   position: relative;
   min-height: 60px;
   background-color: transparent;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--line-gray-color);
 }
 .mt-toot:hover,
 .mt-toot:focus {
   cursor: pointer;
-  background-color: #d9e1e8;
+  background-color: var(--bg-hover-color);
 }
 .mt-toot p:last-child {
   margin-bottom: 0;
@@ -69,7 +75,7 @@
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: contain;
-  background-color: #fff;
+  background-color: var(--bg-color);
   border-radius: 5px;
 }
 .mt-avatar-boosted {
@@ -87,7 +93,7 @@
   font-weight: 600;
 }
 .mt-user > a {
-  color: #000 !important;
+  color: var(--content-text) !important;
 }
 
 /* Text */
@@ -97,9 +103,9 @@
 .toot-text .spoiler-link {
   display: inline-block;
   border-radius: 2px;
-  background-color: #d9e1e8;
+  background-color: var(--bg-hover-color);
   border: 0;
-  color: #000;
+  color: var(--content-text);
   font-weight: 700;
   font-size: 11px;
   padding: 0 6px;

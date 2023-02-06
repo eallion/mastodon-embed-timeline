@@ -1,4 +1,4 @@
-// Mastodon embed feed timeline v3.2.1
+// Mastodon embed feed timeline v3.2.2
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	let mapi = new MastodonApi({
 		container_body_id: 'mt-body',
 		instance_uri: 'https://mastodon.online',
-		user_id: '180745',
+		user_id: '180745', // leave empty if prefer to show local instance toots
 		profile_name: '@idotj',
 		toots_limit: '20',
 		hide_reblog: false,
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let MastodonApi = function (params_) {
 
-	// Endpoint access settings
+	// Endpoint access settings / default values
 	this.INSTANCE_URI = params_.instance_uri;
 	this.USER_ID = params_.user_id || '';
 	this.PROFILE_NAME = this.USER_ID ? params_.profile_name : '';
@@ -32,49 +32,26 @@ let MastodonApi = function (params_) {
 	// Target selector
 	this.mtBodyContainer = document.getElementById(params_.container_body_id);
 
-	// Get the toots
-	this.getToots();
-
 	// Toot interactions
 	this.mtBodyContainer.addEventListener('click', function (event) {
 		// Check if clicked in a toot
 		if (event.target.localName == 'article' || event.target.offsetParent.localName == 'article') {
-			openTootURL(event);
+			this.openTootURL(event);
 		}
 		// Check if clicked in Show More/Less button
 		if (event.target.localName == 'button' && event.target.className == 'spoiler-link') {
-			showTootSpoiler(event);
+			this.toogleSpoiler(event);
 		}
 	});
 	this.mtBodyContainer.addEventListener('keydown', function (event) {
+		// Check if Enter key pressed with focus in an article
 		if (event.code === 'Enter' && event.target.localName == 'article') {
-			openTootURL(event);
+			this.openTootURL(event);
 		}
 	});
 
-	// Open Toot in a new page avoiding any other natural link
-	function openTootURL(event) {
-		let urlToot = event.target.closest('.mt-toot').dataset.location;
-		if (event.target.localName !== 'a' && event.target.localName !== 'span' && event.target.localName !== 'button' && urlToot) {
-			window.open(urlToot, '_blank');
-		}
-	}
-
-	// Show/hide content if click on spoiler button
-	function showTootSpoiler(event) {
-		let spoilerText = event.target.nextSibling;
-		let spoilerBtnText = event.target.textContent;
-
-		spoilerText.classList.toggle('spoiler-text');
-		if (spoilerBtnText == 'Show more') {
-			spoilerBtnText = 'Show less';
-			event.target.setAttribute('aria-expanded', 'true');
-		} else {
-			spoilerBtnText = 'Show more';
-			event.target.setAttribute('aria-expanded', 'false');
-		}
-
-	}
+	// Get the toots
+	this.getToots();
 
 }
 
@@ -105,7 +82,7 @@ MastodonApi.prototype.getToots = function () {
 		.then(jsonData => {
 			// console.log('jsonData: ', jsonData);
 
-			// Clear the loading message
+			// Empty the <div> container
 			this.mtBodyContainer.innerHTML = '';
 
 			// Add toots
@@ -308,6 +285,28 @@ MastodonApi.prototype.formatDate = function (date_) {
 
 	return displayDate;
 };
+
+// Open Toot in a new page avoiding any other natural link
+MastodonApi.prototype.openTootURL = function (event_) {
+	let urlToot = event_.target.closest('.mt-toot').dataset.location;
+	if (event_.target.localName !== 'a' && event_.target.localName !== 'span' && event_.target.localName !== 'button' && urlToot) {
+		window.open(urlToot, '_blank');
+	}
+}
+
+// Spoiler button
+MastodonApi.prototype.toogleSpoiler = function (event_) {
+	let spoilerText = event_.target.nextSibling;
+	let spoilerBtnText = event_.target.textContent;
+	spoilerText.classList.toggle('spoiler-text');
+	if (spoilerBtnText == 'Show more') {
+		spoilerBtnText = 'Show less';
+		event_.target.setAttribute('aria-expanded', 'true');
+	} else {
+		spoilerBtnText = 'Show more';
+		event_.target.setAttribute('aria-expanded', 'false');
+	}
+}
 
 // Loading spinner
 function removeSpinner(element) {
