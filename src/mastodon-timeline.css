@@ -1,26 +1,38 @@
-/* Mastodon embed feed timeline  v3.2.2 */
+/* Mastodon embed feed timeline  v3.2.9 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
 /* Variables */
 :root {
+  --text-max-lines: none;
+}
+
+/* Theme colors */
+:root,
+html[data-theme="light"] {
   --bg-color: #fff;
   --bg-hover-color: #d9e1e8;
   --line-gray-color: #c0cdd9;
   --content-text: #000;
   --link-color: #3a3bff;
   --error-text-color: #8b0000;
-  --text-max-lines: none;
+}
+html[data-theme="dark"] {
+  --bg-color: #282c37;
+  --bg-hover-color: #313543;
+  --line-gray-color: #393f4f;
+  --content-text: #fff;
+  --link-color: #8c8dff;
+  --error-text-color: #fe6c6c;
 }
 
 /* Main container */
 .mt-timeline {
   height: calc(100% - 2rem);
-  padding: 1rem 1.5rem;
+  padding: 1rem 0.5rem 1rem 1.5rem;
   position: relative;
   background: var(--bg-color);
 }
-
 .mt-timeline a:link,
 .mt-timeline a:active,
 .mt-timeline a {
@@ -36,8 +48,8 @@
   overflow-y: auto;
   white-space: pre-wrap;
   word-wrap: break-word;
+  padding-right: 0.5rem;
 }
-
 .mt-body .invisible {
   font-size: 0;
   line-height: 0;
@@ -50,9 +62,9 @@
 /* Toot container */
 .mt-toot {
   margin: 0.25rem 0.5rem 0.25rem 0.25rem;
-  padding: 1rem 0 2rem 65px;
+  padding: 1rem 0.5rem 2rem 4rem;
   position: relative;
-  min-height: 60px;
+  min-height: 3.75rem;
   background-color: transparent;
   border-bottom: 1px solid var(--line-gray-color);
 }
@@ -68,10 +80,10 @@
 /* User icon */
 .mt-avatar {
   position: absolute;
-  top: 20px;
+  top: 1rem;
   left: 5px;
-  width: 50px;
-  height: 50px;
+  width: 3rem;
+  height: 3rem;
   background-color: transparent;
   background-repeat: no-repeat;
   background-position: 50% 50%;
@@ -80,14 +92,14 @@
   border-radius: 5px;
 }
 .mt-avatar-boosted {
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 .mt-avatar-booster {
-  width: 25px;
-  height: 25px;
-  top: 25px;
-  left: 25px;
+  width: 1.5rem;
+  height: 1.5rem;
+  top: 1.5rem;
+  left: 1.5rem;
 }
 .mt-user {
   display: table;
@@ -100,6 +112,7 @@
 /* Text */
 .toot-text {
   margin-bottom: 0.25rem;
+  color: var(--content-text);
 }
 .toot-text .spoiler-link {
   display: inline-block;
@@ -108,10 +121,10 @@
   border: 0;
   color: var(--content-text);
   font-weight: 700;
-  font-size: 11px;
-  padding: 0 6px;
+  font-size: 0.7rem;
+  padding: 0 0.35rem;
   text-transform: uppercase;
-  line-height: 20px;
+  line-height: 1.25rem;
   cursor: pointer;
   vertical-align: top;
 }
@@ -135,18 +148,23 @@
   justify-content: center;
   align-items: center;
   color: var(--error-text-color);
-  padding: 10px;
+  padding: 0.75rem;
   text-align: center;
 }
 
 /* Poll */
 .toot-poll {
   margin-bottom: 0.25rem;
+  color: var(--content-text);
 }
 .toot-poll ul {
   list-style: none;
   padding: 0;
   margin: 0;
+}
+.toot-poll ul li {
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
 }
 .toot-poll ul li:not(:last-child) {
   margin-bottom: 0.25rem;
@@ -179,6 +197,7 @@
   bottom: 0;
   left: 0;
 }
+
 .img-ratio14_7 {
   position: relative;
   padding-top: 48.95%; /* 14:7 */

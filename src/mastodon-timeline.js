@@ -1,25 +1,45 @@
-// Mastodon embed feed timeline v3.2.2
+// Mastodon embed feed timeline v3.2.9
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
 // Timeline settings
 document.addEventListener("DOMContentLoaded", () => {
 	let mapi = new MastodonApi({
+		// Id of the <div> containing the timeline
 		container_body_id: 'mt-body',
+
+		// Preferred color theme: 'light', 'dark' or 'auto' (default: auto)
+		default_theme: 'auto',
+
+		// Your Mastodon instance
 		instance_uri: 'https://mastodon.online',
-		user_id: '180745', // leave empty if prefer to show local instance toots
+
+		// Your user ID on Mastodon instance. Leave empty if you prefer to show local instance toots
+		user_id: '000180745',
+
+		// Your user name on Mastodon instance
 		profile_name: '@idotj',
+
+		// Maximum amount of toots to get (default: 20)
 		toots_limit: '20',
+
+		// Hide boosted toots (default: don't hide)
 		hide_reblog: false,
+
+		// Hide replies toots (default: don't hide)
 		hide_replies: false,
+
+		// Limit the text content to a maximum number of lines (default: unlimited)
 		text_max_lines: '0',
+
+		// Customize the text of the link pointing to the Mastodon page (appears after the last toot)
 		link_see_more: 'See more posts at Mastodon'
 	});
 });
 
 let MastodonApi = function (params_) {
-
 	// Endpoint access settings / default values
+	this.DEFAULT_THEME = params_.default_theme || 'auto';
 	this.INSTANCE_URI = params_.instance_uri;
 	this.USER_ID = params_.user_id || '';
 	this.PROFILE_NAME = this.USER_ID ? params_.profile_name : '';
@@ -32,49 +52,27 @@ let MastodonApi = function (params_) {
 	// Target selector
 	this.mtBodyContainer = document.getElementById(params_.container_body_id);
 
-	// Toot interactions
-	this.mtBodyContainer.addEventListener('click', function (event) {
-		// Check if clicked in a toot
-		if (event.target.localName == 'article' || event.target.offsetParent.localName == 'article') {
-			openTootURL(event);
-		}
-		// Check if clicked in Show More/Less button
-		if (event.target.localName == 'button' && event.target.className == 'spoiler-link') {
-			toogleSpoiler(event);
-		}
-	});
-	this.mtBodyContainer.addEventListener('keydown', function (event) {
-		// Check if Enter key pressed with focus in an article
-		if (event.code === 'Enter' && event.target.localName == 'article') {
-			openTootURL(event);
-		}
-	});
-
-	// Open Toot in a new page avoiding any other natural link
-	function openTootURL(event_) {
-		let urlToot = event_.target.closest('.mt-toot').dataset.location;
-		if (event_.target.localName !== 'a' && event_.target.localName !== 'span' && event_.target.localName !== 'button' && urlToot) {
-			window.open(urlToot, '_blank');
-		}
-	}
-
-	// Spoiler button
-	function toogleSpoiler(event_) {
-		let spoilerText = event_.target.nextSibling;
-		let spoilerBtnText = event_.target.textContent;
-		spoilerText.classList.toggle('spoiler-text');
-		if (spoilerBtnText == 'Show more') {
-			spoilerBtnText = 'Show less';
-			event_.target.setAttribute('aria-expanded', 'true');
-		} else {
-			spoilerBtnText = 'Show more';
-			event_.target.setAttribute('aria-expanded', 'false');
-		}
-	}
+	// Apply selected appearance
+	this.applyTheme();
 
 	// Get the toots
 	this.getToots();
+}
 
+// Theme style
+MastodonApi.prototype.applyTheme = function () {
+	const setTheme = function (theme) {
+		document.documentElement.setAttribute('data-theme', theme);
+	}
+	if (this.DEFAULT_THEME === 'auto') {
+		let systemTheme = window.matchMedia('(prefers-color-scheme: dark)');
+		systemTheme.matches ? setTheme('dark') : setTheme('light');
+		systemTheme.addEventListener('change', event => {
+			event.matches ? setTheme('dark') : setTheme('light');
+		});
+	} else {
+		setTheme(this.DEFAULT_THEME);
+	}
 }
 
 // Listing toots function
@@ -280,6 +278,47 @@ MastodonApi.prototype.getToots = function () {
 		this.mtBodyContainer.insertAdjacentHTML('beforeend', toot);
 	};
 
+	// Toot interactions
+	this.mtBodyContainer.addEventListener('click', function (event) {
+		console.log({event});
+		// Check if clicked in a toot
+		if (event.target.localName == 'article' || event.target.offsetParent.localName == 'article' || event.target.localName == 'img') {
+			openTootURL(event);
+		}
+		// Check if clicked in Show More/Less button
+		if (event.target.localName == 'button' && event.target.className == 'spoiler-link') {
+			toogleSpoiler(event);
+		}
+	});
+	this.mtBodyContainer.addEventListener('keydown', function (event) {
+		// Check if Enter key pressed with focus in an article
+		if (event.code === 'Enter' && event.target.localName == 'article') {
+			openTootURL(event);
+		}
+	});
+
+	// Open Toot in a new page avoiding any other natural link
+	openTootURL = function (event_) {
+		let urlToot = event_.target.closest('.mt-toot').dataset.location;
+		if (event_.target.localName !== 'a' && event_.target.localName !== 'span' && event_.target.localName !== 'button' && urlToot) {
+			window.open(urlToot, '_blank');
+		}
+	}
+
+	// Spoiler button
+	toogleSpoiler = function (event_) {
+		let spoilerText = event_.target.nextSibling;
+		let spoilerBtnText = event_.target.textContent;
+		spoilerText.classList.toggle('spoiler-text');
+		if (spoilerBtnText == 'Show more') {
+			spoilerBtnText = 'Show less';
+			event_.target.setAttribute('aria-expanded', 'true');
+		} else {
+			spoilerBtnText = 'Show more';
+			event_.target.setAttribute('aria-expanded', 'false');
+		}
+	}
+
 };
 
 // Place media
@@ -308,10 +347,8 @@ MastodonApi.prototype.formatDate = function (date_) {
 	return displayDate;
 };
 
-
-
 // Loading spinner
-function removeSpinner(element) {
+removeSpinner = function (element) {
 	const spinnerCSS = 'loading-spinner';
 	// Find closest parent container (1st, 2nd or 3rd level)
 	let spinnerContainer = element.closest('.' + spinnerCSS);
