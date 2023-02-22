@@ -280,7 +280,6 @@ MastodonApi.prototype.getToots = function () {
 
 	// Toot interactions
 	this.mtBodyContainer.addEventListener('click', function (event) {
-		console.log({event});
 		// Check if clicked in a toot
 		if (event.target.localName == 'article' || event.target.offsetParent.localName == 'article' || event.target.localName == 'img') {
 			openTootURL(event);
