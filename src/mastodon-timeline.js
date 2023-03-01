@@ -1,4 +1,4 @@
-// Mastodon embed feed timeline v3.2.9
+// Mastodon embed feed timeline v3.3.0
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
@@ -117,26 +117,27 @@ MastodonApi.prototype.getToots = function () {
 				}
 			}
 
-			// Add target="_blank" to all hashtags
-			let allHashtags = document.querySelectorAll("#mt-body .hashtag");
-			for (let j = 0; j < allHashtags.length; j++) {
-				allHashtags[j].target = "_blank";
-				allHashtags[j].rel = "tag nofollow noopener noreferrer";
+			// Add target="_blank" to all #hashtags and @mentions
+			let linksToBlank = document.querySelectorAll('#mt-body .hashtag, .u-url.mention');
+			for (let j = 0; j < linksToBlank.length; j++) {
+				linksToBlank[j].target = '_blank';
+				linksToBlank[j].hasAttribute('rel', 'tag') ? linksToBlank[j].setAttribute('rel', 'tag nofollow noopener noreferrer') : linksToBlank[j].setAttribute('rel', 'nofollow noopener noreferrer');
 			}
 
 			// Insert link after last toot to visit Mastodon page
 			if (mapi.LINK_SEE_MORE) {
 				let linkHtml = '';
 				if (this.USER_ID) {
-					linkHtml = '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
 				} else {
-					linkHtml = '<div class="mt-seeMore"><a href="' + mapi.INSTANCE_URI + '/public/local' + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/public/local' + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
 				}
-				this.mtBodyContainer.insertAdjacentHTML('beforeend', linkHtml);
+				this.mtBodyContainer.parentNode.insertAdjacentHTML('beforeend', linkHtml);
 			}
 		})
 		.catch(err => {
 			this.mtBodyContainer.innerHTML = '<div class="mt-error">✖️<br/><strong>Request Failed:</strong><br/>' + err + '</div>';
+			this.mtBodyContainer.setAttribute('role', 'none');
 		});
 
 	// Inner function to add each toot content in container
