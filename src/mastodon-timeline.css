@@ -32,6 +32,7 @@ html[data-theme="dark"] {
   overflow-y: auto;
   position: relative;
   background: var(--bg-color);
+  scrollbar-color: var(--bg-hover-color) rgba(0, 0, 0, 0.1);
 }
 .mt-timeline a:link,
 .mt-timeline a:active,
@@ -41,6 +42,24 @@ html[data-theme="dark"] {
 }
 .mt-timeline a:hover {
   text-decoration: underline;
+}
+.mt-timeline::-webkit-scrollbar {
+  width: 0.75rem;
+  height: 0.75rem;
+}
+.mt-timeline::-webkit-scrollbar-corner {
+  background: transparent;
+}
+.mt-timeline::-webkit-scrollbar-thumb {
+  border-radius: 0;
+  border: 0 var(--content-text);
+  border-radius: 2rem;
+  background: var(--bg-hover-color);  
+}
+.mt-timeline::-webkit-scrollbar-track {
+  border: 0 var(--content-text);
+  border-radius: 0;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .mt-body {
@@ -55,31 +74,6 @@ html[data-theme="dark"] {
   width: 0;
   height: 0;
   position: absolute;
-}
-
-/* Scroll bar */
-html{
-  scrollbar-color: var(--bg-hover-color) rgba(0, 0, 0, 0.1);
-}
-::-webkit-scrollbar {
-  width: 0.75rem;
-  height: 0.75rem;
-}
-::-webkit-scrollbar-corner {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  border-radius: 0;
-}
-::-webkit-scrollbar-thumb {
-  border: 0 var(--content-text);
-  border-radius: 2rem;
-  background: var(--bg-hover-color);
-}
-::-webkit-scrollbar-track {
-  border: 0 var(--content-text);
-  border-radius: 0;
-  background: rgba(0, 0, 0, 0.1);
 }
 
 /* Toot container */
