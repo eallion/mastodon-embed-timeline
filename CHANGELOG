@@ -1,3 +1,9 @@
+v3.3.0 - 01/03/2023
+- Simplify timeline container CSS
+- Fix WCAG conflict with role=feed
+- Open @mention link in a new tab/window
+- Add scroll-bar styles (webkit)
+
 v3.2.9 - 21/02/2023
 - Add dark theme
 - Fix click on images
