@@ -1,3 +1,6 @@
+v3.3.1 - 01/03/2023
+- Apply scroll-bar styles to timeline container
+
 v3.3.0 - 01/03/2023
 - Simplify timeline container CSS
 - Fix WCAG conflict with role=feed
