@@ -1,5 +1,7 @@
 # 🐘 Mastodon embed timeline
 
+![Mastodon timeline widget screenshot](screenshot-light-dark.jpg "Mastodon timeline widget screenshot")
+
 Embed a mastodon feed timeline in your page, only with a css and js file.
 
 Working version running at:
