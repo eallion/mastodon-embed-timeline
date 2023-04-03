@@ -87,7 +87,9 @@ MastodonApi.prototype.getToots = function () {
 		requestURL = this.INSTANCE_URI + '/api/v1/timelines/public?limit=' + this.TOOTS_LIMIT;
 	}
 
-	fetch(requestURL, { method: 'get' })
+	fetch(requestURL, {
+		method: 'get'
+	})
 		.then(
 			response => {
 				if (response.ok) {
@@ -267,7 +269,7 @@ MastodonApi.prototype.getToots = function () {
 
 		// Add all to main toot container
 		let toot =
-			'<article class="mt-toot border-bottom" aria-posinset="' + (Number(index) + 1) + '" aria-setsize="' + this.TOOTS_LIMIT + '" data-location="' + url + '" tabindex="0">'
+			'<article class="mt-toot" aria-posinset="' + (Number(index) + 1) + '" aria-setsize="' + this.TOOTS_LIMIT + '" data-location="' + url + '" tabindex="0">'
 			+ avatar
 			+ user
 			+ content

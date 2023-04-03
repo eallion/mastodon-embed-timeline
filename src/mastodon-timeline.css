@@ -51,7 +51,6 @@ html[data-theme="dark"] {
   background: transparent;
 }
 .mt-timeline::-webkit-scrollbar-thumb {
-  border-radius: 0;
   border: 0 var(--content-text);
   border-radius: 2rem;
   background: var(--bg-hover-color);  
