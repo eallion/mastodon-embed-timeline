@@ -234,7 +234,6 @@ html[data-theme="dark"] {
 /* Date */
 .toot-date {
   font-size: 0.75rem;
-  opacity: 0.5;
 }
 
 /* Loading-spinner */
