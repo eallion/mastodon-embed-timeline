@@ -1,41 +1,44 @@
-// Mastodon embed feed timeline v3.3.1
+// Mastodon embed feed timeline v3.4.2
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
 // Timeline settings
 document.addEventListener("DOMContentLoaded", () => {
 	let mapi = new MastodonApi({
-		// Id of the <div> containing the timeline
+		// Id of the <div> containing the timeline.
 		container_body_id: 'mt-body',
 
-		// Preferred color theme: 'light', 'dark' or 'auto' (default: auto)
+		// Preferred color theme: 'light', 'dark' or 'auto' (default: auto).
 		default_theme: 'auto',
 
-		// Your Mastodon instance
-		instance_uri: 'https://mastodon.online',
+		// Your Mastodon instance.
+		instance_url: 'https://mastodon.online',
 
-		// Your user ID on Mastodon instance. Leave empty if you prefer to show local instance toots
-		user_id: '000180745',
+		// Choose type of toots to show in the timeline: 'local', 'profile', 'hashtag' (default: local).
+		timeline_type: 'local',
 
-		// Your user name on Mastodon instance
-		profile_name: '@idotj',
+		// Your user ID on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline.
+		user_id: '',
 
-		// Show toots from a hashtag instead of user timeline.
-		hashtag: 'introduction',
+		// Your user name on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline.
+		profile_name: '',
 
-		// Maximum amount of toots to get (default: 20)
+		// The name of the hashtag. Leave empty if you didn't choose 'hashtag' as type of timeline.
+		hashtag_name: '',
+
+		// Maximum amount of toots to get (default: 20).
 		toots_limit: '20',
 
-		// Hide boosted toots (default: don't hide)
+		// Hide boosted toots (default: don't hide).
 		hide_reblog: false,
 
-		// Hide replies toots (default: don't hide)
+		// Hide replies toots (default: don't hide).
 		hide_replies: false,
 
-		// Limit the text content to a maximum number of lines (default: unlimited)
+		// Limit the text content to a maximum number of lines (default: unlimited).
 		text_max_lines: '0',
 
-		// Customize the text of the link pointing to the Mastodon page (appears after the last toot)
+		// Customize the text of the link pointing to the Mastodon page (appears after the last toot).
 		link_see_more: 'See more posts at Mastodon'
 	});
 });
@@ -43,10 +46,11 @@ document.addEventListener("DOMContentLoaded", () => {
 let MastodonApi = function (params_) {
 	// Endpoint access settings / default values
 	this.DEFAULT_THEME = params_.default_theme || 'auto';
-	this.INSTANCE_URI = params_.instance_uri;
+	this.INSTANCE_URL = params_.instance_url;
 	this.USER_ID = params_.user_id || '';
 	this.PROFILE_NAME = this.USER_ID ? params_.profile_name : '';
-	this.HASHTAG = params_.hashtag || '';
+	this.TIMELINE_TYPE = params_.timeline_type || 'local';
+	this.HASHTAG_NAME = params_.hashtag_name || '';
 	this.TOOTS_LIMIT = params_.toots_limit || '20';
 	this.HIDE_REBLOG = typeof params_.hide_reblog !== 'undefined' ? params_.hide_reblog : false;
 	this.HIDE_REPLIES = typeof params_.hide_replies !== 'undefined' ? params_.hide_replies : false;
@@ -84,13 +88,13 @@ MastodonApi.prototype.getToots = function () {
 	let mapi = this;
 	let requestURL = '';
 
-	// Get request (user toots or local timeline toots)
-	if (this.HASHTAG) {
-		requestURL = this.INSTANCE_URI + '/api/v1/timelines/tag/' + this.HASHTAG + '?limit=' + this.TOOTS_LIMIT;
-	} else if (this.USER_ID) {
-		requestURL = this.INSTANCE_URI + '/api/v1/accounts/' + this.USER_ID + '/statuses?limit=' + this.TOOTS_LIMIT;
-	} else {
-		requestURL = this.INSTANCE_URI + '/api/v1/timelines/public?limit=' + this.TOOTS_LIMIT;
+	// Get request
+	if (this.TIMELINE_TYPE === 'profile') {
+		requestURL = this.INSTANCE_URL + '/api/v1/accounts/' + this.USER_ID + '/statuses?limit=' + this.TOOTS_LIMIT;		
+	} else if (this.TIMELINE_TYPE === 'hashtag') {
+		requestURL = this.INSTANCE_URL + '/api/v1/timelines/tag/' + this.HASHTAG_NAME + '?limit=' + this.TOOTS_LIMIT;
+	} else if (this.TIMELINE_TYPE === 'local') {		
+		requestURL = this.INSTANCE_URL + '/api/v1/timelines/public?local=true&limit=' + this.TOOTS_LIMIT;
 	}
 
 	fetch(requestURL, {
@@ -135,13 +139,13 @@ MastodonApi.prototype.getToots = function () {
 			// Insert link after last toot to visit Mastodon page
 			if (mapi.LINK_SEE_MORE) {
 				let linkHtml = '';
-				if (this.HASHTAG) {
-					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/tags/' + this.HASHTAG + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
-				} else if (this.USER_ID) {
-					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
-				} else {
-					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/public/local' + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
-				}
+				if (this.TIMELINE_TYPE === 'profile') {
+					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URL + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+				} else if (this.TIMELINE_TYPE === 'hashtag') {
+					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URL + '/tags/' + this.HASHTAG_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+				} else if (this.TIMELINE_TYPE === 'local') {		
+					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URL + '/public/local' + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+				}			
 				this.mtBodyContainer.parentNode.insertAdjacentHTML('beforeend', linkHtml);
 			}
 		})

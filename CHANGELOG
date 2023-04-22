@@ -1,5 +1,6 @@
-v3.4.0 - 12/04/2023
+v3.4.2 - 22/04/2023
 - Add support for hashtag timeline
+- Fix query url when showing local instance toots
 
 v3.3.1 - 01/03/2023
 - Apply scroll-bar styles to timeline container
@@ -67,4 +68,4 @@ v1.5.1 - 17/05/2021
 
 v1.0.0 - 06/04/2021
 - First commit
- 
+- Project forked from: https://github.com/AzetJP/mastodon-timeline-widget
