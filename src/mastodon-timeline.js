@@ -20,6 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		// Your user name on Mastodon instance
 		profile_name: '@idotj',
 
+		// Show toots from a hashtag instead of user timeline.
+		hashtag: 'introduction',
+
 		// Maximum amount of toots to get (default: 20)
 		toots_limit: '20',
 
@@ -43,6 +46,7 @@ let MastodonApi = function (params_) {
 	this.INSTANCE_URI = params_.instance_uri;
 	this.USER_ID = params_.user_id || '';
 	this.PROFILE_NAME = this.USER_ID ? params_.profile_name : '';
+	this.HASHTAG = params_.hashtag || '';
 	this.TOOTS_LIMIT = params_.toots_limit || '20';
 	this.HIDE_REBLOG = typeof params_.hide_reblog !== 'undefined' ? params_.hide_reblog : false;
 	this.HIDE_REPLIES = typeof params_.hide_replies !== 'undefined' ? params_.hide_replies : false;
@@ -81,7 +85,9 @@ MastodonApi.prototype.getToots = function () {
 	let requestURL = '';
 
 	// Get request (user toots or local timeline toots)
-	if (this.USER_ID) {
+	if (this.HASHTAG) {
+		requestURL = this.INSTANCE_URI + '/api/v1/timelines/tag/' + this.HASHTAG + '?limit=' + this.TOOTS_LIMIT;
+	} else if (this.USER_ID) {
 		requestURL = this.INSTANCE_URI + '/api/v1/accounts/' + this.USER_ID + '/statuses?limit=' + this.TOOTS_LIMIT;
 	} else {
 		requestURL = this.INSTANCE_URI + '/api/v1/timelines/public?limit=' + this.TOOTS_LIMIT;
@@ -129,7 +135,9 @@ MastodonApi.prototype.getToots = function () {
 			// Insert link after last toot to visit Mastodon page
 			if (mapi.LINK_SEE_MORE) {
 				let linkHtml = '';
-				if (this.USER_ID) {
+				if (this.HASHTAG) {
+					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/tags/' + this.HASHTAG + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
+				} else if (this.USER_ID) {
 					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/' + mapi.PROFILE_NAME + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
 				} else {
 					linkHtml = '<div class="mt-footer"><a href="' + mapi.INSTANCE_URI + '/public/local' + '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' + mapi.LINK_SEE_MORE + '</a></div>';
