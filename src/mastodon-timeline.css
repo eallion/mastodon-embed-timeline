@@ -1,4 +1,4 @@
-/* Mastodon embed feed timeline v3.4.2 */
+/* Mastodon embed feed timeline v3.5.1 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
@@ -53,7 +53,7 @@ html[data-theme="dark"] {
 .mt-timeline::-webkit-scrollbar-thumb {
   border: 0 var(--content-text);
   border-radius: 2rem;
-  background: var(--bg-hover-color);  
+  background: var(--bg-hover-color);
 }
 .mt-timeline::-webkit-scrollbar-track {
   border: 0 var(--content-text);
@@ -168,6 +168,13 @@ html[data-theme="dark"] {
   color: var(--error-text-color);
   padding: 0.75rem;
   text-align: center;
+}
+
+.mt-error-icon {
+  font-size: 2rem;
+}
+.mt-error-message {
+  padding: 1rem 0;
 }
 
 /* Poll */

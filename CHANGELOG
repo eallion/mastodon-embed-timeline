@@ -1,3 +1,7 @@
+v3.5.1 - 08/05/2023
+- Add feature, hide unlisted toots
+- Add message if no toots are shown due to filters applied
+
 v3.4.2 - 22/04/2023
 - Add support for hashtag timeline
 - Fix query url when showing local instance toots
