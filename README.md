@@ -12,6 +12,8 @@ Source code running at:
 
 ## 🗂️ User guide
 
+### Install
+
 Just copy both files (_mastodon-timeline.css_ and _mastodon-timeline.js_ from /src folder) in your project folder.
 
 Now call each one in your page using the `<link>` and `<script>` tag:
@@ -36,7 +38,8 @@ Then copy the following html structure:
 
 Great, you have a Mastodon timeline running in your page.
 
-The next step will be to setup the timeline.  
+### Setup
+
 Edit the the JS file _mastodon-timeline.js_ and at the beginning find these two lines:
 
 ```javascript
