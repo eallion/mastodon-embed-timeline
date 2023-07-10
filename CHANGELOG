@@ -1,3 +1,10 @@
+v3.7.0 - 10/07/2023
+- Add Markdown to HTML feature
+- Add option to change Markdown symbol ">" into a blockquote HTML tag
+- Add button to show spoiler or sensitive images
+- Improve performance
+- Refactoring using template strings
+
 v3.5.1 - 08/05/2023
 - Add feature, hide unlisted toots
 - Add message if no toots are shown due to filters applied

@@ -65,26 +65,29 @@ If you prefer to show a timeline with a specific hashtag then change the `timeli
 Also you have some parameters to customize your embed timeline:
 
 ```javascript
-// Preferred color theme 'light' or 'dark' (default: auto)
-default_theme: "auto";
+// Preferred color theme: 'light', 'dark' or 'auto'. Default: auto
+default_theme: "auto",
 
-// Maximum amount of toots to get (default: 20)
-toots_limit: "20";
+// Maximum amount of toots to get. Default: 20
+toots_limit: "20",
 
-// Hide unlisted toots (default: don't hide)
-hide_unlisted: false;
+// Hide unlisted toots. Default: don't hide
+hide_unlisted: false,
 
-// Hide boosted toots (default: don't hide)
-hide_reblog: false;
+// Hide boosted toots. Default: don't hide
+hide_reblog: false,
 
-// Hide replies toots (default: don't hide)
-hide_replies: false;
+// Hide replies toots. Default: don't hide
+hide_replies: false,
 
-// Limit the text content to a maximum number of lines (default: unlimited)
-text_max_lines: "0";
+// Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag (default: don't apply)
+markdown_blockquote: true,
+
+// Limit the text content to a maximum number of lines. Default: 0 (unlimited)
+text_max_lines: "0",
 
 // Customize the text of the link pointing to the Mastodon page (appears after the last toot)
-btn_see_more: "See more posts at Mastodon";
+link_see_more: "See more posts at Mastodon",
 ```
 
 ### Tip

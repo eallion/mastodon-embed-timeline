@@ -1,47 +1,50 @@
-// Mastodon embed feed timeline v3.5.1
+// Mastodon embed feed timeline v3.7.0
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
 // Timeline settings
 document.addEventListener("DOMContentLoaded", () => {
   let mapi = new MastodonApi({
-    // Id of the <div> containing the timeline.
+    // Id of the <div> containing the timeline
     container_body_id: "mt-body",
 
-    // Preferred color theme: 'light', 'dark' or 'auto' (default: auto).
+    // Preferred color theme: 'light', 'dark' or 'auto'. Default: auto
     default_theme: "auto",
 
-    // Your Mastodon instance.
+    // Your Mastodon instance
     instance_url: "https://mastodon.online",
 
-    // Choose type of toots to show in the timeline: 'local', 'profile', 'hashtag' (default: local).
+    // Choose type of toots to show in the timeline: 'local', 'profile', 'hashtag'. Default: local
     timeline_type: "local",
 
-    // Your user ID on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline.
+    // Your user ID on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline
     user_id: "",
 
-    // Your user name on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline.
+    // Your user name on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline
     profile_name: "",
 
-    // The name of the hashtag. Leave empty if you didn't choose 'hashtag' as type of timeline.
+    // The name of the hashtag. Leave empty if you didn't choose 'hashtag' as type of timeline
     hashtag_name: "",
 
-    // Maximum amount of toots to get (default: 20).
+    // Maximum amount of toots to get. Default: 20
     toots_limit: "20",
 
-    // Hide unlisted toots (default: don't hide).
+    // Hide unlisted toots. Default: don't hide
     hide_unlisted: false,
 
-    // Hide boosted toots (default: don't hide).
+    // Hide boosted toots. Default: don't hide
     hide_reblog: false,
 
-    // Hide replies toots (default: don't hide).
+    // Hide replies toots. Default: don't hide
     hide_replies: false,
 
-    // Limit the text content to a maximum number of lines (default: unlimited).
+    // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag (default: don't apply)
+    markdown_blockquote: false,
+
+    // Limit the text content to a maximum number of lines. Default: 0 (unlimited)
     text_max_lines: "0",
 
-    // Customize the text of the link pointing to the Mastodon page (appears after the last toot).
+    // Customize the text of the link pointing to the Mastodon page (appears after the last toot)
     link_see_more: "See more posts at Mastodon",
   });
 });
@@ -63,6 +66,10 @@ let MastodonApi = function (params_) {
     typeof params_.hide_reblog !== "undefined" ? params_.hide_reblog : false;
   this.HIDE_REPLIES =
     typeof params_.hide_replies !== "undefined" ? params_.hide_replies : false;
+  this.MARKDOWN_BLOCKQUOTE =
+    typeof params_.markdown_blockquote !== "undefined"
+      ? params_.markdown_blockquote
+      : false;
   this.TEXT_MAX_LINES = params_.text_max_lines || "0";
   this.LINK_SEE_MORE = params_.link_see_more;
 
@@ -84,8 +91,8 @@ MastodonApi.prototype.applyTheme = function () {
   if (this.DEFAULT_THEME === "auto") {
     let systemTheme = window.matchMedia("(prefers-color-scheme: dark)");
     systemTheme.matches ? setTheme("dark") : setTheme("light");
-    systemTheme.addEventListener("change", (event) => {
-      event.matches ? setTheme("dark") : setTheme("light");
+    systemTheme.addEventListener("change", (e) => {
+      e.matches ? setTheme("dark") : setTheme("light");
     });
   } else {
     setTheme(this.DEFAULT_THEME);
@@ -99,24 +106,11 @@ MastodonApi.prototype.getToots = function () {
 
   // Get request
   if (this.TIMELINE_TYPE === "profile") {
-    requestURL =
-      this.INSTANCE_URL +
-      "/api/v1/accounts/" +
-      this.USER_ID +
-      "/statuses?limit=" +
-      this.TOOTS_LIMIT;
+    requestURL = `${this.INSTANCE_URL}/api/v1/accounts/${this.USER_ID}/statuses?limit=${this.TOOTS_LIMIT}`;
   } else if (this.TIMELINE_TYPE === "hashtag") {
-    requestURL =
-      this.INSTANCE_URL +
-      "/api/v1/timelines/tag/" +
-      this.HASHTAG_NAME +
-      "?limit=" +
-      this.TOOTS_LIMIT;
+    requestURL = `${this.INSTANCE_URL}/api/v1/timelines/tag/${this.HASHTAG_NAME}?limit=${this.TOOTS_LIMIT}`;
   } else if (this.TIMELINE_TYPE === "local") {
-    requestURL =
-      this.INSTANCE_URL +
-      "/api/v1/timelines/public?local=true&limit=" +
-      this.TOOTS_LIMIT;
+    requestURL = `${this.INSTANCE_URL}/api/v1/timelines/public?local=true&limit=${this.TOOTS_LIMIT}`;
   }
 
   fetch(requestURL, {
@@ -132,7 +126,7 @@ MastodonApi.prototype.getToots = function () {
       }
     })
     .then((jsonData) => {
-      // console.log('jsonData: ', jsonData);
+      // console.log("jsonData: ", jsonData);
 
       // Empty the <div> container
       this.mtBodyContainer.innerHTML = "";
@@ -151,6 +145,7 @@ MastodonApi.prototype.getToots = function () {
           ) {
             // Nothing here (Don't append toots)
           } else {
+            // Format and append toots
             appendToot.call(mapi, jsonData[i], i);
           }
         }
@@ -164,56 +159,27 @@ MastodonApi.prototype.getToots = function () {
           jsonData.length +
           ' toots from the server but due to the "hide filters" applied, no toot is shown</div></div>';
       } else {
-        // Add target="_blank" to all #hashtags and @mentions
-        let linksToBlank = document.querySelectorAll(
-          "#mt-body .hashtag, .u-url.mention"
-        );
-        for (let j = 0; j < linksToBlank.length; j++) {
-          linksToBlank[j].target = "_blank";
-          linksToBlank[j].hasAttribute("rel", "tag")
-            ? linksToBlank[j].setAttribute(
-                "rel",
-                "tag nofollow noopener noreferrer"
-              )
-            : linksToBlank[j].setAttribute(
-                "rel",
-                "nofollow noopener noreferrer"
-              );
-        }
-
         // Insert link after last toot to visit Mastodon page
         if (mapi.LINK_SEE_MORE) {
-          let linkHtml = "";
+          let linkSeeMorePath = "";
           if (this.TIMELINE_TYPE === "profile") {
-            linkHtml =
-              '<div class="mt-footer"><a href="' +
-              mapi.INSTANCE_URL +
-              "/" +
-              mapi.PROFILE_NAME +
-              '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' +
-              mapi.LINK_SEE_MORE +
-              "</a></div>";
+            linkSeeMorePath = mapi.PROFILE_NAME;
           } else if (this.TIMELINE_TYPE === "hashtag") {
-            linkHtml =
-              '<div class="mt-footer"><a href="' +
-              mapi.INSTANCE_URL +
-              "/tags/" +
-              this.HASHTAG_NAME +
-              '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' +
-              mapi.LINK_SEE_MORE +
-              "</a></div>";
+            linkSeeMorePath = "tags/" + this.HASHTAG_NAME;
           } else if (this.TIMELINE_TYPE === "local") {
-            linkHtml =
-              '<div class="mt-footer"><a href="' +
-              mapi.INSTANCE_URL +
-              "/public/local" +
-              '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' +
-              mapi.LINK_SEE_MORE +
-              "</a></div>";
+            linkSeeMorePath = "public/local";
           }
+          let linkSeeMore =
+            '<div class="mt-footer"><a href="' +
+            mapi.INSTANCE_URL +
+            "/" +
+            linkSeeMorePath +
+            '" class="btn" target="_blank" rel="nofollow noopener noreferrer">' +
+            mapi.LINK_SEE_MORE +
+            "</a></div>";
           this.mtBodyContainer.parentNode.insertAdjacentHTML(
             "beforeend",
-            linkHtml
+            linkSeeMore
           );
         }
       }
@@ -314,27 +280,25 @@ MastodonApi.prototype.getToots = function () {
         status_.spoiler_text +
         ' <button type="button" class="spoiler-link" aria-expanded="false">Show more</button>' +
         '<div class="spoiler-text">' +
-        status_.content +
+        this.formatTootText(status_.content) +
         "</div>" +
         "</div>";
     } else if (status_.reblog && status_.reblog.content !== "") {
       content =
-        '<div class="toot-text' +
-        " " +
+        '<div class="toot-text ' +
         text_css +
         '">' +
         "<div>" +
-        status_.reblog.content +
+        this.formatTootText(status_.reblog.content) +
         "</div>" +
         "</div>";
     } else {
       content =
-        '<div class="toot-text' +
-        " " +
+        '<div class="toot-text ' +
         text_css +
         '">' +
         "<div>" +
-        status_.content +
+        this.formatTootText(status_.content) +
         "</div>" +
         "</div>";
     }
@@ -400,37 +364,37 @@ MastodonApi.prototype.getToots = function () {
   };
 
   // Toot interactions
-  this.mtBodyContainer.addEventListener("click", function (event) {
+  this.mtBodyContainer.addEventListener("click", function (e) {
     // Check if clicked in a toot
     if (
-      event.target.localName == "article" ||
-      event.target.offsetParent.localName == "article" ||
-      event.target.localName == "img"
+      e.target.localName == "article" ||
+      e.target.offsetParent.localName == "article" ||
+      e.target.localName == "img"
     ) {
-      openTootURL(event);
+      openTootURL(e);
     }
     // Check if clicked in Show More/Less button
     if (
-      event.target.localName == "button" &&
-      event.target.className == "spoiler-link"
+      e.target.localName == "button" &&
+      e.target.className == "spoiler-link"
     ) {
-      toogleSpoiler(event);
+      toogleSpoiler(e);
     }
   });
-  this.mtBodyContainer.addEventListener("keydown", function (event) {
+  this.mtBodyContainer.addEventListener("keydown", function (e) {
     // Check if Enter key pressed with focus in an article
-    if (event.code === "Enter" && event.target.localName == "article") {
-      openTootURL(event);
+    if (event.code === "Enter" && e.target.localName == "article") {
+      openTootURL(e);
     }
   });
 
   // Open Toot in a new page avoiding any other natural link
-  openTootURL = function (event_) {
-    let urlToot = event_.target.closest(".mt-toot").dataset.location;
+  let openTootURL = function (e) {
+    let urlToot = e.target.closest(".mt-toot").dataset.location;
     if (
-      event_.target.localName !== "a" &&
-      event_.target.localName !== "span" &&
-      event_.target.localName !== "button" &&
+      e.target.localName !== "a" &&
+      e.target.localName !== "span" &&
+      e.target.localName !== "button" &&
       urlToot
     ) {
       window.open(urlToot, "_blank");
@@ -438,29 +402,79 @@ MastodonApi.prototype.getToots = function () {
   };
 
   // Spoiler button
-  toogleSpoiler = function (event_) {
-    let spoilerText = event_.target.nextSibling;
-    let spoilerBtnText = event_.target.textContent;
+  let toogleSpoiler = function (e) {
+    let spoilerText = e.target.nextSibling;
+    let spoilerBtnText = e.target.textContent;
     spoilerText.classList.toggle("spoiler-text");
     if (spoilerBtnText == "Show more") {
       spoilerBtnText = "Show less";
-      event_.target.setAttribute("aria-expanded", "true");
+      e.target.setAttribute("aria-expanded", "true");
     } else {
       spoilerBtnText = "Show more";
-      event_.target.setAttribute("aria-expanded", "false");
+      e.target.setAttribute("aria-expanded", "false");
     }
   };
 };
 
+// Handle text changes made to Toots
+MastodonApi.prototype.formatTootText = function (c) {
+  let content = c;
+
+  // Format hashtags and mentions
+  content = this.addTarget2hashtagMention(content);
+
+  // Convert markdown styles into HTML
+  if (this.MARKDOWN_BLOCKQUOTE) {
+    content = this.replaceHTMLtag(
+      content,
+      "<p>&gt;",
+      "</p>",
+      "<blockquote><p>",
+      "</blockquote></p>"
+    );
+  }
+
+  return content;
+};
+
+// Add target="_blank" to all #hashtags and @mentions
+MastodonApi.prototype.addTarget2hashtagMention = function (c) {
+  let content = c.replaceAll('rel="tag"', 'rel="tag" target="_blank"');
+  content = content.replaceAll(
+    'class="u-url mention"',
+    'class="u-url mention" target="_blank"'
+  );
+  return content;
+};
+
+// Find all start/end <tags> and replace them by another start/end <tags>
+MastodonApi.prototype.replaceHTMLtag = function (
+  c,
+  initialTagOpen,
+  initialTagClose,
+  replacedTagOpen,
+  replacedTagClose
+) {
+  if (c.includes(initialTagOpen)) {
+    const regex = new RegExp(initialTagOpen + "(.*?)" + initialTagClose, "gi");
+    return c.replace(regex, replacedTagOpen + "$1" + replacedTagClose);
+  } else {
+    return c;
+  }
+};
+
 // Place media
-MastodonApi.prototype.replaceMedias = function (media_, spoiler_) {
-  let spoiler = spoiler_ || false;
+MastodonApi.prototype.replaceMedias = function (m, s) {
+  let spoiler = s || false;
   let pic =
     '<div class="toot-media ' +
     (spoiler ? "toot-media-spoiler" : "") +
     ' img-ratio14_7 loading-spinner">' +
+    (spoiler
+      ? '<button class="spoiler-link" onclick="this.parentNode.classList.remove(\'toot-media-spoiler\')">Show content</button>'
+      : "") +
     '<img onload="removeSpinner(this)" onerror="removeSpinner(this)" src="' +
-    media_.preview_url +
+    m.preview_url +
     '" alt="" loading="lazy" />' +
     "</div>";
 
@@ -468,7 +482,7 @@ MastodonApi.prototype.replaceMedias = function (media_, spoiler_) {
 };
 
 // Format date
-MastodonApi.prototype.formatDate = function (date_) {
+MastodonApi.prototype.formatDate = function (d) {
   const monthNames = [
     "Jan",
     "Feb",
@@ -484,7 +498,7 @@ MastodonApi.prototype.formatDate = function (date_) {
     "Dec",
   ];
 
-  let date = new Date(date_);
+  let date = new Date(d);
 
   let displayDate =
     monthNames[date.getMonth()] +
@@ -497,10 +511,10 @@ MastodonApi.prototype.formatDate = function (date_) {
 };
 
 // Loading spinner
-removeSpinner = function (element) {
+removeSpinner = function (e) {
   const spinnerCSS = "loading-spinner";
   // Find closest parent container (1st, 2nd or 3rd level)
-  let spinnerContainer = element.closest("." + spinnerCSS);
+  let spinnerContainer = e.closest("." + spinnerCSS);
   if (spinnerContainer) {
     spinnerContainer.classList.remove(spinnerCSS);
   }
