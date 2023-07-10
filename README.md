@@ -109,3 +109,8 @@ Feel free to add/improve the styles and add more features.
 ## ⚖️ License
 
 GNU Affero General Public License v3.0
+
+## 💬 FAQ
+
+Check the [closed issues](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/issues/?sort=created_date&state=closed&first_page_size=20), you might find your question there.  
+If nothing matches with your problem, check the [open issues](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/issues/?sort=created_date&state=opened&first_page_size=20) or feel free to create a new one.
