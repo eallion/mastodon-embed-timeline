@@ -81,7 +81,7 @@ hide_reblog: false,
 hide_replies: false,
 
 // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag (default: don't apply)
-markdown_blockquote: true,
+markdown_blockquote: false,
 
 // Limit the text content to a maximum number of lines. Default: 0 (unlimited)
 text_max_lines: "0",
