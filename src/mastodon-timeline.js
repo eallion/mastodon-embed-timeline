@@ -1,9 +1,9 @@
-// Mastodon embed feed timeline v3.7.0
+// Mastodon embed feed timeline v3.7.1
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
 // Timeline settings
-document.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("load", () => {
   let mapi = new MastodonApi({
     // Id of the <div> containing the timeline
     container_body_id: "mt-body",
