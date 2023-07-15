@@ -1,3 +1,6 @@
+v3.7.1 - 15/07/2023
+- Use window.onload to take async attribute into account
+
 v3.7.0 - 10/07/2023
 - Add Markdown to HTML feature
 - Add option to change Markdown symbol ">" into a blockquote HTML tag
