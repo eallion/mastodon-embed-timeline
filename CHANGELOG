@@ -1,5 +1,7 @@
-v3.7.1 - 15/07/2023
+v3.7.2 - 25/07/2023
 - Use window.onload to take async attribute into account
+- Remove extra height on loading images
+- Fix interaction conflict with sensitive media and content warning
 
 v3.7.0 - 10/07/2023
 - Add Markdown to HTML feature

@@ -1,4 +1,4 @@
-/* Mastodon embed feed timeline v3.7.1 */
+/* Mastodon embed feed timeline v3.7.2 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
@@ -100,7 +100,6 @@ html[data-theme="dark"] {
   left: 5px;
   width: 3rem;
   height: 3rem;
-  background-color: transparent;
   background-repeat: no-repeat;
   background-position: 50% 50%;
   background-size: contain;
@@ -132,19 +131,8 @@ html[data-theme="dark"] {
 }
 .toot-text .spoiler-link {
   display: inline-block;
-  border-radius: 2px;
-  background-color: var(--bg-hover-color);
-  border: 0;
-  color: var(--content-text);
-  font-weight: 700;
-  font-size: 0.7rem;
-  padding: 0 0.35rem;
-  text-transform: uppercase;
-  line-height: 1.25rem;
-  cursor: pointer;
-  vertical-align: top;
 }
-.toot-text .spoiler-text {
+.toot-text .spoiler-text-hidden {
   display: none;
 }
 .toot-text.truncate {
@@ -222,13 +210,8 @@ html[data-theme="dark"] {
   top: 50%;
   left: 50%;
   z-index: 1;
-  transform: translate(-50%, -50%);
-  cursor: pointer;
+  transform: translate(-50%, -50%); 
 }
-:not(.toot-media-spoiler) > .spoiler-link {
-  visibility: hidden;
-}
-
 .toot-media-spoiler > img {
   filter: blur(2rem);
 }
@@ -256,6 +239,21 @@ html[data-theme="dark"] {
   text-align: center;
 }
 
+/* Spoiler button */
+.spoiler-link {
+  border-radius: 2px;
+  background-color: var(--line-gray-color);
+  border: 0;
+  color: var(--content-text);
+  font-weight: 700;
+  font-size: 0.7rem;
+  padding: 0 0.35rem;
+  text-transform: uppercase;
+  line-height: 1.25rem;
+  cursor: pointer;
+  vertical-align: top;
+}
+
 /* Date */
 .toot-date {
   font-size: 0.75rem;
@@ -271,7 +269,6 @@ html[data-theme="dark"] {
   right: calc(50% - 1.5rem);
 }
 .loading-spinner {
-  height: 100%;
   background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns:svg='http://www.w3.org/2000/svg' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' version='1.0' viewBox='0 0 128 128' %3E%3Cg%3E%3Cpath d='M64 128A64 64 0 0 1 18.34 19.16L21.16 22a60 60 0 1 0 52.8-17.17l.62-3.95A64 64 0 0 1 64 128z' fill='%23404040'/%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 64 64' to='360 64 64' dur='1000ms' repeatCount='indefinite'%3E%3C/animateTransform%3E%3C/g%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: center center;

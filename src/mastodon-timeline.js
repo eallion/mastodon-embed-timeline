@@ -1,4 +1,4 @@
-// Mastodon embed feed timeline v3.7.1
+// Mastodon embed feed timeline v3.7.2
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
@@ -279,7 +279,7 @@ MastodonApi.prototype.getToots = function () {
         '<div class="toot-text">' +
         status_.spoiler_text +
         ' <button type="button" class="spoiler-link" aria-expanded="false">Show more</button>' +
-        '<div class="spoiler-text">' +
+        '<div class="spoiler-text-hidden">' +
         this.formatTootText(status_.content) +
         "</div>" +
         "</div>";
@@ -403,15 +403,25 @@ MastodonApi.prototype.getToots = function () {
 
   // Spoiler button
   let toogleSpoiler = function (e) {
-    let spoilerText = e.target.nextSibling;
-    let spoilerBtnText = e.target.textContent;
-    spoilerText.classList.toggle("spoiler-text");
-    if (spoilerBtnText == "Show more") {
-      spoilerBtnText = "Show less";
-      e.target.setAttribute("aria-expanded", "true");
-    } else {
-      spoilerBtnText = "Show more";
-      e.target.setAttribute("aria-expanded", "false");
+    const nextSibling = e.target.nextSibling;
+    if (nextSibling.localName === "img") {
+      e.target.parentNode.classList.remove("toot-media-spoiler");
+      e.target.style.display = "none";
+    } else if (
+      nextSibling.classList.contains("spoiler-text-hidden") ||
+      nextSibling.classList.contains("spoiler-text-visible")
+    ) {
+      if (e.target.textContent == "Show more") {
+        nextSibling.classList.remove("spoiler-text-hidden");
+        nextSibling.classList.add("spoiler-text-visible");
+        e.target.setAttribute("aria-expanded", "true");
+        e.target.textContent = "Show less";
+      } else {
+        nextSibling.classList.remove("spoiler-text-visible");
+        nextSibling.classList.add("spoiler-text-hidden");
+        e.target.setAttribute("aria-expanded", "false");
+        e.target.textContent = "Show more";
+      }
     }
   };
 };
@@ -470,9 +480,7 @@ MastodonApi.prototype.replaceMedias = function (m, s) {
     '<div class="toot-media ' +
     (spoiler ? "toot-media-spoiler" : "") +
     ' img-ratio14_7 loading-spinner">' +
-    (spoiler
-      ? '<button class="spoiler-link" onclick="this.parentNode.classList.remove(\'toot-media-spoiler\')">Show content</button>'
-      : "") +
+    (spoiler ? '<button class="spoiler-link">Show content</button>' : "") +
     '<img onload="removeSpinner(this)" onerror="removeSpinner(this)" src="' +
     m.preview_url +
     '" alt="" loading="lazy" />' +
