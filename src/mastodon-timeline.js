@@ -1,4 +1,4 @@
-// Mastodon embed feed timeline v3.7.2
+// Mastodon embed feed timeline v3.8.0
 // More info at:
 // https://gitlab.com/idotj/mastodon-embed-feed-timeline
 
@@ -283,7 +283,24 @@ MastodonApi.prototype.getToots = function () {
         this.formatTootText(status_.content) +
         "</div>" +
         "</div>";
-    } else if (status_.reblog && status_.reblog.content !== "") {
+    } else if (
+      status_.reblog &&
+      status_.reblog.content !== "" &&
+      status_.reblog.spoiler_text !== ""
+    ) {
+      content =
+        '<div class="toot-text">' +
+        status_.reblog.spoiler_text +
+        ' <button type="button" class="spoiler-link" aria-expanded="false">Show more</button>' +
+        '<div class="spoiler-text-hidden">' +
+        this.formatTootText(status_.reblog.content) +
+        "</div>" +
+        "</div>";
+    } else if (
+      status_.reblog &&
+      status_.reblog.content !== "" &&
+      status_.reblog.spoiler_text === ""
+    ) {
       content =
         '<div class="toot-text ' +
         text_css +
@@ -317,7 +334,7 @@ MastodonApi.prototype.getToots = function () {
       for (let picid in status_.reblog.media_attachments) {
         media = this.replaceMedias(
           status_.reblog.media_attachments[picid],
-          status_.sensitive
+          status_.reblog.sensitive
         );
       }
     }
@@ -383,13 +400,13 @@ MastodonApi.prototype.getToots = function () {
   });
   this.mtBodyContainer.addEventListener("keydown", function (e) {
     // Check if Enter key pressed with focus in an article
-    if (event.code === "Enter" && e.target.localName == "article") {
+    if (e.key === "Enter" && e.target.localName == "article") {
       openTootURL(e);
     }
   });
 
   // Open Toot in a new page avoiding any other natural link
-  let openTootURL = function (e) {
+  const openTootURL = function (e) {
     let urlToot = e.target.closest(".mt-toot").dataset.location;
     if (
       e.target.localName !== "a" &&
@@ -402,7 +419,7 @@ MastodonApi.prototype.getToots = function () {
   };
 
   // Spoiler button
-  let toogleSpoiler = function (e) {
+  const toogleSpoiler = function (e) {
     const nextSibling = e.target.nextSibling;
     if (nextSibling.localName === "img") {
       e.target.parentNode.classList.remove("toot-media-spoiler");
@@ -476,7 +493,7 @@ MastodonApi.prototype.replaceHTMLtag = function (
 // Place media
 MastodonApi.prototype.replaceMedias = function (m, s) {
   let spoiler = s || false;
-  let pic =
+  const pic =
     '<div class="toot-media ' +
     (spoiler ? "toot-media-spoiler" : "") +
     ' img-ratio14_7 loading-spinner">' +
@@ -508,7 +525,7 @@ MastodonApi.prototype.formatDate = function (d) {
 
   let date = new Date(d);
 
-  let displayDate =
+  const displayDate =
     monthNames[date.getMonth()] +
     " " +
     date.getDate() +
@@ -519,7 +536,7 @@ MastodonApi.prototype.formatDate = function (d) {
 };
 
 // Loading spinner
-removeSpinner = function (e) {
+const removeSpinner = function (e) {
   const spinnerCSS = "loading-spinner";
   // Find closest parent container (1st, 2nd or 3rd level)
   let spinnerContainer = e.closest("." + spinnerCSS);
