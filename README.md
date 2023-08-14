@@ -80,6 +80,9 @@ hide_reblog: false,
 // Hide replies toots. Default: don't hide
 hide_replies: false,
 
+// Hide preview for links. Default: don't hide
+hide_preview_link: false,
+
 // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag (default: don't apply)
 markdown_blockquote: false,
 

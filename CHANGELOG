@@ -1,3 +1,8 @@
+v3.8.1 - 14/08/2023
+- Show preview card from link, photo or video URL
+- Add description for the ALT attribute in images
+- Improve JS comments
+
 v3.8.0 - 04/08/2023
 - Add spoiler/sensitive button for reblog content
 
@@ -77,8 +82,8 @@ v1.5.3 - 23/05/2021
 
 v1.5.2 - 22/05/2021
 - Add avatar name
-- Use id instead of css class for js selectors
-- Rearrange functions in js
+- Use id instead of css class for JS selectors
+- Rearrange functions in JS
 
 v1.5.1 - 17/05/2021
 - Add ellipses for long messages

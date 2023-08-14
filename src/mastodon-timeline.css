@@ -1,4 +1,4 @@
-/* Mastodon embed feed timeline v3.8.0 */
+/* Mastodon embed feed timeline v3.8.1 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
@@ -40,7 +40,7 @@ html[data-theme="dark"] {
   text-decoration: none;
   color: var(--link-color);
 }
-.mt-timeline a:hover {
+.mt-timeline a:not(.toot-preview-link):hover {
   text-decoration: underline;
 }
 .mt-timeline::-webkit-scrollbar {
@@ -78,7 +78,7 @@ html[data-theme="dark"] {
 /* Toot container */
 .mt-toot {
   margin: 0.25rem;
-  padding: 1rem 0.5rem 2rem 4rem;
+  padding: 1rem 0.5rem 1.5rem 4rem;
   position: relative;
   min-height: 3.75rem;
   background-color: transparent;
@@ -119,6 +119,7 @@ html[data-theme="dark"] {
 .mt-user {
   display: table;
   font-weight: 600;
+  margin-bottom: 1rem;
 }
 .mt-user > a {
   color: var(--content-text) !important;
@@ -196,7 +197,7 @@ html[data-theme="dark"] {
 /* Medias */
 .toot-media {
   overflow: hidden;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.5rem;
 }
 .toot-media-preview {
   position: relative;
@@ -210,7 +211,7 @@ html[data-theme="dark"] {
   top: 50%;
   left: 50%;
   z-index: 1;
-  transform: translate(-50%, -50%); 
+  transform: translate(-50%, -50%);
 }
 .toot-media-spoiler > img {
   filter: blur(2rem);
@@ -237,6 +238,47 @@ html[data-theme="dark"] {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
+}
+
+/* Preview link */
+.toot-preview-link {
+  min-height: 4rem;
+  display: flex;
+  flex-direction: row;  
+
+  border: 1px solid var(--line-gray-color);
+  border-radius: 0.5rem;
+  color: var(--link-color);
+  font-size: 0.8rem;
+  margin: 1rem 0 0.5rem 0;
+  overflow: hidden;
+}
+.toot-preview-image {
+  width: 40%;
+  align-self: stretch;
+}
+.toot-preview-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.toot-preview-noImage {
+  width: 40%;
+  font-size: 1.5rem;
+  align-self: center;
+  text-align: center;
+}
+.toot-preview-content {
+  width: 60%;
+  display: flex;
+  align-self: center;
+  flex-direction: column;
+  padding: 0.5rem 1rem;
+  gap: 0.5rem;
+}
+.toot-preview-title {
+  font-weight: 600;
 }
 
 /* Spoiler button */
