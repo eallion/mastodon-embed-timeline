@@ -46,8 +46,8 @@ window.addEventListener("load", () => {
     // Hide preview card if toot contains a link, photo or video from a URL. Default: don't hide
     hide_preview_link: false,
 
-    // Show custom emojis available on the server. Default: show them
-    show_emojos: true,
+    // Hide custom emojis available on the server. Default: don't hide
+    hide_emojos: false,
 
     // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag. Ddefault: don't apply
     markdown_blockquote: false,
@@ -85,8 +85,8 @@ const MastodonApi = function (params_) {
     typeof params_.hide_preview_link !== "undefined"
       ? params_.hide_preview_link
       : false;
-  this.SHOW_EMOJOS =
-    typeof params_.show_emojos !== "undefined" ? params_.show_emojos : true;
+  this.HIDE_EMOJOS =
+    typeof params_.hide_emojos !== "undefined" ? params_.hide_emojos : false;
   this.MARKDOWN_BLOCKQUOTE =
     typeof params_.markdown_blockquote !== "undefined"
       ? params_.markdown_blockquote
@@ -299,7 +299,7 @@ MastodonApi.prototype.getTimelineData = async function () {
     } else if (this.TIMELINE_TYPE === "local") {
       urls.timeline = `${this.INSTANCE_URL}/api/v1/timelines/public?local=true&limit=${this.TOOTS_LIMIT}`;
     }
-    if (this.SHOW_EMOJOS) {
+    if (!this.HIDE_EMOJOS) {
       urls.emojos = this.INSTANCE_URL + "/api/v1/custom_emojis";
     }
 
@@ -545,7 +545,7 @@ MastodonApi.prototype.formatTootText = function (c) {
   content = this.addTarget2hashtagMention(content);
 
   // Convert emojos shortcode into images
-  if (this.SHOW_EMOJOS) {
+  if (!this.HIDE_EMOJOS) {
     content = this.showEmojos(content, this.FETCHED_DATA.emojos);
   }
 

@@ -83,8 +83,8 @@ hide_replies: false,
 // Hide preview for links. Default: don't hide
 hide_preview_link: false,
 
-// Show custom emojis available on the server. Default: show them
-show_emojos: true,
+// Hide custom emojis available on the server. Default: don't hide
+hide_emojos: false,
 
 // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag. Default: don't apply
 markdown_blockquote: false,
