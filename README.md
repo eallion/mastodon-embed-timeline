@@ -83,7 +83,10 @@ hide_replies: false,
 // Hide preview for links. Default: don't hide
 hide_preview_link: false,
 
-// Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag (default: don't apply)
+// Show custom emojis available on the server. Default: show them
+show_emojos: true,
+
+// Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag. Default: don't apply
 markdown_blockquote: false,
 
 // Limit the text content to a maximum number of lines. Default: 0 (unlimited)
