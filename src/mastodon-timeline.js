@@ -9,7 +9,7 @@
  * Adjust these parameters to customize your timeline
  */
 window.addEventListener("load", () => {
-  const customParams = new MastodonApi({
+  const mastodonTimeline = new MastodonApi({
     // Id of the <div> containing the timeline
     container_body_id: "mt-body",
 
