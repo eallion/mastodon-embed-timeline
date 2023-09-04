@@ -1,4 +1,4 @@
-/* Mastodon embed feed timeline v3.8.2 */
+/* Mastodon embed feed timeline v3.9.0 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
@@ -93,28 +93,34 @@ html[data-theme="dark"] {
   margin-bottom: 0;
 }
 
-/* User icon */
+/* User avatar and name */
 .mt-avatar {
+  width: 3rem;
+  height: 3rem;
   position: absolute;
   top: 1rem;
   left: 0.25rem;
-  width: 3rem;
-  height: 3rem;
-  background-repeat: no-repeat;
-  background-position: 50% 50%;
-  background-size: contain;
-  background-color: var(--bg-color);
   border-radius: 0.25rem;
+  overflow: hidden;
 }
-.mt-avatar-boosted {
-  width: 2.5rem;
-  height: 2.5rem;
+.mt-avatar-image img {
+  width: 100%;
+  height: auto;
 }
-.mt-avatar-booster {
+.mt-avatar-image .mt-avatar-boosted {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+.mt-avatar-image .mt-avatar-account {
   width: 1.5rem;
   height: 1.5rem;
   top: 1.5rem;
   left: 1.5rem;
+  position: absolute;
+  border-radius: 0.25rem;
+  overflow: hidden;
 }
 .mt-user {
   display: table;
@@ -157,27 +163,6 @@ html[data-theme="dark"] {
   width: auto;
 }
 
-.mt-error {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  height: calc(100% - 3.5rem);
-  width: calc(100% - 4.5rem);
-  justify-content: center;
-  align-items: center;
-  color: var(--error-text-color);
-  padding: 0.75rem;
-  text-align: center;
-}
-.mt-error-icon {
-  font-size: 2rem;
-}
-.mt-error-message {
-  padding: 1rem 0;
-}
-.mt-error-message hr {
-  color: var(--line-gray-color);
-}
 
 /* Poll */
 .toot-poll {
@@ -252,7 +237,6 @@ html[data-theme="dark"] {
   min-height: 4rem;
   display: flex;
   flex-direction: row;
-
   border: 1px solid var(--line-gray-color);
   border-radius: 0.5rem;
   color: var(--link-color);
@@ -308,7 +292,30 @@ html[data-theme="dark"] {
   font-size: 0.75rem;
 }
 
-/* Loading-spinner */
+/* Error */
+.mt-error {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  height: calc(100% - 3.5rem);
+  width: calc(100% - 4.5rem);
+  justify-content: center;
+  align-items: center;
+  color: var(--error-text-color);
+  padding: 0.75rem;
+  text-align: center;
+}
+.mt-error-icon {
+  font-size: 2rem;
+}
+.mt-error-message {
+  padding: 1rem 0;
+}
+.mt-error-message hr {
+  color: var(--line-gray-color);
+}
+
+/* Loading spinner */
 .mt-body > .loading-spinner {
   position: absolute;
   width: 3rem;
@@ -332,7 +339,7 @@ html[data-theme="dark"] {
   text-align: center;
 }
 
-/* Hidden element */
+/* Hidden elements */
 .visually-hidden {
   position: absolute !important;
   width: 1px !important;

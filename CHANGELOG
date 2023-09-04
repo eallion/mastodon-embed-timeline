@@ -1,4 +1,8 @@
-v3.8.2 - xx/08/2023
+v3.9.0 - 02/09/2023
+- Fix Content Security Policy
+- Fix account name shown
+
+v3.8.2 - 26/08/2023
 - Add support to customized emojis
 - Javascript refactoring to allow multiple requests
 
