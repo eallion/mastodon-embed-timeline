@@ -13,7 +13,7 @@ window.addEventListener("load", () => {
     // Id of the <div> containing the timeline
     container_body_id: "mt-body",
 
-    // Class name for the loading spinner
+    // Class name for the loading spinner (also used in CSS file)
     spinner_class: "loading-spinner",
 
     // Preferred color theme: 'light', 'dark' or 'auto'. Default: auto
