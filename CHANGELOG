@@ -1,3 +1,6 @@
+v3.9.1 - 06/09/2023
+- Fix bug with Markdown-Blockquote function
+
 v3.9.0 - 02/09/2023
 - Fix Content Security Policy
 - Fix account name shown

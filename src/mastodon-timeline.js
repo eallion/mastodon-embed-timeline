@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.9.0
+ * Mastodon embed feed timeline v3.9.1
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -575,7 +575,7 @@ MastodonApi.prototype.formatTootText = function (c) {
       "<p>&gt;",
       "</p>",
       "<blockquote><p>",
-      "</blockquote></p>"
+      "</p></blockquote>"
     );
   }
 
