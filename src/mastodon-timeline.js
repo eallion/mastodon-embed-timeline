@@ -55,6 +55,15 @@ window.addEventListener("load", () => {
     // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag. Ddefault: don't apply
     markdown_blockquote: false,
 
+    //set the font icon for replies counter
+    replies_count_icon: undefined,
+
+    //set the font icon for boosts counter
+    boosts_count_icon: undefined,
+
+    //set the font icon for favourites counter
+    favourites_count_icon: undefined,
+
     // Limit the text content to a maximum number of lines. Default: 0 (unlimited)
     text_max_lines: "0",
 
@@ -99,6 +108,10 @@ const MastodonApi = function (params_) {
   this.TEXT_MAX_LINES = params_.text_max_lines || "0";
   this.LINK_SEE_MORE = params_.link_see_more;
   this.FETCHED_DATA = {};
+
+  this.REPLIES_COUNT_ICON     = params_.replies_count_icon || '[Replies]';
+	this.BOOSTS_COUNT_ICON     = params_.boosts_count_icon || '[Boost]';
+	this.FAVOURITES_COUNT_ICON = params_.favourites_count_icon || '[Favourite]';
 
   this.mtBodyContainer = document.getElementById(this.CONTAINER_BODY_ID);
 
@@ -531,6 +544,20 @@ MastodonApi.prototype.assambleToot = function (c, i) {
     "</a>" +
     "</div>";
 
+  // stats (boosts + favourites counts) >>>
+		// data
+		var repliesCountIcon     = '<span class="toot-status-replies">'   + this.REPLIES_COUNT_ICON    +": "+ c.replies_count    + ' </span>';
+    var boostsCountIcon     = '<span class="toot-status-boosts">'     + this.BOOSTS_COUNT_ICON     +": "+ c.reblogs_count    + ' </span>';
+		var favouritesCountIcon = '<span class="toot-status-favourites">' + this.FAVOURITES_COUNT_ICON +": "+ c.favourites_count + ' </span>';
+
+		// html nodes
+		var statusBar = '<div class="toot-status">' +
+      repliesCountIcon +
+			boostsCountIcon +
+			favouritesCountIcon +
+			'</div>';
+  
+
   // Add all to main toot container
   const toot =
     '<article class="mt-toot" aria-posinset="' +
@@ -547,6 +574,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
     preview_link +
     poll +
     timestamp +
+    statusBar +
     "</article>";
 
   return toot;
