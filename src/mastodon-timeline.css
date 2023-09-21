@@ -1,4 +1,4 @@
-/* Mastodon embed feed timeline v3.9.1 */
+/* Mastodon embed feed timeline v3.9.4 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
@@ -93,7 +93,7 @@ html[data-theme="dark"] {
   margin-bottom: 0;
 }
 
-/* User avatar and name */
+/* User avatar */
 .mt-avatar {
   width: 3rem;
   height: 3rem;
@@ -122,18 +122,29 @@ html[data-theme="dark"] {
   border-radius: 0.25rem;
   overflow: hidden;
 }
-.mt-user {
-  display: table;
-  font-weight: 600;
+
+/* User name and date */
+.mt-toot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
+}
+.mt-user {
+  font-weight: 600;
+  padding-right: 1rem;
 }
 .mt-user > a {
   color: var(--content-text) !important;
 }
+.toot-date {
+  font-size: 0.75rem;
+  text-align: right;
+}
 
 /* Text */
 .toot-text {
-  margin-bottom: 0.25rem;
+  margin-bottom: 1rem;
   color: var(--content-text);
 }
 .toot-text .spoiler-link {
@@ -163,7 +174,6 @@ html[data-theme="dark"] {
   width: auto;
 }
 
-
 /* Poll */
 .toot-poll {
   margin-bottom: 0.25rem;
@@ -189,7 +199,7 @@ html[data-theme="dark"] {
 /* Medias */
 .toot-media {
   overflow: hidden;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 }
 .toot-media-preview {
   position: relative;
@@ -241,7 +251,7 @@ html[data-theme="dark"] {
   border-radius: 0.5rem;
   color: var(--link-color);
   font-size: 0.8rem;
-  margin: 1rem 0 0.5rem 0;
+  margin: 1rem 0;
   overflow: hidden;
 }
 .toot-preview-image {
@@ -287,9 +297,28 @@ html[data-theme="dark"] {
   vertical-align: top;
 }
 
-/* Date */
-.toot-date {
+/* Counter bar */
+.mt-counter-bar {
+  display: flex;
+  gap: clamp(0.25rem, 1vw, 1.5rem);
+  color: var(--link-color);
+}
+
+.mt-counter-replies,
+.mt-counter-reblog,
+.mt-counter-favorites {
+  display: flex;
   font-size: 0.75rem;
+  gap: 0.25rem;
+  align-items: center;
+  opacity: 0.5;
+}
+
+.mt-counter-replies > svg,
+.mt-counter-reblog > svg,
+.mt-counter-favorites > svg {
+  width: 1rem;
+  fill: var(--link-color);
 }
 
 /* Error */

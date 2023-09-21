@@ -92,17 +92,11 @@ markdown_blockquote: false,
 // Limit the text content to a maximum number of lines. Default: 0 (unlimited)
 text_max_lines: "0",
 
+// Hide replies, boosts and favourites toots counter. Default: don't hide
+hide_counter_bar: false,
+
 // Customize the text of the link pointing to the Mastodon page (appears after the last toot)
 link_see_more: "See more posts at Mastodon",
-
-//set the font icon for replies counter, e.g. (make sure to add FontAwesome to you page to make this sample work)
-replies_count_icon: '<i class="fa fa-reply"></i>',
-
-//set the font icon for boosts counter, e.g. (make sure to add FontAwesome to you page to make this sample work)
-boosts_count_icon: '<i class="fa fa-retweet"></i>',
-
-//set the font icon for favourites counter, e.g. (make sure to add FontAwesome to you page to make this sample work)
-favourites_count_icon: '<i class="fa fa-star"></i>',
 ```
 
 ### Tip

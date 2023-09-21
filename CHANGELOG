@@ -1,3 +1,6 @@
+v3.9.4 - 21/09/2023
+- Add replies, reblog (boosts) and favourites counter
+
 v3.9.1 - 06/09/2023
 - Fix bug with Markdown-Blockquote function
 
