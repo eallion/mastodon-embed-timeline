@@ -463,7 +463,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   let content = "";
   if (c.spoiler_text !== "") {
     content =
-      '<div class="toot-text">' +
+      '<div class="mt-toot-text">' +
       c.spoiler_text +
       ' <button type="button" class="spoiler-btn" aria-expanded="false">Show more</button>' +
       '<div class="spoiler-text-hidden">' +
@@ -476,7 +476,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
     c.reblog.spoiler_text !== ""
   ) {
     content =
-      '<div class="toot-text">' +
+      '<div class="mt-toot-text">' +
       c.reblog.spoiler_text +
       ' <button type="button" class="spoiler-btn" aria-expanded="false">Show more</button>' +
       '<div class="spoiler-text-hidden">' +
