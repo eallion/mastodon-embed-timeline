@@ -335,7 +335,7 @@ MastodonApi.prototype.getTimelineData = async function () {
         return { ...result, ...dataItem };
       }, {});
 
-      console.log("Timeline data fetched: ", this.FETCHED_DATA);
+      // console.log("Timeline data fetched: ", this.FETCHED_DATA);
       resolve();
     });
   });
