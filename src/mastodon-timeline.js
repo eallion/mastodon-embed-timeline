@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.9.5
+ * Mastodon embed feed timeline v3.10.0
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -185,9 +185,7 @@ MastodonApi.prototype.buildTimeline = async function () {
     if (
       e.target.localName == "article" ||
       e.target.offsetParent?.localName == "article" ||
-      (e.target.localName == "img" &&
-        e.target.offsetParent.className !== "mt-toot-avatar" &&
-        e.target.offsetParent.className !== "mt-toot-avatar-account")
+      e.target.localName == "img"
     ) {
       openTootURL(e);
     }
@@ -213,6 +211,10 @@ MastodonApi.prototype.buildTimeline = async function () {
       e.target.localName !== "a" &&
       e.target.localName !== "span" &&
       e.target.localName !== "button" &&
+      e.target.localName !== "time" &&
+      e.target.className !== "mt-toot-preview-noImage" &&
+      e.target.parentNode.className !== "mt-toot-avatar-image-big" &&
+      e.target.parentNode.className !== "mt-toot-avatar-image-small" &&
       e.target.parentNode.className !== "mt-toot-preview-image" &&
       urlToot
     ) {
@@ -356,7 +358,7 @@ MastodonApi.prototype.appendToot = function (c, i) {
  * @param {number} i Index of toot
  */
 MastodonApi.prototype.assambleToot = function (c, i) {
-  let avatar, user, url, date, formattedDate;
+  let avatar, user, userName, url, date, formattedDate;
 
   if (c.reblog) {
     // BOOSTED toot
@@ -368,15 +370,15 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       '<a href="' +
       c.reblog.account.url +
       '" class="mt-toot-avatar" rel="nofollow noopener noreferrer" target="_blank">' +
-      '<div class="mt-toot-avatar-image">' +
       '<div class="mt-toot-avatar-boosted">' +
+      '<div class="mt-toot-avatar-image-big">' +
       '<img src="' +
       c.reblog.account.avatar +
       '" alt="' +
       c.reblog.account.username +
       ' avatar" loading="lazy" />' +
       "</div>" +
-      '<div class="mt-toot-avatar-account">' +
+      '<div class="mt-toot-avatar-image-small">' +
       '<img src="' +
       c.account.avatar +
       '" alt="' +
@@ -387,14 +389,18 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       "</a>";
 
     // User name and url
+    userName = this.showEmojos(
+      c.reblog.account.display_name
+        ? c.reblog.account.display_name
+        : c.reblog.account.username,
+      this.FETCHED_DATA.emojos
+    );
     user =
       '<div class="mt-toot-header-user">' +
       '<a href="' +
       c.reblog.account.url +
       '" rel="nofollow noopener noreferrer" target="_blank">' +
-      (c.reblog.account.display_name
-        ? c.reblog.account.display_name
-        : c.reblog.account.username) +
+      userName +
       '<span class="visually-hidden"> account</span>' +
       "</a>" +
       "</div>";
@@ -411,22 +417,28 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       '<a href="' +
       c.account.url +
       '" class="mt-toot-avatar" rel="nofollow noopener noreferrer" target="_blank">' +
-      '<div class="mt-toot-avatar-image">' +
+      '<div class="mt-toot-avatar-standard">' +
+      '<div class="mt-toot-avatar-image-big">' +
       '<img src="' +
       c.account.avatar +
       '" alt="' +
       c.account.username +
       ' avatar" loading="lazy" />' +
       "</div>" +
+      "</div>" +
       "</a>";
 
     // User name and url
+    userName = this.showEmojos(
+      c.account.display_name ? c.account.display_name : c.account.username,
+      this.FETCHED_DATA.emojos
+    );
     user =
       '<div class="mt-toot-header-user">' +
       '<a href="' +
       c.account.url +
       '" rel="nofollow noopener noreferrer" target="_blank">' +
-      (c.account.display_name ? c.account.display_name : c.account.username) +
+      userName +
       '<span class="visually-hidden"> account</span>' +
       "</a>" +
       "</div>";
@@ -524,9 +536,9 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   }
 
   // Preview link
-  let preview_link = "";
+  let previewLink = "";
   if (!this.HIDE_PREVIEW_LINK && c.card) {
-    preview_link = this.placePreviewLink(c.card);
+    previewLink = this.placePreviewLink(c.card);
   }
 
   // Poll
@@ -536,7 +548,8 @@ MastodonApi.prototype.assambleToot = function (c, i) {
     for (let i in c.poll.options) {
       pollOption += "<li>" + c.poll.options[i].title + "</li>";
     }
-    poll = '<div class="mt-toot-poll">' + "<ul>" + pollOption + "</ul>" + "</div>";
+    poll =
+      '<div class="mt-toot-poll">' + "<ul>" + pollOption + "</ul>" + "</div>";
   }
 
   // Counter bar
@@ -577,14 +590,14 @@ MastodonApi.prototype.assambleToot = function (c, i) {
     '" data-location="' +
     url +
     '" tabindex="0">' +
-    avatar +
     '<div class="mt-toot-header">' +
+    avatar +
     user +
     timestamp +
     "</div>" +
     content +
     media +
-    preview_link +
+    previewLink +
     poll +
     counterBar +
     "</article>";

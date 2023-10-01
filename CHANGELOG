@@ -1,3 +1,8 @@
+v3.10.0 - 01/10/2023
+- Render customized emojis in user name
+- Add new styles for scrollbar
+- Maximize the width of the toot-text area
+
 v3.9.5 - 23/09/2023
 - Improve CSS class names
 - Use "time" tag for date format
