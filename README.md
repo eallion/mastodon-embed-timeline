@@ -4,9 +4,6 @@
 
 Embed a mastodon feed timeline in your page, only with a CSS and JS file.
 
-Working version running at:
-<https://www.idotj.com>
-
 Source code running at:
 <https://codepen.io/ipuntoj/pen/MWppNGL>
 
