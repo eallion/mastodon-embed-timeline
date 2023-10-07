@@ -1,6 +1,6 @@
 v3.10.1 - 01/10/2023
 - Add image alt description to preview links
-- Fix image al description color contrast
+- Fix image alt description color contrast
 - Fix quotes problem with image alt description
 - Add poll CSS styles for expired status
 
