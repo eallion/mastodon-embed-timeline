@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.10.0
+ * Mastodon embed feed timeline v3.10.1
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -161,7 +161,7 @@ MastodonApi.prototype.buildTimeline = async function () {
       } else if (this.TIMELINE_TYPE === "local") {
         linkSeeMorePath = "public/local";
       }
-      let linkSeeMore =
+      const linkSeeMore =
         '<div class="mt-footer"><a href="' +
         this.INSTANCE_URL +
         "/" +
@@ -206,7 +206,7 @@ MastodonApi.prototype.buildTimeline = async function () {
    * @param {event} e User interaction trigger
    */
   const openTootURL = function (e) {
-    let urlToot = e.target.closest(".mt-toot").dataset.location;
+    const urlToot = e.target.closest(".mt-toot").dataset.location;
     if (
       e.target.localName !== "a" &&
       e.target.localName !== "span" &&
@@ -337,7 +337,7 @@ MastodonApi.prototype.getTimelineData = async function () {
         return { ...result, ...dataItem };
       }, {});
 
-      // console.log("Timeline data fetched: ", this.FETCHED_DATA);
+      console.log("Timeline data fetched: ", this.FETCHED_DATA);
       resolve();
     });
   });
@@ -375,14 +375,14 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       '<img src="' +
       c.reblog.account.avatar +
       '" alt="' +
-      c.reblog.account.username +
+      this.replaceQuotes(c.reblog.account.username) +
       ' avatar" loading="lazy" />' +
       "</div>" +
       '<div class="mt-toot-avatar-image-small">' +
       '<img src="' +
       c.account.avatar +
       '" alt="' +
-      c.account.username +
+      this.replaceQuotes(c.account.username) +
       ' avatar" loading="lazy" />' +
       "</div>" +
       "</div>" +
@@ -449,7 +449,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
 
   // Date
   formattedDate = this.formatDate(date);
-  let timestamp =
+  const timestamp =
     '<div class="mt-toot-header-date">' +
     '<a href="' +
     url +
@@ -543,31 +543,37 @@ MastodonApi.prototype.assambleToot = function (c, i) {
 
   // Poll
   let poll = "";
-  let pollOption = "";
   if (c.poll) {
+    let pollOption = "";
     for (let i in c.poll.options) {
       pollOption += "<li>" + c.poll.options[i].title + "</li>";
     }
     poll =
-      '<div class="mt-toot-poll">' + "<ul>" + pollOption + "</ul>" + "</div>";
+      '<div class="mt-toot-poll ' +
+      (c.poll.expired ? "mt-toot-poll-expired" : "") +
+      '">' +
+      "<ul>" +
+      pollOption +
+      "</ul>" +
+      "</div>";
   }
 
   // Counter bar
   let counterBar = "";
   if (!this.HIDE_COUNTER_BAR) {
-    let repliesCount =
+    const repliesCount =
       '<div class="mt-toot-counter-bar-replies">' +
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1600" aria-hidden="true"><path d="M1792 1056q0 166-127 451q-3 7-10.5 24t-13.5 30t-13 22q-12 17-28 17q-15 0-23.5-10t-8.5-25q0-9 2.5-26.5t2.5-23.5q5-68 5-123q0-101-17.5-181t-48.5-138.5t-80-101t-105.5-69.5t-133-42.5t-154-21.5t-175.5-6H640v256q0 26-19 45t-45 19t-45-19L19 621Q0 602 0 576t19-45L531 19q19-19 45-19t45 19t19 45v256h224q713 0 875 403q53 134 53 333z"/></svg>' +
       c.replies_count +
       "</div>";
 
-    let reblogCount =
+    const reblogCount =
       '<div class="mt-toot-counter-bar-reblog">' +
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1280" aria-hidden="true"><path d="M1280 1248q0 13-9.5 22.5t-22.5 9.5H288q-8 0-13.5-2t-9-7t-5.5-8t-3-11.5t-1-11.5V640H64q-26 0-45-19T0 576q0-24 15-41l320-384q19-22 49-22t49 22l320 384q15 17 15 41q0 26-19 45t-45 19H512v384h576q16 0 25 11l160 192q7 10 7 21zm640-416q0 24-15 41l-320 384q-20 23-49 23t-49-23l-320-384q-15-17-15-41q0-26 19-45t45-19h192V384H832q-16 0-25-12L647 180q-7-9-7-20q0-13 9.5-22.5T672 128h960q8 0 13.5 2t9 7t5.5 8t3 11.5t1 11.5v600h192q26 0 45 19t19 45z"/></svg>' +
       c.reblogs_count +
       "</div>";
 
-    let favoritesCount =
+    const favoritesCount =
       '<div class="mt-toot-counter-bar-favorites">' +
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 1600" aria-hidden="true"><path d="M1664 615q0 22-26 48l-363 354l86 500q1 7 1 20q0 21-10.5 35.5T1321 1587q-19 0-40-12l-449-236l-449 236q-22 12-40 12q-21 0-31.5-14.5T301 1537q0-6 2-20l86-500L25 663Q0 636 0 615q0-37 56-46l502-73L783 41q19-41 49-41t49 41l225 455l502 73q56 9 56 46z"/></svg>' +
       c.favourites_count +
@@ -582,7 +588,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   }
 
   // Add all to main toot container
-  let toot =
+  const toot =
     '<article class="mt-toot" aria-posinset="' +
     (i + 1) +
     '" aria-setsize="' +
@@ -704,7 +710,7 @@ MastodonApi.prototype.replaceHTMLtag = function (
  * @returns {string} Media in HTML format
  */
 MastodonApi.prototype.placeMedias = function (m, s) {
-  let spoiler = s || false;
+  const spoiler = s || false;
   const pic =
     '<div class="mt-toot-media img-ratio14_7 ' +
     (spoiler ? "mt-toot-media-spoiler " : "") +
@@ -714,7 +720,7 @@ MastodonApi.prototype.placeMedias = function (m, s) {
     '<img src="' +
     m.preview_url +
     '" alt="' +
-    (m.description ? m.description : "") +
+    (m.description ? this.replaceQuotes(m.description) : "") +
     '" loading="lazy" />' +
     "</div>";
 
@@ -727,7 +733,7 @@ MastodonApi.prototype.placeMedias = function (m, s) {
  * @returns {string} Preview link in HTML format
  */
 MastodonApi.prototype.placePreviewLink = function (c) {
-  let card =
+  const card =
     '<a href="' +
     c.url +
     '" class="mt-toot-preview" target="_blank" rel="noopener noreferrer">' +
@@ -736,18 +742,24 @@ MastodonApi.prototype.placePreviewLink = function (c) {
         this.SPINNER_CLASS +
         '"><img src="' +
         c.image +
-        '" alt="" loading="lazy" /></div>'
+        '" alt="' +
+        this.replaceQuotes(c.image_description) +
+        '" loading="lazy" /></div>'
       : '<div class="mt-toot-preview-noImage">📄</div>') +
     "</div>" +
     '<div class="mt-toot-preview-content">' +
     (c.provider_name
-      ? '<span class="mt-toot-preview-provider">' + c.provider_name + "</span>"
+      ? '<span class="mt-toot-preview-provider">' +
+        this.parseHTMLstring(c.provider_name) +
+        "</span>"
       : "") +
     '<span class="mt-toot-preview-title">' +
     c.title +
     "</span>" +
     (c.author_name
-      ? '<span class="mt-toot-preview-author">By ' + c.author_name + "</span>"
+      ? '<span class="mt-toot-preview-author">' +
+        this.parseHTMLstring(c.author_name) +
+        "</span>"
       : "") +
     "</div>" +
     "</a>";
@@ -776,7 +788,7 @@ MastodonApi.prototype.formatDate = function (d) {
     "Dec",
   ];
 
-  let date = new Date(d);
+  const date = new Date(d);
 
   const displayDate =
     monthNames[date.getMonth()] +
@@ -786,6 +798,26 @@ MastodonApi.prototype.formatDate = function (d) {
     date.getFullYear();
 
   return displayDate;
+};
+
+/**
+ * Parse HTML string
+ * @param {string} s HTML string
+ * @returns {string} Plain text
+ */
+MastodonApi.prototype.parseHTMLstring = function (s) {
+  const parser = new DOMParser();
+  const txt = parser.parseFromString(s, "text/html");
+  return txt.body.textContent;
+};
+
+/**
+ * Replace quotes
+ * @param {string} s String
+ * @returns {string} String
+ */
+MastodonApi.prototype.replaceQuotes = function (s) {
+  return s.replace('"', "'");
 };
 
 /**
