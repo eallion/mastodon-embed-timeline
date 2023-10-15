@@ -1,3 +1,7 @@
+v3.10.2 - 01/10/2023
+- Fix counter bar values with boosted posts
+- Improve HTML escape characters
+
 v3.10.1 - 01/10/2023
 - Add image alt description to preview links
 - Fix image alt description color contrast

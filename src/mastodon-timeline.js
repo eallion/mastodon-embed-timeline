@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.10.1
+ * Mastodon embed feed timeline v3.10.2
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -20,7 +20,7 @@ window.addEventListener("load", () => {
     default_theme: "auto",
 
     // Your Mastodon instance
-    instance_url: "https://mastodon.online",
+    instance_url: "https://mastodon.social",
 
     // Choose type of toots to show in the timeline: 'local', 'profile', 'hashtag'. Default: local
     timeline_type: "local",
@@ -324,7 +324,7 @@ MastodonApi.prototype.getTimelineData = async function () {
           reject(new Error("Something went wrong fetching data"));
           this.mtBodyContainer.innerHTML =
             '<div class="mt-error"><span class="mt-error-icon">❌</span><br/><strong>Sorry, request failed:</strong><br/><div class="mt-error-message">' +
-            this.escapeHtml(error.message) +
+            error.message +
             "</div></div>";
           this.mtBodyContainer.setAttribute("role", "none");
           return { [key]: [] };
@@ -337,7 +337,7 @@ MastodonApi.prototype.getTimelineData = async function () {
         return { ...result, ...dataItem };
       }, {});
 
-      // console.log("Timeline data fetched: ", this.FETCHED_DATA);
+      console.log("Timeline data fetched: ", this.FETCHED_DATA);
       resolve();
     });
   });
@@ -358,7 +358,15 @@ MastodonApi.prototype.appendToot = function (c, i) {
  * @param {number} i Index of toot
  */
 MastodonApi.prototype.assambleToot = function (c, i) {
-  let avatar, user, userName, url, date, formattedDate;
+  let avatar,
+    user,
+    userName,
+    url,
+    date,
+    formattedDate,
+    favoritesCount,
+    reblogCount,
+    repliesCount;
 
   if (c.reblog) {
     // BOOSTED toot
@@ -390,9 +398,9 @@ MastodonApi.prototype.assambleToot = function (c, i) {
 
     // User name and url
     userName = this.showEmojos(
-      this.escapeHtml(c.reblog.account.display_name
+      c.reblog.account.display_name
         ? c.reblog.account.display_name
-        : c.reblog.account.username),
+        : c.reblog.account.username,
       this.FETCHED_DATA.emojos
     );
     user =
@@ -407,6 +415,11 @@ MastodonApi.prototype.assambleToot = function (c, i) {
 
     // Date
     date = c.reblog.created_at;
+
+    // Counter bar
+    repliesCount = c.reblog.replies_count;
+    reblogCount = c.reblog.reblogs_count;
+    favoritesCount = c.reblog.favourites_count;
   } else {
     // STANDARD toot
     // Toot url
@@ -430,7 +443,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
 
     // User name and url
     userName = this.showEmojos(
-      this.escapeHtml(c.account.display_name ? c.account.display_name : c.account.username),
+      c.account.display_name ? c.account.display_name : c.account.username,
       this.FETCHED_DATA.emojos
     );
     user =
@@ -438,13 +451,18 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       '<a href="' +
       c.account.url +
       '" rel="nofollow noopener noreferrer" target="_blank">' +
-      this.escapeHtml(userName) +
+      userName +
       '<span class="visually-hidden"> account</span>' +
       "</a>" +
       "</div>";
 
     // Date
     date = c.created_at;
+
+    // Counter bar
+    repliesCount = c.replies_count;
+    reblogCount = c.reblogs_count;
+    favoritesCount = c.favourites_count;
   }
 
   // Date
@@ -561,29 +579,29 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   // Counter bar
   let counterBar = "";
   if (!this.HIDE_COUNTER_BAR) {
-    const repliesCount =
+    const repliesTag =
       '<div class="mt-toot-counter-bar-replies">' +
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1600" aria-hidden="true"><path d="M1792 1056q0 166-127 451q-3 7-10.5 24t-13.5 30t-13 22q-12 17-28 17q-15 0-23.5-10t-8.5-25q0-9 2.5-26.5t2.5-23.5q5-68 5-123q0-101-17.5-181t-48.5-138.5t-80-101t-105.5-69.5t-133-42.5t-154-21.5t-175.5-6H640v256q0 26-19 45t-45 19t-45-19L19 621Q0 602 0 576t19-45L531 19q19-19 45-19t45 19t19 45v256h224q713 0 875 403q53 134 53 333z"/></svg>' +
-      c.replies_count +
+      repliesCount +
       "</div>";
 
-    const reblogCount =
+    const reblogTag =
       '<div class="mt-toot-counter-bar-reblog">' +
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1280" aria-hidden="true"><path d="M1280 1248q0 13-9.5 22.5t-22.5 9.5H288q-8 0-13.5-2t-9-7t-5.5-8t-3-11.5t-1-11.5V640H64q-26 0-45-19T0 576q0-24 15-41l320-384q19-22 49-22t49 22l320 384q15 17 15 41q0 26-19 45t-45 19H512v384h576q16 0 25 11l160 192q7 10 7 21zm640-416q0 24-15 41l-320 384q-20 23-49 23t-49-23l-320-384q-15-17-15-41q0-26 19-45t45-19h192V384H832q-16 0-25-12L647 180q-7-9-7-20q0-13 9.5-22.5T672 128h960q8 0 13.5 2t9 7t5.5 8t3 11.5t1 11.5v600h192q26 0 45 19t19 45z"/></svg>' +
-      c.reblogs_count +
+      reblogCount +
       "</div>";
 
-    const favoritesCount =
+    const favoritesTag =
       '<div class="mt-toot-counter-bar-favorites">' +
       '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 1600" aria-hidden="true"><path d="M1664 615q0 22-26 48l-363 354l86 500q1 7 1 20q0 21-10.5 35.5T1321 1587q-19 0-40-12l-449-236l-449 236q-22 12-40 12q-21 0-31.5-14.5T301 1537q0-6 2-20l86-500L25 663Q0 636 0 615q0-37 56-46l502-73L783 41q19-41 49-41t49 41l225 455l502 73q56 9 56 46z"/></svg>' +
-      c.favourites_count +
+      favoritesCount +
       "</div>";
 
     counterBar =
       '<div class="mt-toot-counter-bar">' +
-      repliesCount +
-      reblogCount +
-      favoritesCount +
+      repliesTag +
+      reblogTag +
+      favoritesTag +
       "</div>";
   }
 
@@ -750,7 +768,7 @@ MastodonApi.prototype.placePreviewLink = function (c) {
     '<div class="mt-toot-preview-content">' +
     (c.provider_name
       ? '<span class="mt-toot-preview-provider">' +
-        this.escapeHtml(this.parseHTMLstring(c.provider_name)) +
+        this.parseHTMLstring(c.provider_name) +
         "</span>"
       : "") +
     '<span class="mt-toot-preview-title">' +
@@ -758,7 +776,7 @@ MastodonApi.prototype.placePreviewLink = function (c) {
     "</span>" +
     (c.author_name
       ? '<span class="mt-toot-preview-author">' +
-        this.escapeHtml(this.parseHTMLstring(c.author_name)) +
+        this.parseHTMLstring(c.author_name) +
         "</span>"
       : "") +
     "</div>" +
@@ -818,8 +836,12 @@ MastodonApi.prototype.parseHTMLstring = function (s) {
  * @returns {string} String
  */
 MastodonApi.prototype.escapeHtml = function (s) {
-  return (s ?? "").replace("&", "&amp;").replace("<", "&lt;")
-    .replace(">", "&gt;").replace('"', "&quot;");
+  return (s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 };
 
 /**
