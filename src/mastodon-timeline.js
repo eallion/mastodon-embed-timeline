@@ -155,9 +155,9 @@ MastodonApi.prototype.buildTimeline = async function () {
     if (this.LINK_SEE_MORE) {
       let linkSeeMorePath = "";
       if (this.TIMELINE_TYPE === "profile") {
-        linkSeeMorePath = this.PROFILE_NAME;
+        linkSeeMorePath = encodeURIComponent(this.PROFILE_NAME);
       } else if (this.TIMELINE_TYPE === "hashtag") {
-        linkSeeMorePath = "tags/" + this.HASHTAG_NAME;
+        linkSeeMorePath = "tags/" + encodeURIComponent(this.HASHTAG_NAME);
       } else if (this.TIMELINE_TYPE === "local") {
         linkSeeMorePath = "public/local";
       }
@@ -218,7 +218,7 @@ MastodonApi.prototype.buildTimeline = async function () {
       e.target.parentNode.className !== "mt-toot-preview-image" &&
       urlToot
     ) {
-      window.open(urlToot, "_blank");
+      window.open(urlToot, "_blank", "noopener");
     }
   };
 
@@ -324,7 +324,7 @@ MastodonApi.prototype.getTimelineData = async function () {
           reject(new Error("Something went wrong fetching data"));
           this.mtBodyContainer.innerHTML =
             '<div class="mt-error"><span class="mt-error-icon">❌</span><br/><strong>Sorry, request failed:</strong><br/><div class="mt-error-message">' +
-            error.message +
+            this.escapeHtml(error.message) +
             "</div></div>";
           this.mtBodyContainer.setAttribute("role", "none");
           return { [key]: [] };
@@ -375,14 +375,14 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       '<img src="' +
       c.reblog.account.avatar +
       '" alt="' +
-      this.replaceQuotes(c.reblog.account.username) +
+      this.escapeHtml(c.reblog.account.username) +
       ' avatar" loading="lazy" />' +
       "</div>" +
       '<div class="mt-toot-avatar-image-small">' +
       '<img src="' +
       c.account.avatar +
       '" alt="' +
-      this.replaceQuotes(c.account.username) +
+      this.escapeHtml(c.account.username) +
       ' avatar" loading="lazy" />' +
       "</div>" +
       "</div>" +
@@ -390,9 +390,9 @@ MastodonApi.prototype.assambleToot = function (c, i) {
 
     // User name and url
     userName = this.showEmojos(
-      c.reblog.account.display_name
+      this.escapeHtml(c.reblog.account.display_name
         ? c.reblog.account.display_name
-        : c.reblog.account.username,
+        : c.reblog.account.username),
       this.FETCHED_DATA.emojos
     );
     user =
@@ -422,7 +422,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       '<img src="' +
       c.account.avatar +
       '" alt="' +
-      c.account.username +
+      this.escapeHtml(c.account.username) +
       ' avatar" loading="lazy" />' +
       "</div>" +
       "</div>" +
@@ -430,7 +430,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
 
     // User name and url
     userName = this.showEmojos(
-      c.account.display_name ? c.account.display_name : c.account.username,
+      this.escapeHtml(c.account.display_name ? c.account.display_name : c.account.username),
       this.FETCHED_DATA.emojos
     );
     user =
@@ -438,7 +438,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       '<a href="' +
       c.account.url +
       '" rel="nofollow noopener noreferrer" target="_blank">' +
-      userName +
+      this.escapeHtml(userName) +
       '<span class="visually-hidden"> account</span>' +
       "</a>" +
       "</div>";
@@ -720,7 +720,7 @@ MastodonApi.prototype.placeMedias = function (m, s) {
     '<img src="' +
     m.preview_url +
     '" alt="' +
-    (m.description ? this.replaceQuotes(m.description) : "") +
+    (m.description ? this.escapeHtml(m.description) : "") +
     '" loading="lazy" />' +
     "</div>";
 
@@ -743,14 +743,14 @@ MastodonApi.prototype.placePreviewLink = function (c) {
         '"><img src="' +
         c.image +
         '" alt="' +
-        this.replaceQuotes(c.image_description) +
+        this.escapeHtml(c.image_description) +
         '" loading="lazy" /></div>'
       : '<div class="mt-toot-preview-noImage">📄</div>') +
     "</div>" +
     '<div class="mt-toot-preview-content">' +
     (c.provider_name
       ? '<span class="mt-toot-preview-provider">' +
-        this.parseHTMLstring(c.provider_name) +
+        this.escapeHtml(this.parseHTMLstring(c.provider_name)) +
         "</span>"
       : "") +
     '<span class="mt-toot-preview-title">' +
@@ -758,7 +758,7 @@ MastodonApi.prototype.placePreviewLink = function (c) {
     "</span>" +
     (c.author_name
       ? '<span class="mt-toot-preview-author">' +
-        this.parseHTMLstring(c.author_name) +
+        this.escapeHtml(this.parseHTMLstring(c.author_name)) +
         "</span>"
       : "") +
     "</div>" +
@@ -812,12 +812,14 @@ MastodonApi.prototype.parseHTMLstring = function (s) {
 };
 
 /**
- * Replace quotes
+ * Escape quotes and other special characters, to make them safe to add
+ * to HTML content and attributes as plain text
  * @param {string} s String
  * @returns {string} String
  */
-MastodonApi.prototype.replaceQuotes = function (s) {
-  return s.replace('"', "'");
+MastodonApi.prototype.escapeHtml = function (s) {
+  return (s ?? "").replace("&", "&amp;").replace("<", "&lt;")
+    .replace(">", "&gt;").replace('"', "&quot;");
 };
 
 /**
