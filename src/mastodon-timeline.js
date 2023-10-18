@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.10.2
+ * Mastodon embed feed timeline v3.10.3
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -538,17 +538,16 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   }
 
   // Media attachments
-  let media = "";
+  let media = [];
   if (c.media_attachments.length > 0) {
     for (let picid in c.media_attachments) {
-      media = this.placeMedias(c.media_attachments[picid], c.sensitive);
+      media.push(this.placeMedias(c.media_attachments[picid], c.sensitive));
     }
   }
   if (c.reblog && c.reblog.media_attachments.length > 0) {
     for (let picid in c.reblog.media_attachments) {
-      media = this.placeMedias(
-        c.reblog.media_attachments[picid],
-        c.reblog.sensitive
+      media.push(
+        this.placeMedias(c.reblog.media_attachments[picid], c.reblog.sensitive)
       );
     }
   }
@@ -620,7 +619,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
     timestamp +
     "</div>" +
     content +
-    media +
+    media.join("") +
     previewLink +
     poll +
     counterBar +

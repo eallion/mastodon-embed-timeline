@@ -1,3 +1,6 @@
+v3.10.3 - 18/10/2023
+- Fix media load when post has more than one image
+
 v3.10.2 - 01/10/2023
 - Fix counter bar values with boosted posts
 - Improve HTML escape characters
