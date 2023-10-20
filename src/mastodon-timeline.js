@@ -155,7 +155,7 @@ MastodonApi.prototype.buildTimeline = async function () {
     if (this.LINK_SEE_MORE) {
       let linkSeeMorePath = "";
       if (this.TIMELINE_TYPE === "profile") {
-        linkSeeMorePath = encodeURIComponent(this.PROFILE_NAME);
+        linkSeeMorePath = this.PROFILE_NAME;
       } else if (this.TIMELINE_TYPE === "hashtag") {
         linkSeeMorePath = "tags/" + encodeURIComponent(this.HASHTAG_NAME);
       } else if (this.TIMELINE_TYPE === "local") {
