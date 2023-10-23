@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.10.3
+ * Mastodon embed feed timeline v3.10.4
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -20,7 +20,7 @@ window.addEventListener("load", () => {
     default_theme: "auto",
 
     // Your Mastodon instance
-    instance_url: "https://mastodon.social",
+    instance_url: "https://mastodon.online",
 
     // Choose type of toots to show in the timeline: 'local', 'profile', 'hashtag'. Default: local
     timeline_type: "local",
@@ -149,7 +149,7 @@ MastodonApi.prototype.buildTimeline = async function () {
     this.mtBodyContainer.innerHTML =
       '<div class="mt-error"><span class="mt-error-icon">📭</span><br/><strong>Sorry, no toots to show</strong><br/><div class="mt-error-message">Got ' +
       this.FETCHED_DATA.timeline.length +
-      ' toots from the server but due to the "hide filters" applied, no toot is shown</div></div>';
+      ' toots from the server. <br/>This may be due to an incorrect configuration in the parameters or to filters applied to hide certains type of toots.</div></div>';
   } else {
     // Insert link after last toot to visit Mastodon page
     if (this.LINK_SEE_MORE) {
@@ -157,7 +157,7 @@ MastodonApi.prototype.buildTimeline = async function () {
       if (this.TIMELINE_TYPE === "profile") {
         linkSeeMorePath = this.PROFILE_NAME;
       } else if (this.TIMELINE_TYPE === "hashtag") {
-        linkSeeMorePath = "tags/" + encodeURIComponent(this.HASHTAG_NAME);
+        linkSeeMorePath = "tags/" + this.HASHTAG_NAME;
       } else if (this.TIMELINE_TYPE === "local") {
         linkSeeMorePath = "public/local";
       }
@@ -165,7 +165,7 @@ MastodonApi.prototype.buildTimeline = async function () {
         '<div class="mt-footer"><a href="' +
         this.INSTANCE_URL +
         "/" +
-        linkSeeMorePath +
+        this.escapeHtml(linkSeeMorePath) +
         '" target="_blank" rel="nofollow noopener noreferrer">' +
         this.LINK_SEE_MORE +
         "</a></div>";

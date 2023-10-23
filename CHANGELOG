@@ -1,3 +1,6 @@
+v3.10.4 - 23/10/2023
+- Fix HTML encodeURIComponent problem
+
 v3.10.3 - 18/10/2023
 - Fix media load when post has more than one image
 
