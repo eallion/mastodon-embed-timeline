@@ -40,23 +40,23 @@ Great, you have a Mastodon timeline running in your page.
 Edit the the JS file _mastodon-timeline.js_ and at the beginning find these two lines:
 
 ```javascript
-    instance_url:   'Your Mastodon instance',
+    instance_url:   'Your Mastodon instance (not including the last `/` symbol)',
     timeline_type:  'local',
 ```
 
-Enter your Mastodon instance URL (not including the last `/` symbol) and reload the page. You should see toots from your local instance in your timeline.
+Enter your Mastodon instance URL and reload the page. You should see toots from your local instance in your timeline.
 
 If you want to show a profile timeline then change the `timeline_type` to `profile` and set the following values:
 
 ```javascript
     user_id:        'Your user ID number on Mastodon instance',
-    profile_name:   'Your user name on Mastodon instance (including the @ symbol at the beginning)',
+    profile_name:   'Your user name on Mastodon instance (including the `@` symbol at the beginning)',
 ```
 
-If you prefer to show a timeline with a specific hashtag then change the `timeline_type` to `hashtag` and enter the name of the hashtag (not including the `#` symbol):
+If you prefer to show a timeline with a specific hashtag then change the `timeline_type` to `hashtag` and enter the name of the hashtag:
 
 ```javascript
-    hashtag_name:   'YourHashtag',
+    hashtag_name:   'YourHashtag (not including the `#` symbol)',
 ```
 
 Also you have some parameters to customize your embed timeline:
