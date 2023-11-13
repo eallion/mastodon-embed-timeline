@@ -25,13 +25,13 @@ window.addEventListener("load", () => {
     // Choose type of toots to show in the timeline: 'local', 'profile', 'hashtag'. Default: local
     timeline_type: "local",
 
-    // Your user ID on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline
+    // Your user ID number on Mastodon instance. Leave it empty if you didn't choose 'profile' as type of timeline
     user_id: "",
 
-    // Your user name on Mastodon instance. Leave empty if you didn't choose 'profile' as type of timeline
+    // Your user name on Mastodon instance (including the @ symbol at the beginning). Leave it empty if you didn't choose 'profile' as type of timeline
     profile_name: "",
 
-    // The name of the hashtag. Leave empty if you didn't choose 'hashtag' as type of timeline
+    // The name of the hashtag (not including the # symbol). Leave it empty if you didn't choose 'hashtag' as type of timeline
     hashtag_name: "",
 
     // Maximum amount of toots to get. Default: 20
