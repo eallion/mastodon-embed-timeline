@@ -49,8 +49,8 @@ Enter your Mastodon instance URL (not including the last `/` symbol) and reload 
 If you want to show a profile timeline then change the `timeline_type` to `profile` and set the following values:
 
 ```javascript
-    user_id:        'Your user ID on Mastodon instance',
-    profile_name:   'Your user name on Mastodon instance',
+    user_id:        'Your user ID number on Mastodon instance',
+    profile_name:   'Your user name on Mastodon instance (including the @ symbol at the beginning)',
 ```
 
 If you prefer to show a timeline with a specific hashtag then change the `timeline_type` to `hashtag` and enter the name of the hashtag (not including the `#` symbol):
@@ -98,15 +98,18 @@ link_see_more: "See more posts at Mastodon",
 
 ### Tip
 
-If you don't know your `user_id`, you have two ways to get it:
+If you don't know your `user_id`, you have three ways to get it:
 
 - Right click on your avatar image and inspect the element.  
   You will see in your html code a line like this one:  
   `<img src="https://files.xxxxxxxx.xx/accounts/avatars/000/180/745/original/xxxxxxxxxx.png" alt="xxxx">`  
   Check the `src=""` url, your user id is between `/accounts/avatars/` and `/original/`. So removing the slashs `/` you will get your user id, like in the example: `000180745`
 
-- Other option, just copy your profile name and instance uri here:  
+- Copy your profile name and instance uri here:  
   <a href="https://prouser123.me/mastodon-userid-lookup/" target="_blank" rel="noopener">https://prouser123.me/mastodon-userid-lookup/</a>
+
+- Type the following url in your browser and the first value in the list is your ID (replace the words INSTANCE and USERNAME with your current values):  
+  https://INSTANCE/api/v1/accounts/lookup?acct=USERNAME  
 
 ## 🚀 Improve me
 
