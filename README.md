@@ -26,7 +26,7 @@ Now call each one in your page using the `<link>` and `<script>` tag:
 Then copy the following html structure:
 
 ```html
-<div class="mt-timeline">
+<div class="mt-container">
   <div id="mt-body" class="mt-body" role="feed">
     <div class="loading-spinner"></div>
   </div>
