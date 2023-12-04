@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.10.4
+ * Mastodon embed feed timeline v3.11.0
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -20,7 +20,7 @@ window.addEventListener("load", () => {
     default_theme: "auto",
 
     // Your Mastodon instance
-    instance_url: "https://mastodon.online",
+    instance_url: "https://mastdn.social",
 
     // Choose type of toots to show in the timeline: 'local', 'profile', 'hashtag'. Default: local
     timeline_type: "local",
@@ -379,7 +379,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       c.reblog.account.url +
       '" class="mt-toot-avatar" rel="nofollow noopener noreferrer" target="_blank">' +
       '<div class="mt-toot-avatar-boosted">' +
-      '<div class="mt-toot-avatar-image-big">' +
+      '<div class="mt-toot-avatar-image-big loading-spinner">' +
       '<img src="' +
       c.reblog.account.avatar +
       '" alt="' +
@@ -431,7 +431,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
       c.account.url +
       '" class="mt-toot-avatar" rel="nofollow noopener noreferrer" target="_blank">' +
       '<div class="mt-toot-avatar-standard">' +
-      '<div class="mt-toot-avatar-image-big">' +
+      '<div class="mt-toot-avatar-image-big loading-spinner">' +
       '<img src="' +
       c.account.avatar +
       '" alt="' +
@@ -580,19 +580,19 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   if (!this.HIDE_COUNTER_BAR) {
     const repliesTag =
       '<div class="mt-toot-counter-bar-replies">' +
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1600" aria-hidden="true"><path d="M1792 1056q0 166-127 451q-3 7-10.5 24t-13.5 30t-13 22q-12 17-28 17q-15 0-23.5-10t-8.5-25q0-9 2.5-26.5t2.5-23.5q5-68 5-123q0-101-17.5-181t-48.5-138.5t-80-101t-105.5-69.5t-133-42.5t-154-21.5t-175.5-6H640v256q0 26-19 45t-45 19t-45-19L19 621Q0 602 0 576t19-45L531 19q19-19 45-19t45 19t19 45v256h224q713 0 875 403q53 134 53 333z"/></svg>' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 -960 960 960" aria-hidden="true"><path d="M774.913-185.869V-356q0-56.609-35.891-92.5-35.892-35.891-92.5-35.891H258.045L411.435-331l-56 56.566L105.869-524l249.566-249.566 56 56.566-153.39 153.391h388.477q88.957 0 148.566 59.609 59.608 59.609 59.608 148v170.131h-79.783Z"></path></svg>' +
       repliesCount +
       "</div>";
 
     const reblogTag =
       '<div class="mt-toot-counter-bar-reblog">' +
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1280" aria-hidden="true"><path d="M1280 1248q0 13-9.5 22.5t-22.5 9.5H288q-8 0-13.5-2t-9-7t-5.5-8t-3-11.5t-1-11.5V640H64q-26 0-45-19T0 576q0-24 15-41l320-384q19-22 49-22t49 22l320 384q15 17 15 41q0 26-19 45t-45 19H512v384h576q16 0 25 11l160 192q7 10 7 21zm640-416q0 24-15 41l-320 384q-20 23-49 23t-49-23l-320-384q-15-17-15-41q0-26 19-45t45-19h192V384H832q-16 0-25-12L647 180q-7-9-7-20q0-13 9.5-22.5T672 128h960q8 0 13.5 2t9 7t5.5 8t3 11.5t1 11.5v600h192q26 0 45 19t19 45z"/></svg>' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 -960 960 960" aria-hidden="true"><path d="M276.043-65.304 105.869-236.043l170.174-170.175 52.74 54.175-78.652 78.652h449.304v-160h75.261v235.261H250.131l78.652 78.087-52.74 54.74Zm-90.174-457.348v-235.261h524.565L631.782-836l52.74-54.74L854.696-720 684.522-549.26 631.782-604l78.652-78.652H261.13v160h-75.261Z"></path></svg>' +
       reblogCount +
       "</div>";
 
     const favoritesTag =
       '<div class="mt-toot-counter-bar-favorites">' +
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1664 1600" aria-hidden="true"><path d="M1664 615q0 22-26 48l-363 354l86 500q1 7 1 20q0 21-10.5 35.5T1321 1587q-19 0-40-12l-449-236l-449 236q-22 12-40 12q-21 0-31.5-14.5T301 1537q0-6 2-20l86-500L25 663Q0 636 0 615q0-37 56-46l502-73L783 41q19-41 49-41t49 41l225 455l502 73q56 9 56 46z"/></svg>' +
+      '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 -960 960 960" aria-hidden="true"><path d="m330.955-216.328 149.066-89 149.066 90.023-40.305-168.391 131.217-114.347-172.956-14.87L480-671.869l-67.043 158.521-172.956 14.305 131.427 113.796-40.473 168.919ZM212.086-50.608l70.652-305.305L45.52-561.305l312.645-26.579L480-876.176l121.835 288.292 312.645 26.579-237.218 205.392 71.217 305.306L480-213.173 212.086-50.607ZM480-433.87Z"></path></svg>' +
       favoritesCount +
       "</div>";
 
