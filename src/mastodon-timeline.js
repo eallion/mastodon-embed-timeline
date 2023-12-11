@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.11.0
+ * Mastodon embed feed timeline v3.12.0
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -149,7 +149,7 @@ MastodonApi.prototype.buildTimeline = async function () {
     this.mtBodyContainer.innerHTML =
       '<div class="mt-error"><span class="mt-error-icon">📭</span><br/><strong>Sorry, no toots to show</strong><br/><div class="mt-error-message">Got ' +
       this.FETCHED_DATA.timeline.length +
-      ' toots from the server. <br/>This may be due to an incorrect configuration in the parameters or to filters applied to hide certains type of toots.</div></div>';
+      " toots from the server. <br/>This may be due to an incorrect configuration in the parameters or to filters applied to hide certains type of toots.</div></div>";
   } else {
     // Insert link after last toot to visit Mastodon page
     if (this.LINK_SEE_MORE) {
@@ -216,6 +216,7 @@ MastodonApi.prototype.buildTimeline = async function () {
       e.target.parentNode.className !== "mt-toot-avatar-image-big" &&
       e.target.parentNode.className !== "mt-toot-avatar-image-small" &&
       e.target.parentNode.className !== "mt-toot-preview-image" &&
+      e.target.parentNode.className !== "mt-toot-preview" &&
       urlToot
     ) {
       window.open(urlToot, "_blank", "noopener");
