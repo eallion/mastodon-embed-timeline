@@ -1,5 +1,5 @@
 {
-  "name": "mastodon-embed-timeline",
+  "name": "@idotj/mastodon-embed-feed-timeline",
   "description": "Displays Mastodon timeline with posts embed in your website. Very easy to setup, no dependencies, no trackers, WCAG compliant and fully responsive.",
   "version": "3.12.0",
   "author": {
