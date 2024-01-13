@@ -77,6 +77,9 @@ hide_reblog: false,
 // Hide replies toots. Default: don't hide
 hide_replies: false,
 
+// Hide video image preview and load video player instead. Default: don't hide
+hide_video_preview: false,
+
 // Hide preview for links. Default: don't hide
 hide_preview_link: false,
 

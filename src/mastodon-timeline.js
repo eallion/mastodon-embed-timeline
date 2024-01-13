@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.12.0
+ * Mastodon embed feed timeline v3.13.1
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -46,6 +46,9 @@ window.addEventListener("load", () => {
     // Hide replies toots. Default: don't hide
     hide_replies: false,
 
+    // Hide video image preview and load video player instead. Default: don't hide
+    hide_video_preview: false,
+
     // Hide preview card if toot contains a link, photo or video from a URL. Default: don't hide
     hide_preview_link: false,
 
@@ -89,6 +92,10 @@ const MastodonApi = function (params_) {
     typeof params_.hide_reblog !== "undefined" ? params_.hide_reblog : false;
   this.HIDE_REPLIES =
     typeof params_.hide_replies !== "undefined" ? params_.hide_replies : false;
+  this.HIDE_VIDEO_PREVIEW =
+    typeof params_.hide_video_preview !== "undefined"
+      ? params_.hide_video_preview
+      : false;
   this.HIDE_PREVIEW_LINK =
     typeof params_.hide_preview_link !== "undefined"
       ? params_.hide_preview_link
@@ -185,13 +192,27 @@ MastodonApi.prototype.buildTimeline = async function () {
     if (
       e.target.localName == "article" ||
       e.target.offsetParent?.localName == "article" ||
-      e.target.localName == "img"
+      (e.target.localName == "img" &&
+        !e.target.parentNode.classList.contains("video-ratio14_7"))
     ) {
       openTootURL(e);
     }
     // Check if Show More/Less button was clicked
     if (e.target.localName == "button" && e.target.className == "spoiler-btn") {
       toogleSpoiler(e);
+    }
+    // Check if video preview image or play icon/button was clicked
+    if (
+      e.target.className == "mt-toot-media-play-icon" ||
+      (e.target.localName == "svg" &&
+        e.target.parentNode.className == "mt-toot-media-play-icon") ||
+      (e.target.localName == "path" &&
+        e.target.parentNode.parentNode.className ==
+          "mt-toot-media-play-icon") ||
+      (e.target.localName == "img" &&
+        e.target.parentNode.classList.contains("video-ratio14_7"))
+    ) {
+      loadTootVideo(e);
     }
   });
   this.mtBodyContainer.addEventListener("keydown", function (e) {
@@ -229,7 +250,11 @@ MastodonApi.prototype.buildTimeline = async function () {
    */
   const toogleSpoiler = function (e) {
     const nextSibling = e.target.nextSibling;
-    if (nextSibling.localName === "img") {
+    if (
+      nextSibling.localName === "img" ||
+      nextSibling.localName === "audio" ||
+      nextSibling.localName === "video"
+    ) {
       e.target.parentNode.classList.remove("mt-toot-media-spoiler");
       e.target.style.display = "none";
     } else if (
@@ -248,6 +273,18 @@ MastodonApi.prototype.buildTimeline = async function () {
         e.target.textContent = "Show more";
       }
     }
+  };
+
+  /**
+   * Replace the video preview image by the video player
+   * @param {event} e User interaction trigger
+   */
+  const loadTootVideo = function (e) {
+    const parentNode = e.target.closest("[data-video-url]");
+    const videoURL = parentNode.dataset.videoUrl;
+    parentNode.replaceChildren();
+    parentNode.innerHTML =
+      '<video controls src="' + videoURL + '" autoplay></video>';
   };
 };
 
@@ -541,14 +578,14 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   // Media attachments
   let media = [];
   if (c.media_attachments.length > 0) {
-    for (let picid in c.media_attachments) {
-      media.push(this.placeMedias(c.media_attachments[picid], c.sensitive));
+    for (let i in c.media_attachments) {
+      media.push(this.placeMedias(c.media_attachments[i], c.sensitive));
     }
   }
   if (c.reblog && c.reblog.media_attachments.length > 0) {
-    for (let picid in c.reblog.media_attachments) {
+    for (let i in c.reblog.media_attachments) {
       media.push(
-        this.placeMedias(c.reblog.media_attachments[picid], c.reblog.sensitive)
+        this.placeMedias(c.reblog.media_attachments[i], c.reblog.sensitive)
       );
     }
   }
@@ -729,20 +766,85 @@ MastodonApi.prototype.replaceHTMLtag = function (
  */
 MastodonApi.prototype.placeMedias = function (m, s) {
   const spoiler = s || false;
-  const pic =
-    '<div class="mt-toot-media img-ratio14_7 ' +
-    (spoiler ? "mt-toot-media-spoiler " : "") +
-    this.SPINNER_CLASS +
-    '">' +
-    (spoiler ? '<button class="spoiler-btn">Show content</button>' : "") +
-    '<img src="' +
-    m.preview_url +
-    '" alt="' +
-    (m.description ? this.escapeHtml(m.description) : "") +
-    '" loading="lazy" />' +
-    "</div>";
+  const type = m.type;
+  let media = "";
 
-  return pic;
+  if (type === "image") {
+    media =
+      '<div class="mt-toot-media img-ratio14_7 ' +
+      (spoiler ? "mt-toot-media-spoiler " : "") +
+      this.SPINNER_CLASS +
+      '">' +
+      (spoiler ? '<button class="spoiler-btn">Show content</button>' : "") +
+      '<img src="' +
+      m.preview_url +
+      '" alt="' +
+      (m.description ? this.escapeHtml(m.description) : "") +
+      '" loading="lazy" />' +
+      "</div>";
+  }
+
+  if (type === "audio") {
+    if (m.preview_url) {
+      media =
+        '<div class="mt-toot-media img-ratio14_7 ' +
+        (spoiler ? "mt-toot-media-spoiler " : "") +
+        this.SPINNER_CLASS +
+        '">' +
+        (spoiler ? '<button class="spoiler-btn">Show content</button>' : "") +
+        '<audio controls src="' +
+        m.url +
+        '"></audio>' +
+        '<img src="' +
+        m.preview_url +
+        '" alt="' +
+        (m.description ? this.escapeHtml(m.description) : "") +
+        '" loading="lazy" />' +
+        "</div>";
+    } else {
+      media =
+        '<div class="mt-toot-media ' +
+        (spoiler ? "mt-toot-media-spoiler " : "") +
+        '">' +
+        (spoiler ? '<button class="spoiler-btn">Show content</button>' : "") +
+        '<audio controls src="' +
+        m.url +
+        '"></audio>' +
+        "</div>";
+    }
+  }
+
+  if (type === "video") {
+    if (!this.HIDE_VIDEO_PREVIEW) {
+      media =
+        '<div class="mt-toot-media video-ratio14_7 ' +
+        (spoiler ? "mt-toot-media-spoiler " : "") +
+        this.SPINNER_CLASS +
+        '" data-video-url="' +
+        m.url +
+        '">' +
+        (spoiler ? '<button class="spoiler-btn">Show content</button>' : "") +
+        '<img src="' +
+        m.preview_url +
+        '" alt="' +
+        (m.description ? this.escapeHtml(m.description) : "") +
+        '" loading="lazy" />' +
+        '<button class="mt-toot-media-play-icon" title="Load video"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 14"><path d="M9.5 7l-9 6.3V.7z"/></svg></button>' +
+        "</div>";
+    } else {
+      media =
+        '<div class="mt-toot-media video-ratio14_7 ' +
+        (spoiler ? "mt-toot-media-spoiler " : "") +
+        '">' +
+        (spoiler ? '<button class="spoiler-btn">Show content</button>' : "") +
+        '<video controls src="' +
+        m.url +
+        '"></video>' +
+        "</div>";
+    }
+  }
+
+  return media;
 };
 
 /**

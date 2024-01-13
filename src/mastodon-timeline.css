@@ -1,4 +1,4 @@
-/* Mastodon embed feed timeline v3.12.0 */
+/* Mastodon embed feed timeline v3.13.1 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-feed-timeline */
 
@@ -223,6 +223,7 @@ html[data-theme="dark"] {
 
 /* Medias */
 .mt-toot-media {
+  position: relative;
   overflow: hidden;
   margin-bottom: 1rem;
 }
@@ -233,15 +234,26 @@ html[data-theme="dark"] {
   z-index: 1;
   transform: translate(-50%, -50%);
 }
-.mt-toot-media-spoiler > img {
+.mt-toot-media-spoiler > img,
+.mt-toot-media-spoiler > audio,
+.mt-toot-media-spoiler > video,
+.mt-toot-media-spoiler > .mt-toot-media-play-icon {
   filter: blur(2rem);
+  pointer-events: none;
 }
-.img-ratio14_7 {
-  position: relative;
+.mt-toot-media.img-ratio14_7,
+.mt-toot-media.video-ratio14_7 {
   padding-top: 56.95%;
   width: 100%;
 }
-.img-ratio14_7 > img {
+.mt-toot-media > audio {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+.img-ratio14_7 > img,
+.video-ratio14_7 > img,
+.video-ratio14_7 > video {
   width: 100%;
   height: auto;
   position: absolute;
@@ -250,6 +262,29 @@ html[data-theme="dark"] {
   transform: translate(-50%, -50%);
   text-align: center;
   color: var(--content-text);
+}
+.mt-toot-media.loading-spinner .mt-toot-media-play-icon {
+  display: none;
+}
+.mt-toot-media-play-icon {
+  display: flex;
+  position: absolute;
+  width: 3rem;
+  height: 3rem;
+  top: calc(50% - 1.5rem);
+  left: calc(50% - 1.5rem);
+  justify-content: center;
+  align-items: center;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+.mt-toot-media-play-icon > svg {
+  width: 2.5rem;
+  height: 2.5rem;
+  fill: var(--bg-color);
+  stroke:var(--content-text);
+  stroke-width: 1px;
 }
 
 /* Preview link */
