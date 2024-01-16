@@ -1,5 +1,5 @@
 /**
- * Mastodon embed feed timeline v3.13.1
+ * Mastodon embed feed timeline v3.13.2
  * More info at:
  * https://gitlab.com/idotj/mastodon-embed-feed-timeline
  */
@@ -75,7 +75,9 @@ window.addEventListener("load", () => {
  * Trigger main function to build the timeline
  */
 const MastodonApi = function (params_) {
-  this.CONTAINER_BODY_ID = params_.container_body_id || "mt-body";
+  this.CONTAINER_BODY_ID = document.getElementById(
+    params_.container_body_id || "mt-body"
+  );
   this.SPINNER_CLASS = params_.spinner_class || "loading-spinner";
   this.DEFAULT_THEME = params_.default_theme || "auto";
   this.INSTANCE_URL = params_.instance_url;
@@ -112,8 +114,6 @@ const MastodonApi = function (params_) {
   this.LINK_SEE_MORE = params_.link_see_more;
   this.FETCHED_DATA = {};
 
-  this.mtBodyContainer = document.getElementById(this.CONTAINER_BODY_ID);
-
   this.buildTimeline();
 };
 
@@ -128,7 +128,7 @@ MastodonApi.prototype.buildTimeline = async function () {
   await this.getTimelineData();
 
   // Empty the <div> container
-  this.mtBodyContainer.innerHTML = "";
+  this.CONTAINER_BODY_ID.innerHTML = "";
 
   for (let i in this.FETCHED_DATA.timeline) {
     // First filter (Public / Unlisted)
@@ -151,9 +151,9 @@ MastodonApi.prototype.buildTimeline = async function () {
   }
 
   // Check if there are toots in the container (due to filters applied)
-  if (this.mtBodyContainer.innerHTML === "") {
-    this.mtBodyContainer.setAttribute("role", "none");
-    this.mtBodyContainer.innerHTML =
+  if (this.CONTAINER_BODY_ID.innerHTML === "") {
+    this.CONTAINER_BODY_ID.setAttribute("role", "none");
+    this.CONTAINER_BODY_ID.innerHTML =
       '<div class="mt-error"><span class="mt-error-icon">📭</span><br/><strong>Sorry, no toots to show</strong><br/><div class="mt-error-message">Got ' +
       this.FETCHED_DATA.timeline.length +
       " toots from the server. <br/>This may be due to an incorrect configuration in the parameters or to filters applied to hide certains type of toots.</div></div>";
@@ -176,7 +176,7 @@ MastodonApi.prototype.buildTimeline = async function () {
         '" target="_blank" rel="nofollow noopener noreferrer">' +
         this.LINK_SEE_MORE +
         "</a></div>";
-      this.mtBodyContainer.parentNode.insertAdjacentHTML(
+      this.CONTAINER_BODY_ID.parentNode.insertAdjacentHTML(
         "beforeend",
         linkSeeMore
       );
@@ -187,7 +187,7 @@ MastodonApi.prototype.buildTimeline = async function () {
   }
 
   // Toot interactions
-  this.mtBodyContainer.addEventListener("click", function (e) {
+  this.CONTAINER_BODY_ID.addEventListener("click", function (e) {
     // Check if toot cointainer was clicked
     if (
       e.target.localName == "article" ||
@@ -215,7 +215,7 @@ MastodonApi.prototype.buildTimeline = async function () {
       loadTootVideo(e);
     }
   });
-  this.mtBodyContainer.addEventListener("keydown", function (e) {
+  this.CONTAINER_BODY_ID.addEventListener("keydown", function (e) {
     // Check if Enter key was pressed with focus in an article
     if (e.key === "Enter" && e.target.localName == "article") {
       openTootURL(e);
@@ -360,11 +360,11 @@ MastodonApi.prototype.getTimelineData = async function () {
         .then((data) => ({ [key]: data }))
         .catch((error) => {
           reject(new Error("Something went wrong fetching data"));
-          this.mtBodyContainer.innerHTML =
+          this.CONTAINER_BODY_ID.innerHTML =
             '<div class="mt-error"><span class="mt-error-icon">❌</span><br/><strong>Sorry, request failed:</strong><br/><div class="mt-error-message">' +
             error.message +
             "</div></div>";
-          this.mtBodyContainer.setAttribute("role", "none");
+          this.CONTAINER_BODY_ID.setAttribute("role", "none");
           return { [key]: [] };
         });
     });
@@ -387,7 +387,10 @@ MastodonApi.prototype.getTimelineData = async function () {
  * @param {number} i Index of toot
  */
 MastodonApi.prototype.appendToot = function (c, i) {
-  this.mtBodyContainer.insertAdjacentHTML("beforeend", this.assambleToot(c, i));
+  this.CONTAINER_BODY_ID.insertAdjacentHTML(
+    "beforeend",
+    this.assambleToot(c, i)
+  );
 };
 
 /**
@@ -521,7 +524,7 @@ MastodonApi.prototype.assambleToot = function (c, i) {
   // Main text
   let text_css = "";
   if (this.TEXT_MAX_LINES !== "0") {
-    text_css = "truncate";
+    text_css = " truncate";
     document.documentElement.style.setProperty(
       "--text-max-lines",
       this.TEXT_MAX_LINES
@@ -959,10 +962,10 @@ MastodonApi.prototype.manageSpinner = function () {
   };
 
   // Add listener to images
-  this.mtBodyContainer
-    .querySelectorAll(`.${this.SPINNER_CLASS} > img`)
-    .forEach((e) => {
-      e.addEventListener("load", removeSpinner);
-      e.addEventListener("error", removeSpinner);
-    });
+  this.CONTAINER_BODY_ID.querySelectorAll(
+    `.${this.SPINNER_CLASS} > img`
+  ).forEach((e) => {
+    e.addEventListener("load", removeSpinner);
+    e.addEventListener("error", removeSpinner);
+  });
 };

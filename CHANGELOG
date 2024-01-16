@@ -1,3 +1,6 @@
+v3.13.2 - 16/01/2024
+- Fix truncate CSS class name
+
 v3.13.1 - 12/01/2024
 - Add support for audio player
 - Add support for video player
