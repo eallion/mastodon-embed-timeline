@@ -1,3 +1,6 @@
+v3.13.3 - 16/01/2024
+- Add Docker compose
+
 v3.13.2 - 16/01/2024
 - Fix truncate CSS class name
 
