@@ -4,7 +4,7 @@
 
 Embed a mastodon feed timeline in your page, only with a CSS and JS file.
 
-Source code running at:
+Demo running:
 <https://codepen.io/ipuntoj/pen/MWppNGL>
 
 ## 🗂️ User guide
@@ -101,22 +101,18 @@ link_see_more: "See more posts at Mastodon",
 
 ### Tip
 
-If you don't know your `user_id`, you have three ways to get it:
+To setup a **profile timeline** you will need your `user_id` number. If you don't know it you have two ways to get it:
 
-- Right click on your avatar image and inspect the element.  
-  You will see in your html code a line like this one:  
-  `<img src="https://files.xxxxxxxx.xx/accounts/avatars/000/180/745/original/xxxxxxxxxx.png" alt="xxxx">`  
-  Check the `src=""` url, your user id is between `/accounts/avatars/` and `/original/`. So removing the slashs `/` you will get your user id, like in the example: `000180745`
+- Copy the url below and paste it in a new tab. Remember to replace the words `INSTANCE` and `USERNAME` with your current values in the url:  
+  <https://INSTANCE/api/v1/accounts/lookup?acct=USERNAME>  
+  The first value you see in the list is your `id` number.
 
-- Copy your profile name and instance uri here:  
+- Click on the link below and put your `@USERNAME` and `@INSTANCE` in the input field:  
   <a href="https://prouser123.me/mastodon-userid-lookup/" target="_blank" rel="noopener">https://prouser123.me/mastodon-userid-lookup/</a>
-
-- Type the following url in your browser and the first value in the list is your ID (replace the words INSTANCE and USERNAME with your current values):  
-  https://INSTANCE/api/v1/accounts/lookup?acct=USERNAME  
 
 ## 🚀 Improve me
 
-Feel free to add/improve the styles and add more features.
+Feel free to add your features and improvements.
 
 ## ⚖️ License
 
