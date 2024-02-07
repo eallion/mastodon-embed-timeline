@@ -3,7 +3,7 @@
 #
 # $ docker compose up
 
-version: '3.3'
+version: "3.3"
 
 services:
   lighttpd:
@@ -12,9 +12,13 @@ services:
       - "8080:80"
       - "8443:443"
     volumes:
-      - ./src/index.html:/var/www/index.html
-      - ./src/mastodon-timeline.js:/var/www/mastodon-timeline.js
-      - ./src/mastodon-timeline.css:/var/www/mastodon-timeline.css
+      - ./css/mastodon-timeline.css:/var/www/css/mastodon-timeline.css
+      - ./js/mastodon-timeline.js:/var/www/js/mastodon-timeline.js
+      - ./local-timeline.html:/var/www/index.html
+      - ./profile-timeline.html:/var/www/profile-timeline.html
+      - ./hashtag-timeline.html:/var/www/hashtag-timeline.html
+      - ./theme-timeline.html:/var/www/theme-timeline.html
+      - ./multiple-timelines.html:/var/www/multiple-timelines.html
     environment:
       - PORT=80
       - SERVER_NAME=mastodon-timeline

@@ -52,7 +52,7 @@ class MastodonTimeline {
    * Initialize and build the timeline
    */
   mtInit() {
-    // console.log("Init Mastodon timeline. Settings: ", this.mtSettings);
+    console.log("Init Mastodon timeline. Settings: ", this.mtSettings);
     this.#loadColorTheme();
     this.#buildTimeline("newTimeline");
   }
@@ -186,7 +186,7 @@ class MastodonTimeline {
           return { ...result, ...dataItem };
         }, {});
 
-        // console.log("Timeline data fetched: ", this.mtSettings.fetchedData);
+        console.log("Timeline data fetched: ", this.mtSettings.fetchedData);
         resolve();
       });
     });

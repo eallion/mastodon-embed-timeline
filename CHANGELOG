@@ -1,3 +1,16 @@
+v4.0.0 - xx/02/2024
+- Revamped JS (ES6)
+- Renamed CSS classes
+- Improved performance
+- Removed the use of the word "toot" in code and comments
+- Dynamic text for content-sensitive "Show/Hide" buttons
+- Easier way to customize timeline settings
+- Button to refresh timeline
+- Improved theme color management
+- Improve error messages
+- Possibility to have several timelines on the same page
+- Fixed inconsistency in video aspect ratio
+
 v3.13.3 - 16/01/2024
 - Add Docker compose
 
@@ -49,7 +62,7 @@ v3.9.0 - 02/09/2023
 
 v3.8.2 - 26/08/2023
 - Add support to customized emojis
-- Javascript refactoring to allow multiple requests
+- JavaScript refactoring to allow multiple requests
 
 v3.8.1 - 14/08/2023
 - Show preview card from link, photo or video URL
