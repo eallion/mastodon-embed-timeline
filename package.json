@@ -1,0 +1,27 @@
+{
+  "name": "@idotj/mastodon-embed-feed-timeline",
+  "description": "Displays Mastodon timeline with posts embed in your website. Very easy to setup, no dependencies, no trackers, cross-browser, WCAG compliant and fully responsive.",
+  "version": "4.0.0",
+  "author": {
+    "name": "idotj"
+  },
+  "scripts": {
+    "test": "echo \"No test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://gitlab.com/idotj/mastodon-embed-feed-timeline.git"
+  },
+  "keywords": [
+    "mastodon",
+    "widget",
+    "timeline",
+    "embedded",
+    "fediverse"
+  ],
+  "bugs": {
+    "url": "https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/issues"
+  },
+  "homepage": "https://gitlab.com/idotj/mastodon-embed-feed-timeline",
+  "license": "GNU"
+}
