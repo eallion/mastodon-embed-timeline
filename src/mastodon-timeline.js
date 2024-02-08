@@ -311,12 +311,15 @@ class MastodonTimeline {
         "</a>";
 
       // User name and url
-      userName = this.#createEmoji(
-        c.reblog.account.display_name
-          ? c.reblog.account.display_name
-          : c.reblog.account.username,
-        this.mtSettings.fetchedData.emojos
-      );
+      userName = c.reblog.account.display_name
+        ? c.reblog.account.display_name
+        : c.reblog.account.username;
+      if (!this.mtSettings.hideEmojos) {
+        userName = this.#createEmoji(
+          userName,
+          this.mtSettings.fetchedData.emojos
+        );
+      }
       user =
         '<div class="mt-post-header-user">' +
         '<a href="' +
@@ -356,10 +359,15 @@ class MastodonTimeline {
         "</a>";
 
       // User name and url
-      userName = this.#createEmoji(
-        c.account.display_name ? c.account.display_name : c.account.username,
-        this.mtSettings.fetchedData.emojos
-      );
+      userName = c.account.display_name
+        ? c.account.display_name
+        : c.account.username;
+      if (!this.mtSettings.hideEmojos) {
+        userName = this.#createEmoji(
+          userName,
+          this.mtSettings.fetchedData.emojos
+        );
+      }
       user =
         '<div class="mt-post-header-user">' +
         '<a href="' +
