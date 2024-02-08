@@ -1,4 +1,7 @@
-v4.0.0 - xx/02/2024
+v4.0.1 - 08/02/2024
+- Fix error in emojis present in user/profile title
+
+v4.0.0 - 07/02/2024
 - Revamped JS (ES6)
 - Renamed CSS classes
 - Improved performance
@@ -9,7 +12,7 @@ v4.0.0 - xx/02/2024
 - Improved theme color management
 - Improve error messages
 - Possibility to have several timelines on the same page
-- Fixed inconsistency in video aspect ratio
+- Fix inconsistency in video aspect ratio
 
 v3.13.3 - 16/01/2024
 - Add Docker compose
