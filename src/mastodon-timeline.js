@@ -1,7 +1,7 @@
 /**
  * Mastodon embed feed timeline
  * @author idotj
- * @version 4.0.1
+ * @version 4.0.3
  * @url https://gitlab.com/idotj/mastodon-embed-feed-timeline
  * @license GNU AGPLv3
  */
@@ -11,7 +11,6 @@ class MastodonTimeline {
   constructor(customSettings = {}) {
     this.defaultSettings = {
       mtContainerId: "mt-container",
-      mtBody: "",
       instanceUrl: "https://mastodon.social",
       timelineType: "local",
       userId: "",
@@ -35,38 +34,70 @@ class MastodonTimeline {
       btnShowContent: "SHOW CONTENT",
       btnSeeMore: "See more posts at Mastodon",
       btnReload: "Refresh",
-      fetchedData: {},
     };
 
     this.mtSettings = { ...this.defaultSettings, ...customSettings };
 
-    // Set node of body container
-    this.mtSettings.mtBody = document
-      .getElementById(this.mtSettings.mtContainerId)
-      .getElementsByClassName("mt-body")[0];
+    this.mtContainerNode = "";
+    this.mtBodyNode = "";
+    this.fetchedData = {};
 
     this.mtInit();
+  }
+
+  /**
+   * Trigger callback when DOM loaded or complete
+   * @param {function} c Callback executed
+   */
+  onDOMContentLoaded(c) {
+    if (
+      typeof document !== "undefined" &&
+      (document.readyState === "complete" ||
+        document.readyState === "interactive")
+    ) {
+      c();
+    } else if (
+      typeof document !== "undefined" &&
+      (document.readyState !== "complete" ||
+        document.readyState !== "interactive")
+    ) {
+      document.addEventListener("DOMContentLoaded", c);
+    }
   }
 
   /**
    * Initialize and build the timeline
    */
   mtInit() {
-    // console.log("Init Mastodon timeline. Settings: ", this.mtSettings);
-    this.#loadColorTheme();
-    this.#buildTimeline("newTimeline");
+    // console.log("Creating Mastodon timeline with settings: ", this.mtSettings);
+
+    this.onDOMContentLoaded(() => {
+      // Register container node
+      this.mtContainerNode = document.getElementById(
+        this.mtSettings.mtContainerId
+      );
+
+      // Register body node
+      this.mtBodyNode =
+        this.mtContainerNode.getElementsByClassName("mt-body")[0];
+
+      this.#loadColorTheme();
+      this.#buildTimeline("newTimeline");
+    });
   }
 
   /**
    * Reload the timeline by fetching the lastest posts
    */
   mtUpdate() {
-    this.mtSettings.mtBody.replaceChildren();
-    this.mtSettings.mtBody.insertAdjacentHTML(
-      "afterbegin",
-      '<div class="mt-loading-spinner"></div>'
-    );
-    this.#buildTimeline("updateTimeline");
+    this.onDOMContentLoaded(() => {
+      this.mtBodyNode.replaceChildren();
+      this.mtBodyNode.insertAdjacentHTML(
+        "afterbegin",
+        '<div class="mt-loading-spinner"></div>'
+      );
+      this.#buildTimeline("updateTimeline");
+    });
   }
 
   /**
@@ -74,9 +105,9 @@ class MastodonTimeline {
    * @param {string} themeType Type of color theme
    */
   mtColorTheme(themeType) {
-    document
-      .getElementById(this.mtSettings.mtContainerId)
-      .setAttribute("data-theme", themeType);
+    this.onDOMContentLoaded(() => {
+      this.mtContainerNode.setAttribute("data-theme", themeType);
+    });
   }
 
   /**
@@ -200,7 +231,7 @@ class MastodonTimeline {
     await this.#fetchTimelineData();
 
     // Empty container body
-    this.mtSettings.mtBody.replaceChildren();
+    this.mtBodyNode.replaceChildren();
 
     // Set posts counter to 0
     let nbPostShow = 0;
@@ -235,7 +266,7 @@ class MastodonTimeline {
     }
 
     // If there are no posts to display, show an error message
-    if (this.mtSettings.mtBody.innerHTML === "") {
+    if (this.mtBodyNode.innerHTML === "") {
       const errorMessage =
         "No posts to show <hr/>" +
         (this.mtSettings.fetchedData.timeline?.length || 0) +
@@ -260,10 +291,7 @@ class MastodonTimeline {
    * @param {number} i Index of post
    */
   #appendPost(c, i) {
-    this.mtSettings.mtBody.insertAdjacentHTML(
-      "beforeend",
-      this.#assamblePost(c, i)
-    );
+    this.mtBodyNode.insertAdjacentHTML("beforeend", this.#assamblePost(c, i));
   }
 
   /**
@@ -406,7 +434,7 @@ class MastodonTimeline {
     let txtCss = "";
     if (this.mtSettings.txtMaxLines !== "0") {
       txtCss = " truncate";
-      this.mtSettings.mtBody.parentNode.style.setProperty(
+      this.mtBodyNode.parentNode.style.setProperty(
         "--mt-txt-max-lines",
         this.mtSettings.txtMaxLines
       );
@@ -862,7 +890,7 @@ class MastodonTimeline {
    * @param {object} c Preview link content
    * @returns {string} Preview link in HTML format
    */
-  #createPreviewLink = function (c) {
+  #createPreviewLink(c) {
     const card =
       '<a href="' +
       c.url +
@@ -895,7 +923,7 @@ class MastodonTimeline {
       "</a>";
 
     return card;
-  };
+  }
 
   /**
    * Parse HTML string
@@ -914,14 +942,13 @@ class MastodonTimeline {
   #buildFooter() {
     if (this.mtSettings.btnSeeMore || this.mtSettings.btnReload) {
       // Add footer container
-      this.mtSettings.mtBody.parentNode.insertAdjacentHTML(
+      this.mtBodyNode.parentNode.insertAdjacentHTML(
         "beforeend",
         '<div class="mt-footer"></div>'
       );
 
-      const containerFooter = document
-        .getElementById(this.mtSettings.mtContainerId)
-        .getElementsByClassName("mt-footer")[0];
+      const containerFooter =
+        this.mtContainerNode.getElementsByClassName("mt-footer")[0];
 
       // Create button to open Mastodon page
       if (this.mtSettings.btnSeeMore) {
@@ -962,9 +989,8 @@ class MastodonTimeline {
 
         containerFooter.insertAdjacentHTML("beforeend", btnReloadHTML);
 
-        const reloadBtn = document
-          .getElementById(this.mtSettings.mtContainerId)
-          .getElementsByClassName("btn-refresh")[0];
+        const reloadBtn =
+          this.mtContainerNode.getElementsByClassName("btn-refresh")[0];
         reloadBtn.addEventListener("click", () => {
           this.mtUpdate();
         });
@@ -976,7 +1002,7 @@ class MastodonTimeline {
    * Add EventListeners for timeline interactions and trigger functions
    */
   #setPostsInteracion() {
-    this.mtSettings.mtBody.addEventListener("click", (e) => {
+    this.mtBodyNode.addEventListener("click", (e) => {
       // Check if post cointainer was clicked
       if (
         e.target.localName == "article" ||
@@ -1007,7 +1033,7 @@ class MastodonTimeline {
         this.#loadPostVideo(e);
       }
     });
-    this.mtSettings.mtBody.addEventListener("keydown", (e) => {
+    this.mtBodyNode.addEventListener("keydown", (e) => {
       // Check if Enter key was pressed with focus in an article
       if (e.key === "Enter" && e.target.localName == "article") {
         this.#openPostUrl(e);
@@ -1048,7 +1074,7 @@ class MastodonTimeline {
       e.target.removeEventListener("error", removeSpinner);
     };
     // Add EventListener to images
-    this.mtSettings.mtBody
+    this.mtBodyNode
       .querySelectorAll(`.${this.mtSettings.spinnerClass} > img`)
       .forEach((e) => {
         e.addEventListener("load", removeSpinner);
@@ -1063,13 +1089,13 @@ class MastodonTimeline {
    */
   #showError(t, i) {
     const icon = i || "❌";
-    this.mtSettings.mtBody.innerHTML =
+    this.mtBodyNode.innerHTML =
       '<div class="mt-error"><span class="mt-error-icon">' +
       icon +
       '</span><br/><strong>Oops, something\'s happened:</strong><br/><div class="mt-error-message">' +
       t +
       "</div></div>";
-    this.mtSettings.mtBody.setAttribute("role", "none");
+    this.mtBodyNode.setAttribute("role", "none");
     throw new Error(
       "Stopping the script due to an error building the timeline."
     );

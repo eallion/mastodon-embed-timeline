@@ -12,13 +12,13 @@ services:
       - "8080:80"
       - "8443:443"
     volumes:
-      - ./css/mastodon-timeline.css:/var/www/css/mastodon-timeline.css
-      - ./js/mastodon-timeline.js:/var/www/js/mastodon-timeline.js
-      - ./local-timeline.html:/var/www/index.html
-      - ./profile-timeline.html:/var/www/profile-timeline.html
-      - ./hashtag-timeline.html:/var/www/hashtag-timeline.html
-      - ./theme-timeline.html:/var/www/theme-timeline.html
-      - ./multiple-timelines.html:/var/www/multiple-timelines.html
+      - ./src/mastodon-timeline.css:/var/www/src/mastodon-timeline.css
+      - ./src/mastodon-timeline.js:/var/www/src/mastodon-timeline.js
+      - ./examples/local-timeline.html:/var/www/index.html
+      - ./examples/profile-timeline.html:/var/www/profile-timeline.html
+      - ./examples/hashtag-timeline.html:/var/www/hashtag-timeline.html
+      - ./examples/theme-timeline.html:/var/www/theme-timeline.html
+      - ./examples/multiple-timelines.html:/var/www/multiple-timelines.html
     environment:
       - PORT=80
       - SERVER_NAME=mastodon-timeline

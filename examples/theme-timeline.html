@@ -8,7 +8,7 @@
     <meta name="keywords" content="mastodon, embed timeline" />
     <meta name="description" content="Mastodon embed timeline" />
     <link rel="shortcut icon" href="#" />
-    <link rel="stylesheet" href="./css/mastodon-timeline.css" />
+    <link rel="stylesheet" href="../src/mastodon-timeline.css" />
     <style>
       * {
         box-sizing: border-box;
@@ -95,7 +95,7 @@
         <pre>
         <code>
   &lt;script&gt;
-    const myTimeline1 = new MastodonTimeline({
+    const myTimeline01 = new MastodonTimeline({
       mtContainerId: "mt-container-01",
       defaultTheme: "light",
     });
@@ -111,7 +111,7 @@
         <pre>
         <code>
   &lt;script&gt;
-    const myTimeline2 = new MastodonTimeline({
+    const myTimeline02 = new MastodonTimeline({
       mtContainerId: "mt-container-02",
       defaultTheme: "dark",
     });
@@ -126,20 +126,20 @@
           You can change your timeline color calling the function <strong>mtColorTheme()</strong>
         </p>
         <div class="dummy-buttons-container">
-          <button onclick="myTimeline1.mtColorTheme('dark')">
+          <button onclick="myTimeline01.mtColorTheme('dark')">
             Switch 1st timeline to dark theme
           </button>
-          <button onclick="myTimeline2.mtColorTheme('light')">
+          <button onclick="myTimeline02.mtColorTheme('light')">
             Switch 2nd timeline to light theme
           </button>
         </div>
         <pre>
           <code>
-  &lt;button onclick="myTimeline1.mtColorTheme('dark')"&gt;
+  &lt;button onclick="myTimeline01.mtColorTheme('dark')"&gt;
       Switch 1st timeline to dark theme
   &lt;/button&gt;
 
-  &lt;button onclick="myTimeline2.mtColorTheme('light')"&gt;
+  &lt;button onclick="myTimeline02.mtColorTheme('light')"&gt;
       Switch 2nd timeline to light theme
   &lt;/button&gt;
             </code>
@@ -166,14 +166,14 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="./js/mastodon-timeline.js"></script>
+    <script src="../src/mastodon-timeline.js"></script>
     <script>
-      const myTimeline1 = new MastodonTimeline({
+      const myTimeline01 = new MastodonTimeline({
         mtContainerId: "mt-container-01",
         defaultTheme: "light",
       });
 
-      const myTimeline2 = new MastodonTimeline({
+      const myTimeline02 = new MastodonTimeline({
         mtContainerId: "mt-container-02",
         defaultTheme: "dark",
       });

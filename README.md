@@ -72,7 +72,7 @@ const myTimeline = new MastodonTimeline();
 
 By default it will show a timeline with 20 posts from the instance [mastodon.social](https://mastodon.social/public/local)
 
-ℹ️ If you are trying to use your timeline in a CMS such as Drupal, Wordpress, Joomla, etc... you will need to initialize your script when the whole page has loaded. In that case initialize the script by running:
+ℹ️ If you are trying to initialize the script before `mastodon-timeline.js` is loaded, you will probably get such an error: "MastodonTimeline is not defined". To fix that initialize the script by running:
 
 ```js
 window.addEventListener("load", () => {
@@ -216,7 +216,7 @@ You can pass more options/values to personalize your timeline:
 
 ### Examples
 
-The folder `examples/` contains several demos in HTML to play with. Just download the folder and open each HTML file in your favorite browser.
+The folder `examples/` contains several demos in HTML to play with. Download the full project and open each HTML file in your favorite browser.
 
 Also, you have a Docker file to perform your tests if needed. Simply inside the `examples/` folder run:
 
