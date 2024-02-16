@@ -218,7 +218,7 @@ You can pass more options/values to personalize your timeline:
 
 The folder `examples/` contains several demos in HTML to play with. Download the full project and open each HTML file in your favorite browser.
 
-Also, you have a Docker file to perform your tests if needed. Simply inside the `examples/` folder run:
+Also, you have a Docker file to perform your tests if needed. Simply run:
 
 ```terminal
 docker compose up
