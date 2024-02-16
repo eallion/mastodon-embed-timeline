@@ -72,7 +72,7 @@ const myTimeline = new MastodonTimeline();
 
 By default it will show a timeline with 20 posts from the instance [mastodon.social](https://mastodon.social/public/local)
 
-ℹ️ If you are trying to initialize the script before `mastodon-timeline.js` is loaded, you will probably get such an error: "MastodonTimeline is not defined". To fix that initialize the script by running:
+ℹ️ If you are trying to initialize the script before `mastodon-timeline.js` is loaded, you will probably get such an error: "_MastodonTimeline is not defined_". To fix that initialize the script by running:
 
 ```js
 window.addEventListener("load", () => {
