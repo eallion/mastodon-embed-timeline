@@ -18,7 +18,6 @@ Demo running:
   - [Customize](#customize)
   - [API](#api)
   - [Examples](#examples)
-  - [Browser support](#browser-support)
 
 ## Installation
 
@@ -224,7 +223,7 @@ Also, you have a Docker file to perform your tests if needed. Simply run:
 docker compose up
 ```
 
-### Browser support
+## 🌐 Browser support
 
 Mastodon embed timeline is supported on the latest versions of the following browsers:
 
