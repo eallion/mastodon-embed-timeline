@@ -46,7 +46,7 @@ Now call the CSS and JS files in your HTML page using the `<link>` and `<script>
     <!-- JavaScript -->
     <script src="path/to/mastodon-timeline.min.js"></script>
     <script>
-          <!-- You can initialize the script here -->
+          // You can initialize the script here
     </script>
   </body>
 </html>
