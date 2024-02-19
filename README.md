@@ -10,7 +10,7 @@ Demo running:
 ## 📋 Table of contents
 
 - [**Installation**](#installation)
-- [**Usage**](#usage)
+- [**Setup**](#setup)
   - [Initialize](#initialize)
     - [Local timeline](#local-timeline)
     - [Profile timeline](#profile-timeline)
@@ -45,11 +45,14 @@ Now call the CSS and JS files in your HTML page using the `<link>` and `<script>
 
     <!-- JavaScript -->
     <script src="path/to/mastodon-timeline.min.js"></script>
+    <script>
+          <!-- You can initialize the script here -->
+    </script>
   </body>
 </html>
 ```
 
-## Usage
+## Setup
 
 ### Initialize
 
@@ -71,13 +74,15 @@ const myTimeline = new MastodonTimeline();
 
 By default it will show a timeline with 20 posts from the instance [mastodon.social](https://mastodon.social/public/local)
 
-ℹ️ If you are trying to initialize the script before `mastodon-timeline.js` is loaded, you will probably get such an error: "_MastodonTimeline is not defined_". To fix that initialize the script by running:
+ℹ️ If you are trying to initialize the script before `mastodon-timeline.min.js` is loaded, you will probably get such an error: "_MastodonTimeline is not defined_". To fix that initialize the script by running:
 
 ```js
 window.addEventListener("load", () => {
   const myTimeline = new MastodonTimeline();
 });
 ```
+
+The next step is to configure the options/values of your timeline according to the type you need. There are three types, **Local**, **Profile** and **Hashtag**:
 
 #### Local timeline
 
@@ -131,7 +136,7 @@ It will show a timeline with posts containing the hashtag [#fediverse](https://m
 
 ### Customize
 
-You can pass more options/values to personalize your timeline:
+You can pass more options/values to personalize your timeline. Here you have all the available options:
 
 ```js
   // Id of the <div> containing the timeline
@@ -210,7 +215,7 @@ You can pass more options/values to personalize your timeline:
 
 | Function | Description |
 | --- | --- |
-| `mtColorTheme(themeType)` | Apply a theme color. `themeType` accepts only two values: `light` or `dark` |
+| `mtColorTheme(themeType)` | Apply a theme color. `themeType` accepts only two values: `'light'` or `'dark'` |
 | `mtUpdate()` | Reload the timeline by fetching the lastest posts |
 
 ### Examples
@@ -248,4 +253,5 @@ Check the [closed issues](https://gitlab.com/idotj/mastodon-embed-feed-timeline/
 
 If nothing matches with your problem, check the [open issues](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/issues/?sort=created_date&state=opened&first_page_size=20) or feel free to create a new one.
 
-Looking for a previous version of Mastodon embed timeline? Check on the tags list to see all the released versions: [Tags version history](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/tags)
+Looking for a previous version of Mastodon embed timeline?  
+Check on the tags list to see all the released versions: [Tags version history](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/tags)
