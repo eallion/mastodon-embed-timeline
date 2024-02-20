@@ -1,3 +1,6 @@
+v4.0.4 - 20/02/2024
+- Improve alignment for refresh button 
+
 v4.0.3 - 16/02/2024
 - Delete duplicated JS/CSS files for examples
 - Move docker file to root folder and update paths
