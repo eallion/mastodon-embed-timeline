@@ -365,6 +365,7 @@
 .mt-container .mt-btn-violet,
 .mt-container a.mt-btn-violet {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
   border-radius: 0.25rem;
   border: 0.5rem;
