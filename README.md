@@ -298,3 +298,4 @@ If nothing matches with your problem, check the [open issues](https://gitlab.com
 
 Looking for a previous version of Mastodon embed timeline?  
 Check on the tags list to see all the released versions: [Tags history](https://gitlab.com/idotj/mastodon-embed-timeline/-/tags)
+
