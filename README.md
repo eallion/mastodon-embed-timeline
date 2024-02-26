@@ -64,7 +64,9 @@ Copy the following CSS and JS to include in your project:
 
 ```html
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.1/dist/mastodon-timeline.min.css" integrity="sha256-8K/cHh6W5bGXJHrkHD8gXe+Z3pe1zt5Zsq2eC1MQbx4=" crossorigin="anonymous">
+```
 
+```html
 <script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.1/dist/mastodon-timeline.umd.js" integrity="sha256-G5WmanubPwBlbI/BnihBUXGfZqjppxj/1jB9kR2SEYA=" crossorigin="anonymous"></script>
 ```
 
@@ -298,4 +300,3 @@ If nothing matches with your problem, check the [open issues](https://gitlab.com
 
 Looking for a previous version of Mastodon embed timeline?  
 Check on the tags list to see all the released versions: [Tags history](https://gitlab.com/idotj/mastodon-embed-timeline/-/tags)
-
