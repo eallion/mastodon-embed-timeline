@@ -1,6 +1,6 @@
 {
   "name": "@idotj/mastodon-embed-timeline",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "Displays Mastodon timeline with posts embed in your website. Very easy to setup, no dependencies, no trackers, cross-browser, WCAG compliant and fully responsive.",
   "license": "GNU",
   "author": {

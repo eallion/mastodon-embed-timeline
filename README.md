@@ -70,13 +70,13 @@ JS and CSS files available soon!
 Install your timeline using npm or yarn:
 
 ```terminal
-npm install @idot/mastodon-embed-timeline
+npm install @idotj/mastodon-embed-timeline
 ```
 
 or
 
 ```terminal
-yarn add @idot/mastodon-embed-timeline
+yarn add @idotj/mastodon-embed-timeline
 ```
 
 After installation, you can import the widget as follows:
