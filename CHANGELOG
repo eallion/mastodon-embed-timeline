@@ -1,3 +1,11 @@
+v4.2.0 - 26/02/2024
+- Changed project name: mastodon-embed-feed-timeline -> mastodon-embed-timeline
+- Improved DOM load for module purposes
+- New build script with Rollup.js
+- Added CDN and NPM install steps
+- Added Contributing documentation
+- Added example for JS module case
+
 v4.0.4 - 20/02/2024
 - Improve alignment for refresh button
 

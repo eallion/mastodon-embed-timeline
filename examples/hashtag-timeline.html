@@ -8,7 +8,7 @@
     <meta name="keywords" content="mastodon, embed timeline" />
     <meta name="description" content="Mastodon embed timeline" />
     <link rel="shortcut icon" href="#" />
-    <link rel="stylesheet" href="../src/mastodon-timeline.css" />
+    <link rel="stylesheet" href="../dist/mastodon-timeline.min.css" />
     <style>
       * {
         box-sizing: border-box;
@@ -82,7 +82,7 @@
         <pre>
         <code>
   &lt;script&gt;
-    const myTimeline = new MastodonTimeline({
+    const myTimeline = new MastodonTimeline.Init({
       instanceUrl: "https://mastodon.online",
       timelineType: "hashtag",
       hashtagName: "fediverse",
@@ -103,9 +103,9 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="../src/mastodon-timeline.js"></script>
+    <script src="../dist/mastodon-timeline.umd.js"></script>
     <script>
-      const myTimeline = new MastodonTimeline({
+      const myTimeline = new MastodonTimeline.Init({
         instanceUrl: "https://mastodon.online",
         timelineType: "hashtag",
         hashtagName: "fediverse",

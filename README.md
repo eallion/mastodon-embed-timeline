@@ -1,31 +1,42 @@
-# 🐘 Mastodon embed timeline (new v4)
+# 🐘 Mastodon embed timeline (new v4.2)
 
 ![Mastodon timeline widget screenshot](screenshot-light-dark.jpg "Mastodon timeline widget screenshot")
 
-Embed a mastodon feed timeline in your page, only with a CSS and JS file.
+Embed a mastodon timeline in your page, only with a CSS and JS file.
 
 Demo running:
 <https://codepen.io/ipuntoj/pen/MWppNGL>
 
 ## 📋 Table of contents
 
-- [**Installation**](#installation)
-- [**Setup**](#setup)
-  - [Initialize](#initialize)
-    - [Local timeline](#local-timeline)
-    - [Profile timeline](#profile-timeline)
-    - [Hashtag timeline](#hashtag-timeline)
-  - [Customize](#customize)
-  - [API](#api)
-  - [Examples](#examples)
+- [🐘 Mastodon embed timeline (new v4.2)](#-mastodon-embed-timeline-new-v42)
+  - [📋 Table of contents](#-table-of-contents)
+  - [Installation](#installation)
+    - [Download](#download)
+    - [CDN](#cdn)
+    - [Package manager](#package-manager)
+  - [Setup](#setup)
+    - [Initialize](#initialize)
+      - [Local timeline](#local-timeline)
+      - [Profile timeline](#profile-timeline)
+      - [Hashtag timeline](#hashtag-timeline)
+    - [Customize](#customize)
+    - [API](#api)
+    - [Examples](#examples)
+  - [🌐 Browser support](#-browser-support)
+  - [🚀 Improve me](#-improve-me)
+  - [⚖️ License](#️-license)
+  - [💬 FAQ](#-faq)
 
 ## Installation
+
+### Download
 
 Ready-to-use compiled and minified files to easily start.
 
 - Download into your project the following files:
   - `dist/mastodon-timeline.min.css`
-  - `dist/mastodon-timeline.min.js`
+  - `dist/mastodon-timeline.umd.js`
 
 Now call the CSS and JS files in your HTML page using the `<link>` and `<script>` tags as follows in this example:
 
@@ -35,7 +46,7 @@ Now call the CSS and JS files in your HTML page using the `<link>` and `<script>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Mastodon embed timeline</title>
+    <title>Your site title</title>
 
     <!-- CSS -->
     <link href="path/to/mastodon-timeline.min.css" rel="stylesheet" />
@@ -44,13 +55,45 @@ Now call the CSS and JS files in your HTML page using the `<link>` and `<script>
     <!-- Your HTML content -->
 
     <!-- JavaScript -->
-    <script src="path/to/mastodon-timeline.min.js"></script>
+    <script src="path/to/mastodon-timeline.umd.js"></script>
     <script>
-          // You can initialize the script here
+      // You can initialize the script here
     </script>
   </body>
 </html>
 ```
+
+### CDN
+
+This option allows you to get started quickly without the need to upload any files into your server.
+
+```html
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.0/dist/mastodon-timeline.min.css" integrity="sha256-RS5EmHN6wbvM+CqlWZmYPJ+Yh6BhLP/lmz646sBzwq0=" crossorigin="anonymous" />
+
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.0/dist/mastodon-timeline.umd.js" integrity="sha256-4a8ZoATaIg72pDzQNp97w0/M8EXBiPqHUAPC88MnYN4=" crossorigin="anonymous"></script>
+```
+
+### Package manager
+
+Install your timeline using npm or yarn:
+
+```terminal
+npm install @idot/mastodon-embed-timeline
+```
+
+or
+
+```terminal
+yarn add @idot/mastodon-embed-timeline
+```
+
+After installation, you can import the widget as follows:
+
+```js
+import * as MastodonTimeline from "@idotj/mastodon-embed-timeline";
+```
+
+Make sure to import also the `@idotj/mastodon-embed-timeline/dist/mastodon-timeline.min.css` file in your project.
 
 ## Setup
 
@@ -69,16 +112,16 @@ The first step to get your timeline up is to add the following HTML structure in
 Then after that you can initialize the script by running:
 
 ```js
-const myTimeline = new MastodonTimeline();
+const myTimeline = new MastodonTimeline.Init();
 ```
 
 By default it will show a timeline with 20 posts from the instance [mastodon.social](https://mastodon.social/public/local)
 
-ℹ️ If you are trying to initialize the script before `mastodon-timeline.min.js` is loaded, you will probably get such an error: "_MastodonTimeline is not defined_". To fix that initialize the script by running:
+ℹ️ If you are trying to initialize the script before `mastodon-timeline.umd.js` is loaded, you will probably get such an error in the console: "_MastodonTimeline is not defined_". To fix that initialize the script by running:
 
 ```js
 window.addEventListener("load", () => {
-  const myTimeline = new MastodonTimeline();
+  const myTimeline = new MastodonTimeline.Init();
 });
 ```
 
@@ -89,7 +132,7 @@ The next step is to configure the options/values of your timeline according to t
 Add the following option/value when initializing the timeline:
 
 ```js
-const myTimeline = new MastodonTimeline({
+const myTimeline = new MastodonTimeline.Init({
   instanceUrl: "https://mastodon.online",
 });
 ```
@@ -101,7 +144,7 @@ It will show a timeline with posts from the instance [mastodon.online](https://m
 Add the following options/values when initializing the timeline:
 
 ```js
-const myTimeline = new MastodonTimeline({
+const myTimeline = new MastodonTimeline.Init({
   instanceUrl: "https://mastodon.online",
   timelineType: "profile",
   userId: "000180745",
@@ -125,7 +168,7 @@ It will show a timeline with posts from my Mastodon profile [@idotj](https://mas
 Add the following options/values when initializing the timeline:
 
 ```js
-const myTimeline = new MastodonTimeline({
+const myTimeline = new MastodonTimeline.Init({
   instanceUrl: "https://mastodon.online",
   timelineType: "hashtag",
   hashtagName: "fediverse",
@@ -167,7 +210,7 @@ You can pass more options/values to personalize your timeline. Here you have all
   maxNbPostFetch: "20",
 
   // Maximum number of posts to show in the timeline. Default: 20
-  maxNbPostShow: "20",  
+  maxNbPostShow: "20",
 
   // Hide unlisted posts. Default: don't hide
   hideUnlisted: false,
@@ -209,24 +252,26 @@ You can pass more options/values to personalize your timeline. Here you have all
   // Customize the text of the button reloading the list of posts placed at the end of the timeline. Leave the value empty to hide it
   btnReload: "Refresh",
 
+  // Keep searching for the main <div> container before building the timeline. Useful in some cases where extra time is needed to render the page. Default: false
+  insistSearchContainer: false,
+
+  // Defines the maximum time to continue searching for the main <div> container. Default: 3 seconds
+  insistSearchContainerTime: "3000",
+
 ```
 
 ### API
 
-| Function | Description |
-| --- | --- |
+| Function                  | Description                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------- |
 | `mtColorTheme(themeType)` | Apply a theme color. `themeType` accepts only two values: `'light'` or `'dark'` |
-| `mtUpdate()` | Reload the timeline by fetching the lastest posts |
+| `mtUpdate()`              | Reload the timeline by fetching the lastest posts                               |
 
 ### Examples
 
 The folder `examples/` contains several demos in HTML to play with. Download the full project and open each HTML file in your favorite browser.
 
-Also, you have a Docker file to perform your tests if needed. Simply run:
-
-```terminal
-docker compose up
-```
+Also, you have other alternatives to run these examples locally. Consult the document [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md#testing) to use other options like Docker or Http-server.
 
 ## 🌐 Browser support
 
@@ -241,7 +286,8 @@ Mastodon embed timeline is supported on the latest versions of the following bro
 
 ## 🚀 Improve me
 
-Feel free to add your features and improvements.
+Feel free to add your features and improvements.  
+Take a look at the [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md) document to learn more about how to build and collaborate on the project.
 
 ## ⚖️ License
 
@@ -249,9 +295,9 @@ GNU Affero General Public License v3.0
 
 ## 💬 FAQ
 
-Check the [closed issues](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/issues/?sort=created_date&state=closed&first_page_size=20), you might find your question there.
+Check the [closed issues](https://gitlab.com/idotj/mastodon-embed-timeline/-/issues/?sort=created_date&state=closed&first_page_size=20), you might find your question there.
 
-If nothing matches with your problem, check the [open issues](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/issues/?sort=created_date&state=opened&first_page_size=20) or feel free to create a new one.
+If nothing matches with your problem, check the [open issues](https://gitlab.com/idotj/mastodon-embed-timeline/-/issues/?sort=created_date&state=opened&first_page_size=20) or feel free to create a new one.
 
 Looking for a previous version of Mastodon embed timeline?  
-Check on the tags list to see all the released versions: [Tags version history](https://gitlab.com/idotj/mastodon-embed-feed-timeline/-/tags)
+Check on the tags list to see all the released versions: [Tags history](https://gitlab.com/idotj/mastodon-embed-timeline/-/tags)

@@ -1,5 +1,5 @@
-# This is a docker compose file to demonstrate and test the mastodon-timeline widget
-# Run this docker CLI from the root repo directory:
+# This is a docker compose file to demonstrate and test the Mastodon embed timeline widget
+# Run this docker CLI from the root repository directory:
 #
 # $ docker compose up
 
@@ -12,13 +12,8 @@ services:
       - "8080:80"
       - "8443:443"
     volumes:
-      - ./src/mastodon-timeline.css:/var/www/src/mastodon-timeline.css
-      - ./src/mastodon-timeline.js:/var/www/src/mastodon-timeline.js
-      - ./examples/local-timeline.html:/var/www/index.html
-      - ./examples/profile-timeline.html:/var/www/profile-timeline.html
-      - ./examples/hashtag-timeline.html:/var/www/hashtag-timeline.html
-      - ./examples/theme-timeline.html:/var/www/theme-timeline.html
-      - ./examples/multiple-timelines.html:/var/www/multiple-timelines.html
+      - ./dist:/var/www/dist
+      - ./examples:/var/www/examples
     environment:
       - PORT=80
       - SERVER_NAME=mastodon-timeline

@@ -67,34 +67,9 @@
       <!-- Title + Explained details of the example -->
       <div class="dummy-wrapper-text">
         <h1>🐘 Mastodon embed timeline</h1>
-        <h2>Local timeline</h2>
+        <h2>Local timeline (Javascript module)</h2>
         <p>
           This example shows 20 posts from the following instance:
-          <br />
-          <a
-            href="https://mastodon.social/public/local"
-            target="_blank"
-            rel="nofollow noopener noreferrer"
-            >mastodon.social</a
-          >
-        </p>
-        <p>
-          It has the default parameters and has been initialized with the
-          following script:
-        </p>
-        <pre>
-        <code>
-  &lt;script&gt;
-    const myTimeline = new MastodonTimeline.Init();
-  &lt;/script&gt;
-          </code>
-        </pre>
-
-        <hr />
-
-        <p>
-          To change the current instance and show a different local timeline,
-          for example:
           <br />
           <a
             href="https://mastodon.online/public/local"
@@ -104,19 +79,36 @@
           >
         </p>
         <p>
-          You just need to initialize the script by passing the custom option
-          <strong>instanceUrl</strong> with the value
-          <strong>"https://mastodon.online"</strong> as follows in the example:
+          It loads the Javascript file as a module and has been initialized with
+          the following script:
         </p>
         <pre>
         <code>
-  &lt;script&gt;
+  &lt;script type="module"&gt;
+    import * as MastodonTimeline from '../dist/mastodon-timeline.esm.js'
     const myTimeline = new MastodonTimeline.Init({
       instanceUrl: "https://mastodon.online"
     });
   &lt;/script&gt;
           </code>
         </pre>
+
+        <hr />
+
+        <p>
+          If you get an error in your browser console related with CORS:
+          <em
+            >"Cross-Origin Request Blocked: The Same Origin Policy disallows
+            reading the remote resource..."</em
+          >
+          I recommend to check the
+          <a
+            href="https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md#testing"
+            target="_blank"
+            >CONTRIBUTING.md</a
+          >
+          document and setup a local environment to test.
+        </p>
       </div>
 
       <div class="dummy-wrapper-timeline">
@@ -130,9 +122,11 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="../dist/mastodon-timeline.umd.js"></script>
-    <script>
-      const myTimeline = new MastodonTimeline.Init();
+    <script type="module">
+      import * as MastodonTimeline from "../dist/mastodon-timeline.esm.js";
+      const myTimeline = new MastodonTimeline.Init({
+        instanceUrl: "https://mastodon.online",
+      });
     </script>
   </body>
 </html>

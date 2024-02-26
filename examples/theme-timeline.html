@@ -8,7 +8,7 @@
     <meta name="keywords" content="mastodon, embed timeline" />
     <meta name="description" content="Mastodon embed timeline" />
     <link rel="shortcut icon" href="#" />
-    <link rel="stylesheet" href="../src/mastodon-timeline.css" />
+    <link rel="stylesheet" href="../dist/mastodon-timeline.min.css" />
     <style>
       * {
         box-sizing: border-box;
@@ -95,7 +95,7 @@
         <pre>
         <code>
   &lt;script&gt;
-    const myTimeline01 = new MastodonTimeline({
+    const myTimeline01 = new MastodonTimeline.Init({
       mtContainerId: "mt-container-01",
       defaultTheme: "light",
     });
@@ -111,7 +111,7 @@
         <pre>
         <code>
   &lt;script&gt;
-    const myTimeline02 = new MastodonTimeline({
+    const myTimeline02 = new MastodonTimeline.Init({
       mtContainerId: "mt-container-02",
       defaultTheme: "dark",
     });
@@ -166,14 +166,14 @@
     </div>
 
     <!-- JavaScript -->
-    <script src="../src/mastodon-timeline.js"></script>
+    <script src="../dist/mastodon-timeline.umd.js"></script>
     <script>
-      const myTimeline01 = new MastodonTimeline({
+      const myTimeline01 = new MastodonTimeline.Init({
         mtContainerId: "mt-container-01",
         defaultTheme: "light",
       });
 
-      const myTimeline02 = new MastodonTimeline({
+      const myTimeline02 = new MastodonTimeline.Init({
         mtContainerId: "mt-container-02",
         defaultTheme: "dark",
       });
