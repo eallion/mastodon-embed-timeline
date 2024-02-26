@@ -9,24 +9,18 @@ Demo running:
 
 ## 📋 Table of contents
 
-- [🐘 Mastodon embed timeline (new v4.2)](#-mastodon-embed-timeline-new-v42)
-  - [📋 Table of contents](#-table-of-contents)
-  - [Installation](#installation)
-    - [Download](#download)
-    - [CDN](#cdn)
-    - [Package manager](#package-manager)
-  - [Setup](#setup)
-    - [Initialize](#initialize)
-      - [Local timeline](#local-timeline)
-      - [Profile timeline](#profile-timeline)
-      - [Hashtag timeline](#hashtag-timeline)
-    - [Customize](#customize)
-    - [API](#api)
-    - [Examples](#examples)
-  - [🌐 Browser support](#-browser-support)
-  - [🚀 Improve me](#-improve-me)
-  - [⚖️ License](#️-license)
-  - [💬 FAQ](#-faq)
+- [Installation](#installation)
+  - [Download](#download)
+  - [CDN](#cdn)
+  - [Package manager](#package-manager)
+- [Setup](#setup)
+  - [Initialize](#initialize)
+    - [Local timeline](#local-timeline)
+    - [Profile timeline](#profile-timeline)
+    - [Hashtag timeline](#hashtag-timeline)
+  - [Customize](#customize)
+  - [API](#api)
+  - [Examples](#examples)
 
 ## Installation
 
@@ -68,9 +62,7 @@ Now call the CSS and JS files in your HTML page using the `<link>` and `<script>
 This option allows you to get started quickly without the need to upload any files into your server.
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.0/dist/mastodon-timeline.min.css" integrity="sha256-RS5EmHN6wbvM+CqlWZmYPJ+Yh6BhLP/lmz646sBzwq0=" crossorigin="anonymous" />
-
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.0/dist/mastodon-timeline.umd.js" integrity="sha256-4a8ZoATaIg72pDzQNp97w0/M8EXBiPqHUAPC88MnYN4=" crossorigin="anonymous"></script>
+JS and CSS files available soon!
 ```
 
 ### Package manager
