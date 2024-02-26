@@ -72,7 +72,7 @@ Copy the following CSS and JS to include in your project:
 
 ### Package manager
 
-Install your timeline using npm or yarn:
+Install your Mastodon timeline using npm or yarn:
 
 ```terminal
 npm install @idotj/mastodon-embed-timeline
