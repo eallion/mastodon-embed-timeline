@@ -19,8 +19,8 @@ Demo running:
     - [Profile timeline](#profile-timeline)
     - [Hashtag timeline](#hashtag-timeline)
   - [Customize](#customize)
-  - [API](#api)
-  - [Examples](#examples)
+- [API](#api)
+- [Examples](#examples)
 
 ## Installation
 
@@ -59,10 +59,13 @@ Now call the CSS and JS files in your HTML page using the `<link>` and `<script>
 
 ### CDN
 
-This option allows you to get started quickly without the need to upload any files into your server.
+This option allows you to get started quickly without the need to upload any files into your server.  
+Copy the following CSS and JS to include in your project:
 
 ```html
-JS and CSS files available soon!
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.1/dist/mastodon-timeline.min.css" integrity="sha256-8K/cHh6W5bGXJHrkHD8gXe+Z3pe1zt5Zsq2eC1MQbx4=" crossorigin="anonymous">
+
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.1/dist/mastodon-timeline.umd.js" integrity="sha256-G5WmanubPwBlbI/BnihBUXGfZqjppxj/1jB9kR2SEYA=" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
@@ -109,7 +112,9 @@ const myTimeline = new MastodonTimeline.Init();
 
 By default it will show a timeline with 20 posts from the instance [mastodon.social](https://mastodon.social/public/local)
 
-ℹ️ If you are trying to initialize the script before `mastodon-timeline.umd.js` is loaded, you will probably get such an error in the console: "_MastodonTimeline is not defined_". To fix that initialize the script by running:
+ℹ️ If you are trying to initialize the script before `mastodon-timeline.umd.js` is loaded, you will probably get such an error in the console:  
+"_MastodonTimeline is not defined_".  
+To fix that try to initialize the script as follow:
 
 ```js
 window.addEventListener("load", () => {
@@ -252,14 +257,14 @@ You can pass more options/values to personalize your timeline. Here you have all
 
 ```
 
-### API
+## API
 
 | Function                  | Description                                                                     |
 | ------------------------- | ------------------------------------------------------------------------------- |
 | `mtColorTheme(themeType)` | Apply a theme color. `themeType` accepts only two values: `'light'` or `'dark'` |
 | `mtUpdate()`              | Reload the timeline by fetching the lastest posts                               |
 
-### Examples
+## Examples
 
 The folder `examples/` contains several demos in HTML to play with. Download the full project and open each HTML file in your favorite browser.
 
