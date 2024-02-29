@@ -6,20 +6,19 @@ stages:
 
 variables:
   REGISTRY_URL: "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
-  REGISTRY_URL1: "https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
 
 delete_registry:
   stage: delete_registry
   script:
     - >
-      curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "${REGISTRY_URL1}"
+      curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https:${REGISTRY_URL}"
   only:
     - master    
 
 deploy:
   stage: deploy
   script:
-    - echo "@scope:registry=https://${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/" > .npmrc
+    - echo "@scope:registry=https:${REGISTRY_URL}" > .npmrc
     - echo "${REGISTRY_URL}:_authToken=${CI_JOB_TOKEN}" >> .npmrc
     - npm publish
   only:
