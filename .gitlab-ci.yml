@@ -10,8 +10,7 @@ variables:
 delete_registry:
   stage: delete_registry
   script:
-    - >
-      curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https:${REGISTRY_URL}"
+    - curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https:${REGISTRY_URL}"
   only:
     - master    
 
