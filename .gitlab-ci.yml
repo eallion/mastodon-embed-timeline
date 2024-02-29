@@ -1,10 +1,18 @@
 image: node:latest
 
 stages:
+  - delete_registry
   - deploy
 
 variables:
   REGISTRY_URL: "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
+
+delete_registry:
+  stage: delete_registry
+  script:
+    - curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" $REGISTRY_URL
+  only:
+    - master    
 
 deploy:
   stage: deploy
