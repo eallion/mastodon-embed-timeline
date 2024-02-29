@@ -6,11 +6,13 @@ stages:
 
 variables:
   REGISTRY_URL: "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/npm/"
+  REGISTRY_URL2: "//${CI_SERVER_HOST}/api/v4/projects/${CI_PROJECT_ID}/packages/"
 
 delete_registry:
   stage: delete_registry
   script:
-    - curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https:${REGISTRY_URL}"
+    - >
+      curl --request DELETE --header "PRIVATE-TOKEN: $CI_JOB_TOKEN" "https:${REGISTRY_URL2}"
   only:
     - master    
 
