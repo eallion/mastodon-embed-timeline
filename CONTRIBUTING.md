@@ -2,13 +2,13 @@
 
 Thanks for your interest in contributing. Any feature and improvement from the community to make this project better is always welcome.
 
-## How to Contribute
+## 🤝 How to contribute
 
-### Reporting Issues
+### Reporting issues
 
 If you find any bugs, issues, or have suggestions, please [create a new issue](https://gitlab.com/idotj/mastodon-embed-timeline/-/issues/new) and provide detailed information about the problem or feature.
 
-### Code Contributions
+### Code contributions
 
 1. Fork the repository on GitLab.
 2. Create a new branch from the `main` branch for your changes.
@@ -16,7 +16,7 @@ If you find any bugs, issues, or have suggestions, please [create a new issue](h
 4. Compile and test your changes thoroughly.
 5. Submit a pull request to the `main` branch with a clear title and description.
 
-## Getting Started
+## 🛠️ Getting started
 
 ### Setup your environment
 
@@ -75,10 +75,10 @@ If you need to emulate a server for your local development/testing, here are som
   Now open your browser and entering the following url you will land in the Local timeline page:  
   [http://localhost:8080/examples/local-timeline.html](http://localhost:8080/examples/local-timeline.html)
 
-## Code Review Process
+## 🔍 Code review process
 
 All contributions will go through a code review process. Be prepared to address feedback and make necessary changes to your code.
 
-## License
+## ⚖️ License
 
 By contributing to this project, you agree that your contributions will be licensed under the GNU Affero General Public License v3.0.

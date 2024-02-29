@@ -1,3 +1,7 @@
+v4.3.2 - 01/03/2024
+- Render emojos in user name
+- Use fallback for user account without user name
+
 v4.3.1 - 01/03/2024
 - Show pinned posts
 - Add icon to pinned posts

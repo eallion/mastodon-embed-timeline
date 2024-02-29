@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.3.1
+ * @version 4.3.2
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -394,12 +394,12 @@ export class Init {
 
       // User name and url
       if (!this.mtSettings.hideEmojos && c.reblog.account.display_name) {
-        userName = this.#createEmoji(
+        userName = this.#shortcode2Emojos(
           c.reblog.account.display_name,
-          this.fetchedData.emojos
+          c.reblog.account.emojis
         );
       } else {
-        userName = c.reblog.account.display_name;
+        userName = c.reblog.account.display_name ? c.reblog.account.display_name : c.reblog.account.username;
       }
 
       if (!this.mtSettings.hideUserAccount) {
@@ -454,12 +454,12 @@ export class Init {
 
       // User name and url
       if (!this.mtSettings.hideEmojos && c.account.display_name) {
-        userName = this.#createEmoji(
+        userName = this.#shortcode2Emojos(
           c.account.display_name,
-          this.fetchedData.emojos
+          c.account.emojis
         );
       } else {
-        userName = c.account.display_name;
+        userName = c.account.display_name ? c.account.display_name : c.account.username;
       }
 
       if (!this.mtSettings.hideUserAccount) {
@@ -677,7 +677,7 @@ export class Init {
 
     // Convert emojos shortcode into images
     if (!this.mtSettings.hideEmojos) {
-      content = this.#createEmoji(content, this.fetchedData.emojos);
+      content = this.#shortcode2Emojos(content, this.fetchedData.emojos);
     }
 
     // Convert markdown styles into HTML
@@ -758,7 +758,7 @@ export class Init {
    * @param {array} e List with all custom emojis
    * @returns {string} Text content modified
    */
-  #createEmoji(c, e) {
+  #shortcode2Emojos(c, e) {
     if (c.includes(":")) {
       for (const emojo of e) {
         const regex = new RegExp(`\\:${emojo.shortcode}\\:`, "g");
