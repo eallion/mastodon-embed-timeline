@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.3.2
+ * @version 4.3.3
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -1116,6 +1116,7 @@ export class Init {
       e.target.localName !== "a" &&
       e.target.localName !== "span" &&
       e.target.localName !== "button" &&
+      e.target.localName !== "bdi" &&
       e.target.localName !== "time" &&
       e.target.className !== "mt-post-preview-noImage" &&
       e.target.parentNode.className !== "mt-post-avatar-image-big" &&
