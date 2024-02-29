@@ -1,4 +1,4 @@
-# 🐘 Mastodon embed timeline (new v4.2)
+# 🐘 Mastodon embed timeline
 
 ![Mastodon timeline widget screenshot](screenshot-light-dark.jpg "Mastodon timeline widget screenshot")
 
@@ -24,27 +24,29 @@ Demo running:
 
 ## Installation
 
+You have three different ways to install it in your project, choose the one that best suits your needs:
+
 ### Download
 
-Ready-to-use compiled and minified files to easily start.
+Download into your project the following compiled and minified files:
 
-- Download into your project the following files:
-  - `dist/mastodon-timeline.min.css`
-  - `dist/mastodon-timeline.umd.js`
+- `dist/mastodon-timeline.min.css`
+- `dist/mastodon-timeline.umd.js`
 
 Now call the CSS and JS files in your HTML page using the `<link>` and `<script>` tags as follows in this example:
 
 ```html
 <!DOCTYPE html>
+
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Your site title</title>
-
     <!-- CSS -->
     <link href="path/to/mastodon-timeline.min.css" rel="stylesheet" />
   </head>
+
   <body>
     <!-- Your HTML content -->
 
@@ -59,20 +61,20 @@ Now call the CSS and JS files in your HTML page using the `<link>` and `<script>
 
 ### CDN
 
-This option allows you to get started quickly without the need to upload any files into your server.  
-Copy the following CSS and JS to include in your project:
+This option allows you to start without the need to upload any files on your server.  
+Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.1/dist/mastodon-timeline.min.css" integrity="sha256-8K/cHh6W5bGXJHrkHD8gXe+Z3pe1zt5Zsq2eC1MQbx4=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.1/dist/mastodon-timeline.min.css" integrity="sha256-8K/cHh6W5bGXJHrkHD8gXe+Z3pe1zt5Zsq2eC1MQbx4=" crossorigin="anonymous" />
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.2.1/dist/mastodon-timeline.umd.js" integrity="sha256-G5WmanubPwBlbI/BnihBUXGfZqjppxj/1jB9kR2SEYA=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.1/dist/mastodon-timeline.umd.js" integrity="sha256-G5WmanubPwBlbI/BnihBUXGfZqjppxj/1jB9kR2SEYA=" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
 
-Install your Mastodon timeline using npm or yarn:
+A quick way to get it installed using **npm** or **yarn**:
 
 ```terminal
 npm install @idotj/mastodon-embed-timeline
@@ -84,19 +86,19 @@ or
 yarn add @idotj/mastodon-embed-timeline
 ```
 
-After installation, you can import the widget as follows:
+After installation, you can import the Javascript as follows:
 
 ```js
 import * as MastodonTimeline from "@idotj/mastodon-embed-timeline";
 ```
 
-Make sure to import also the `@idotj/mastodon-embed-timeline/dist/mastodon-timeline.min.css` file in your project.
+Make sure to import also the file `mastodon-timeline.min.css` into your project.
 
 ## Setup
 
 ### Initialize
 
-The first step to get your timeline up is to add the following HTML structure in your page:
+To get your timeline up add the following HTML structure in your page:
 
 ```html
 <div id="mt-container" class="mt-container">
@@ -124,11 +126,11 @@ window.addEventListener("load", () => {
 });
 ```
 
-The next step is to configure the options/values of your timeline according to the type you need. There are three types, **Local**, **Profile** and **Hashtag**:
+The next step is to configure the options/values of your timeline according to the type you prefer. There are three types, **Local**, **Profile** and **Hashtag**. Here you have an example of each one to see how it works:
 
 #### Local timeline
 
-Add the following option/value when initializing the timeline:
+To show a timeline with posts from the instance [mastodon.online](https://mastodon.online/public/local) add the following option/value when initializing the timeline:
 
 ```js
 const myTimeline = new MastodonTimeline.Init({
@@ -136,11 +138,9 @@ const myTimeline = new MastodonTimeline.Init({
 });
 ```
 
-It will show a timeline with posts from the instance [mastodon.online](https://mastodon.online/public/local)
-
 #### Profile timeline
 
-Add the following options/values when initializing the timeline:
+To show a timeline with posts from my Mastodon profile [@idotj](https://mastodon.online/@idotj) add the following options/values when initializing the timeline:
 
 ```js
 const myTimeline = new MastodonTimeline.Init({
@@ -150,8 +150,6 @@ const myTimeline = new MastodonTimeline.Init({
   profileName: "@idotj",
 });
 ```
-
-It will show a timeline with posts from my Mastodon profile [@idotj](https://mastodon.online/@idotj)
 
 ℹ️ If you don't know your `userId` you have two ways to get it:
 
@@ -164,7 +162,7 @@ It will show a timeline with posts from my Mastodon profile [@idotj](https://mas
 
 #### Hashtag timeline
 
-Add the following options/values when initializing the timeline:
+To show a timeline with posts containing the hashtag [#fediverse](https://mastodon.online/tags/fediverse) add the following options/values when initializing the timeline:
 
 ```js
 const myTimeline = new MastodonTimeline.Init({
@@ -174,68 +172,106 @@ const myTimeline = new MastodonTimeline.Init({
 });
 ```
 
-It will show a timeline with posts containing the hashtag [#fediverse](https://mastodon.online/tags/fediverse)
-
 ### Customize
 
-You can pass more options/values to personalize your timeline. Here you have all the available options:
+In the `examples/` folder there is an HTML file `local-timeline-customized.html` where you can see how to customize your timeline by overwriting the CSS styles and using various JS options when initializing the timeline.
+
+If you need to change something in the core files (`src/` folder), I recommend you to read the document [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md#testing) to see how to compile and test your changes.
+
+Here you have all the options available to quickly setup and customize your timeline:
 
 ```js
   // Id of the <div> containing the timeline
   mtContainerId: "mt-container",
 
-  // Mastodon instance Url (including https://)
+  // Mastodon instance Url including https://
   instanceUrl: "https://mastodon.social",
 
-  // Choose type of posts to show in the timeline: 'local', 'profile', 'hashtag'. Default: local
+  // Choose type of posts to show in the timeline: 'local', 'profile', 'hashtag'
+  // Default: local
   timelineType: "local",
 
-  // Your user ID number on Mastodon instance. Leave it empty if you didn't choose 'profile' as type of timeline
+  // Your user ID number on Mastodon instance
+  // Leave it empty if you didn't choose 'profile' as type of timeline
   userId: "",
 
-  // Your user name on Mastodon instance (including the @ symbol at the beginning). Leave it empty if you didn't choose 'profile' as type of timeline
+  // Your user name on Mastodon instance (including the @ symbol at the beginning)
+  // Leave it empty if you didn't choose 'profile' as type of timeline
   profileName: "",
 
-  // The name of the hashtag (not including the # symbol). Leave it empty if you didn't choose 'hashtag' as type of timeline
+  // The name of the hashtag (not including the # symbol)
+  // Leave it empty if you didn't choose 'hashtag' as type of timeline
   hashtagName: "",
 
   // Class name for the loading spinner (also used in CSS file)
   spinnerClass: "mt-loading-spinner",
 
-  // Preferred color theme: 'light', 'dark' or 'auto'. Default: auto
+  // Preferred color theme: 'light', 'dark' or 'auto'
+  // Default: auto
   defaultTheme: "auto",
 
-  // Maximum number of posts to request to the server. Default: 20
+  // Maximum number of posts to request to the server
+  // Default: 20
   maxNbPostFetch: "20",
 
-  // Maximum number of posts to show in the timeline. Default: 20
+  // Maximum number of posts to show in the timeline
+  // Default: 20
   maxNbPostShow: "20",
 
-  // Hide unlisted posts. Default: don't hide
+  // Specifies the format of the date according to the chosen language/country
+  // Default: British English (day-month-year order)
+  dateLocale: "en-GB",
+
+  // Customize the date format using the options
+  // Default: DD MMM YYYY
+  dateOptions: {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  },
+
+  // Hide unlisted posts
+  // Default: don't hide
   hideUnlisted: false,
 
-  // Hide boosted posts. Default: don't hide
+  // Hide boosted posts
+  // Default: don't hide
   hideReblog: false,
 
-  // Hide replies posts. Default: don't hide
+  // Hide replies posts
+  // Default: don't hide
   hideReplies: false,
 
-  // Hide video image preview and load video player instead. Default: don't hide
-  hideVideoPreview: false,
+  // Hide pinned posts from the profile timeline
+  // Default: don't hide
+  hidePinnedPosts: false,
 
-  // Hide preview card if post contains a link, photo or video from a Url. Default: don't hide
-  hidePreviewLink: false,
+  // Hide user account under the user name
+  // Default: don't hide
+  hideUserAccount: false,
 
-  // Hide custom emojis available on the server. Default: don't hide
+  // Hide custom emojis available on the server
+  // Default: don't hide
   hideEmojos: false,
 
-  // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag. Default: don't apply
-  markdownBlockquote: false,
+  // Hide video image preview and load video player instead
+  // Default: don't hide
+  hideVideoPreview: false,
 
-  // Hide replies, boosts and favourites posts counter. Default: don't hide
+  // Hide preview card if post contains a link, photo or video from a Url
+  // Default: don't hide
+  hidePreviewLink: false,
+
+  // Hide replies, boosts and favourites posts counter
+  // Default: don't hide
   hideCounterBar: false,
 
-  // Limit the text content to a maximum number of lines. Default: 0 (unlimited)
+  // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag
+  // Default: don't apply
+  markdownBlockquote: false,
+
+  // Limit the text content to a maximum number of lines
+  // Default: 0 (unlimited)
   txtMaxLines: "0",
 
   // Customize the text of the button used for showing/hiding sensitive/spolier text
@@ -245,16 +281,20 @@ You can pass more options/values to personalize your timeline. Here you have all
   // Customize the text of the button used for showing sensitive/spolier media content
   btnShowContent: "SHOW CONTENT",
 
-  // Customize the text of the button pointing to the Mastodon page placed at the end of the timeline. Leave the value empty to hide it
+  // Customize the text of the button pointing to the Mastodon page placed at the end of the timeline
+  // Leave the value empty to hide it
   btnSeeMore: "See more posts at Mastodon",
 
-  // Customize the text of the button reloading the list of posts placed at the end of the timeline. Leave the value empty to hide it
+  // Customize the text of the button reloading the list of posts placed at the end of the timeline
+  // Leave the value empty to hide it
   btnReload: "Refresh",
 
-  // Keep searching for the main <div> container before building the timeline. Useful in some cases where extra time is needed to render the page. Default: false
+  // Keep searching for the main <div> container before building the timeline. Useful in some cases where extra time is needed to render the page
+  // Default: don't apply
   insistSearchContainer: false,
 
-  // Defines the maximum time to continue searching for the main <div> container. Default: 3 seconds
+  // Defines the maximum time to continue searching for the main <div> container
+  // Default: 3 seconds
   insistSearchContainerTime: "3000",
 
 ```
@@ -270,7 +310,7 @@ You can pass more options/values to personalize your timeline. Here you have all
 
 The folder `examples/` contains several demos in HTML to play with. Download the full project and open each HTML file in your favorite browser.
 
-Also, you have other alternatives to run these examples locally. Consult the document [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md#testing) to use other options like Docker or Http-server.
+Also, you have other alternatives to run these examples locally. Consult the document [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md#testing) to use options such as Docker or Http-server.
 
 ## 🌐 Browser support
 

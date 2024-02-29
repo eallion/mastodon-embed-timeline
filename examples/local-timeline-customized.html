@@ -59,6 +59,25 @@
       .dummy-wrapper-text hr {
         margin: 2rem 0;
       }
+
+      /* Customized CSS styles */
+      .mt-container {
+        background-color: transparent;
+        border: 1px solid white;
+      }
+      .mt-post {
+        border-bottom: none;
+        box-shadow: 2px 2px 6px 2px rgba(0, 0, 0, 0.25);
+        margin-bottom: 1rem;
+      }
+      .mt-post-avatar-image-big img {
+        border-radius: 0;
+      }
+      .mt-container a,
+      .mt-container a:active,
+      .mt-container a:link {
+        color: darkgreen;
+      }
     </style>
   </head>
 
@@ -67,25 +86,47 @@
       <!-- Title + Explained details of the example -->
       <div class="dummy-wrapper-text">
         <h1>🐘 Mastodon embed timeline</h1>
-        <h2>Hashtag timeline</h2>
+        <h2>Local timeline (customized)</h2>
         <p>
-          This example shows posts containing the hashtag
+          This example shows 10 posts from the following instance:
           <br />
           <a
-            href="https://mastodon.online/tags/fediverse"
+            href="https://mastodon.social/public/local"
             target="_blank"
             rel="nofollow noopener noreferrer"
-            >#fediverse</a
+            >mastodon.social</a
           >
         </p>
-        <p>It has been initialized with the following script:</p>
+        <p>
+          Contains several CSS styles that change its appearance without the
+          need to modify the original CSS file (inspect the code at the
+          beginning of the HTML file to see the changes).
+        </p>
+        <p>
+          At JS level, it defaults to the light theme and the date is displayed
+          in US format using digits only. In order to achieve a minimalist
+          style, the following options have been changed at its
+          initialization:
+        </p>
         <pre>
         <code>
   &lt;script&gt;
     const myTimeline = new MastodonTimeline.Init({
       instanceUrl: "https://mastodon.online",
-      timelineType: "hashtag",
-      hashtagName: "fediverse",
+      defaultTheme: "light",
+      dateLocale: "en-CA",
+      dateOptions: {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+      },
+      hideReplies: true,
+      hideUserAccount: true,
+      hidePreviewLink: true,
+      hideCounterBar: true,
+      txtMaxLines: "3",
+      btnSeeMore: "",
+      btnReload: ""
     });
   &lt;/script&gt;
           </code>
@@ -107,8 +148,21 @@
     <script>
       const myTimeline = new MastodonTimeline.Init({
         instanceUrl: "https://mastodon.online",
-        timelineType: "hashtag",
-        hashtagName: "fediverse",
+        defaultTheme: "light",
+        maxNbPostShow: "10",
+        dateLocale: "en-CA",
+        dateOptions: {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+        },
+        hideReplies: true,
+        hideUserAccount: true,
+        hidePreviewLink: true,
+        hideCounterBar: true,
+        txtMaxLines: "3",
+        btnSeeMore: "",
+        btnReload: "",
       });
     </script>
   </body>

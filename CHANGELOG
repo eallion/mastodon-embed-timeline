@@ -1,3 +1,12 @@
+v4.3.1 - 01/03/2024
+- Show pinned posts
+- Add icon to pinned posts
+- Add '*' character to edited posts
+- Use Intl.DateTimeFormat for date formatting
+- Allow to customize date by locale/options parameters
+- Show user account under user name
+- Added a new customized HTML example
+
 v4.2.1 - 26/02/2024
 - Changed project name: mastodon-embed-feed-timeline -> mastodon-embed-timeline
 - Improved DOM load for module purposes
