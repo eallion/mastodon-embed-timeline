@@ -53,6 +53,7 @@
   background-color: var(--mt-color-bg);
   scrollbar-color: var(--mt-color-contrast-gray) var(--mt-color-bg);
   scrollbar-width: auto;
+  container: mt-container / inline-size;
 }
 .mt-container::-webkit-scrollbar {
   width: 0.25rem;
@@ -615,4 +616,11 @@ body:has(dialog.mt-dialog[open]) {
   clip: rect(0, 0, 0, 0) !important;
   white-space: nowrap !important;
   border: 0 !important;
+}
+
+/* Responsive styles */
+@container mt-container (max-width: 20rem) {
+  .mt-post-media-wrapper .mt-post-media {
+    grid-column: 1 / 3;
+  }
 }
