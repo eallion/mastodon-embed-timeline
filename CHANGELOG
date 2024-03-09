@@ -1,3 +1,6 @@
+v4.3.x - xx/03/2024
+- Display medias inside post using CSS grid
+
 v4.3.5 - 09/03/2024
 - Add a carousel/lightbox for pictures and videos in a post
 - Improve data set for media items

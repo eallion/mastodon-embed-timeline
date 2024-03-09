@@ -1,4 +1,4 @@
-/* Mastodon embed timeline v4.3.5 */
+/* Mastodon embed timeline v4.3.7 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-timeline */
 
@@ -261,15 +261,39 @@
 
 /* Medias */
 .mt-post-media-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
   margin-bottom: 1rem;
 }
 .mt-post-media {
   position: relative;
   overflow: hidden;
+  width: 100%;
 }
+
+/** option A **/
+.mt-post-media:nth-child(1) {
+  grid-column: 1 / 2;
+}
+.mt-post-media:nth-child(1) ~ .mt-post-media:nth-child(2) {
+  grid-column: 2 / 3;
+}
+
+/** option B **/
+.mt-post-media:nth-child(3) {
+  grid-column: 1 / 3;
+}
+.mt-post-media-wrapper:has(.mt-post-media:nth-child(4)) .mt-post-media:nth-child(3) {
+  grid-column: 1 / 2;
+}
+
+
+/** Only one media **/
+.mt-post-media:only-child {
+  grid-column: 1 / 3;
+}
+
 .mt-post-media-spoiler > img,
 .mt-post-media-spoiler > audio,
 .mt-post-media-spoiler > video,
@@ -297,6 +321,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  object-fit: cover;
   text-align: center;
   color: var(--mt-color-content-txt);
 }

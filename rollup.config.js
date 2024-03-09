@@ -15,6 +15,6 @@ export default [
         format: "umd",
       },
     ],
-    plugins: [terser()],
+    // plugins: [terser()],
   },
 ];

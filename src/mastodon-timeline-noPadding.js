@@ -5,8 +5,9 @@
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
+"use strict";
 
-class Init {
+export class Init {
   constructor(customSettings = {}) {
     this.defaultSettings = {
       mtContainerId: "mt-container",
@@ -301,10 +302,14 @@ class Init {
         if (
           (this.mtSettings.hideReblog && posts[i].reblog) ||
           (this.mtSettings.hideReplies && posts[i].in_reply_to_id)
-        ) ; else {
+        ) {
+          // Nothing here (Don't append posts)
+        } else {
           if (nbPostShow < this.mtSettings.maxNbPostShow) {
             this.#appendPost(posts[i], Number(i));
             nbPostShow++;
+          } else {
+            // Nothing here (Reached the limit of maximum number of posts to show)
           }
         }
       }
@@ -810,9 +815,7 @@ class Init {
         m.meta.original.width +
         '" data-media-height-hd="' +
         m.meta.original.height +
-        '" style="padding-top: calc(100%/' +
-        m.meta.small.aspect +
-        ')">' +
+        '">' +
         (spoiler
           ? '<button class="mt-btn-dark mt-btn-spoiler">' +
             this.mtSettings.btnShowContent +
@@ -842,9 +845,7 @@ class Init {
           m.meta.small.width +
           '" data-media-height-hd="' +
           m.meta.small.height +
-          '" style="padding-top: calc(100%/' +
-          m.meta.small.aspect +
-          ')">' +
+          '">' +
           (spoiler
             ? '<button class="mt-btn-dark mt-btn-spoiler">' +
               this.mtSettings.btnShowContent +
@@ -894,9 +895,7 @@ class Init {
           m.meta.original.width +
           '" data-media-height-hd="' +
           m.meta.original.height +
-          '" style="padding-top: calc(100%/' +
-          m.meta.small.aspect +
-          ')">' +
+          '">' +
           (spoiler
             ? '<button class="mt-btn-dark mt-btn-spoiler">' +
               this.mtSettings.btnShowContent +
@@ -923,9 +922,7 @@ class Init {
           m.meta.original.width +
           '" data-media-width-hd="' +
           m.meta.original.height +
-          '" style="padding-top: calc(100%/' +
-          m.meta.small.aspect +
-          ')">' +
+          '">' +
           (spoiler
             ? '<button class="mt-btn-dark mt-btn-spoiler">' +
               this.mtSettings.btnShowContent +
@@ -1440,5 +1437,3 @@ class Init {
     );
   }
 }
-
-export { Init };
