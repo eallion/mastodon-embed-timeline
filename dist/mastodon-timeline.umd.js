@@ -244,7 +244,7 @@
             return { ...result, ...dataItem };
           }, {});
 
-          // console.log("Mastodon timeline data fetched: ", this.fetchedData);
+          console.log("Mastodon timeline data fetched: ", this.fetchedData);
           resolve();
         });
       });
