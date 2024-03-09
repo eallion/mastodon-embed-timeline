@@ -60,23 +60,41 @@
         margin: 2rem 0;
       }
 
-      /* Customized CSS styles */
+      /* Example of customized CSS styles */
       .mt-container {
+        font-family: monospace;
         background-color: transparent;
         border: 1px solid white;
-      }
-      .mt-post {
-        border-bottom: none;
-        box-shadow: 2px 2px 6px 2px rgba(0, 0, 0, 0.25);
-        margin-bottom: 1rem;
-      }
-      .mt-post-avatar-image-big img {
-        border-radius: 0;
       }
       .mt-container a,
       .mt-container a:active,
       .mt-container a:link {
         color: darkgreen;
+      }
+      .mt-post-header {
+        margin-bottom: 0;
+      }
+      .mt-post-avatar-image-big img {
+        border-radius: 0;
+      }
+      .mt-post-header-user {
+        margin-right: auto;
+      }
+      .mt-post-header-date {
+        position: absolute;
+        bottom: 1rem;
+        left: 3.5rem;
+      }
+      .mt-post {
+        border-bottom: none;
+        box-shadow: 2px 2px 6px 2px rgba(0, 0, 0, 0.25);
+        margin-bottom: 1rem;
+        padding-bottom: 2rem;
+      }
+      .mt-post-txt,
+      .mt-post-media-wrapper {
+        width: calc(100% - 3rem);
+        margin-left: auto;
       }
     </style>
   </head>
@@ -105,8 +123,7 @@
         <p>
           At JS level, it defaults to the light theme and the date is displayed
           in US format using digits only. In order to achieve a minimalist
-          style, the following options have been changed at its
-          initialization:
+          style, the following options have been changed at its initialization:
         </p>
         <pre>
         <code>

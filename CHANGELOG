@@ -1,3 +1,9 @@
+v4.3.5 - 09/03/2024
+- Add a carousel/lightbox for pictures and videos in a post
+- Improve data set for media items
+- Enable loop for videos by default
+- Small UI improvements
+
 v4.3.3 - 01/03/2024
 - Fix click conflict on user name
 - Render emojos in user name
@@ -58,7 +64,7 @@ v3.13.1 - 12/01/2024
 v3.12.0 - 11/12/2023
 - Fix link preview event on click
 
-v3.11.0 - 4/11/2023
+v3.11.0 - 04/11/2023
 - Update icons
 - Improve loader spinner
 
@@ -103,7 +109,7 @@ v3.8.1 - 14/08/2023
 - Improve JS comments
 
 v3.8.0 - 04/08/2023
-- Add spoiler/sensitive button for reblog content
+- Add sensitive/spoiler button for reblog content
 
 v3.7.2 - 25/07/2023
 - Use window.onload to take async attribute into account

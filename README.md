@@ -2,7 +2,7 @@
 
 ![Mastodon timeline widget screenshot](screenshot-light-dark.jpg "Mastodon timeline widget screenshot")
 
-Embed a mastodon timeline in your page, only with a CSS and JS file.
+Embed a Mastodon timeline in your page, only with a CSS and JS file.
 
 Demo running:
 <https://codepen.io/ipuntoj/pen/MWppNGL>
@@ -65,11 +65,11 @@ This option allows you to start without the need to upload any files on your ser
 Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.3/dist/mastodon-timeline.min.css" integrity="sha256-n6277x0TxwslF9uskcdwCPorYZnoSB9Wbv1O1w7Ahds=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.min.css" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.3/dist/mastodon-timeline.umd.js" integrity="sha256-H+NYFuLL1tG4+iQmE5LRh5zBg1bToiCK/k4uJi4n3ks=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.umd.js" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
@@ -108,7 +108,7 @@ To get your timeline up add the following HTML structure in your page:
 </div>
 ```
 
-Then after that you can initialize the script by running:
+Now you can then initialize the script running:
 
 ```js
 const myTimeline = new MastodonTimeline.Init();
@@ -246,7 +246,7 @@ Here you have all the options available to quickly setup and customize your time
   // Default: don't hide
   hidePinnedPosts: false,
 
-  // Hide user account under the user name
+  // Hide the user account under the user name
   // Default: don't hide
   hideUserAccount: false,
 
@@ -270,15 +270,24 @@ Here you have all the options available to quickly setup and customize your time
   // Default: don't apply
   markdownBlockquote: false,
 
+  // Show a carousel/lightbox when the user clicks on a picture in a post
+  // Default: not disabled
+  disableCarousel: false,
+
+  // Customize the text of the buttons used for the carousel/lightbox
+  carouselCloseTxt: "Close carousel",
+  carouselPrevTxt: "Previous media item",
+  carouselNextTxt: "Next media item",  
+
   // Limit the text content to a maximum number of lines
   // Default: 0 (unlimited)
   txtMaxLines: "0",
 
-  // Customize the text of the button used for showing/hiding sensitive/spolier text
+  // Customize the text of the button used for showing/hiding sensitive/spoiler text
   btnShowMore: "SHOW MORE",
   btnShowLess: "SHOW LESS",
 
-  // Customize the text of the button used for showing sensitive/spolier media content
+  // Customize the text of the button used for showing sensitive/spoiler media content
   btnShowContent: "SHOW CONTENT",
 
   // Customize the text of the button pointing to the Mastodon page placed at the end of the timeline
