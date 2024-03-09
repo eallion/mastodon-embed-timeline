@@ -65,11 +65,11 @@ This option allows you to start without the need to upload any files on your ser
 Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.min.css" integrity="sha256-TkH0gLCNo9xhRd7Ji2Q3KqeVSgeK8B6CeLLqjzlWz6U=" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.umd.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.umd.js" integrity="sha256-8eBpA1WfC0uucdJx/KIODQA1VHbnYCT7HZgvm7R4RIg=" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
