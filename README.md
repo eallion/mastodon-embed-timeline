@@ -65,11 +65,11 @@ This option allows you to start without the need to upload any files on your ser
 Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.min.css" integrity="sha256-TkH0gLCNo9xhRd7Ji2Q3KqeVSgeK8B6CeLLqjzlWz6U=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.7/dist/mastodon-timeline.min.css" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.5/dist/mastodon-timeline.umd.js" integrity="sha256-8eBpA1WfC0uucdJx/KIODQA1VHbnYCT7HZgvm7R4RIg=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.7/dist/mastodon-timeline.umd.js" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
@@ -174,7 +174,7 @@ const myTimeline = new MastodonTimeline.Init({
 
 ### Customize
 
-In the `examples/` folder there is an HTML file `local-timeline-customized.html` where you can see how to customize your timeline by overwriting the CSS styles and using various JS options when initializing the timeline.
+In the `examples/` folder there is an HTML file `local-timeline-customized.html` where you can see how to customize your timeline by overwriting the CSS styles and using several JS options when initializing the timeline.
 
 If you need to change something in the core files (`src/` folder), I recommend you to read the document [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md#testing) to see how to compile and test your changes.
 

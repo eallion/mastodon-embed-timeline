@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.3.5
+ * @version 4.3.7
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -1353,8 +1353,9 @@ export class Init {
 
       // Check if image in post was clicked
       if (
-        localName == "img" &&
         !this.mtSettings.disableCarousel &&
+        localName == "img" &&
+        !parentNode.classList.contains("mt-post-preview-image") &&
         parentNode.getAttribute("data-media-type") !== "video" &&
         parentNode.getAttribute("data-media-type") !== "gifv"
       ) {
