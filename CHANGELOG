@@ -1,3 +1,11 @@
+v4.3.10 - 21/03/2024
+- Allow to load more than 20 or 40 posts
+- Add link preview description
+- Allow to choose a maximum number of lines of text in preview description
+- Fix carousel conflict with avatar and emojos images
+- Fix possible error in aria-setsize with values greater than the total number of posts
+- JS refactoring
+
 v4.3.7 - 12/03/2024
 - Display medias inside post using CSS grid
 - Add a placeholder bg-color for images
@@ -168,7 +176,7 @@ v3.1.1 - 28/01/2023
 
 v3.1.0 - 21/01/2023
 - Fix spoiler content show/hide
-- Add feature, choose a maximum number of lines of text
+- Allow to choose a maximum number of lines of text in posts
 - Hide button to user page if 'btn_see_more' is empty
 
 v2.12.0 - 02/12/2022

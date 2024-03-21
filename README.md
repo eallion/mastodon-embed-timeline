@@ -65,11 +65,11 @@ This option allows you to start without the need to upload any files on your ser
 Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.7/dist/mastodon-timeline.min.css" integrity="sha256-TxNxDe916jqa7iqnY5d3/1SuHlB+/4r9XEH0kOwh2Nc=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.10/dist/mastodon-timeline.min.css" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.7/dist/mastodon-timeline.umd.js" integrity="sha256-VK7I7SRA8gZaOzjlIQ6aeG0vOlkzuRnstJi2fgR3L80=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.10/dist/mastodon-timeline.umd.js" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
@@ -182,48 +182,54 @@ Here you have all the options available to quickly setup and customize your time
 
 ```js
   // Id of the <div> containing the timeline
+  // Default: "mt-container"
   mtContainerId: "mt-container",
 
   // Mastodon instance Url including https://
+  // Default: "https://mastodon.social"
   instanceUrl: "https://mastodon.social",
 
   // Choose type of posts to show in the timeline: 'local', 'profile', 'hashtag'
-  // Default: local
+  // Default: "local"
   timelineType: "local",
 
   // Your user ID number on Mastodon instance
   // Leave it empty if you didn't choose 'profile' as type of timeline
+  // Default: ""
   userId: "",
 
   // Your user name on Mastodon instance (including the @ symbol at the beginning)
   // Leave it empty if you didn't choose 'profile' as type of timeline
+  // Default: ""
   profileName: "",
 
   // The name of the hashtag (not including the # symbol)
   // Leave it empty if you didn't choose 'hashtag' as type of timeline
+  // Default: ""
   hashtagName: "",
 
   // Class name for the loading spinner (also used in CSS file)
+  // Default: "mt-loading-spinner"
   spinnerClass: "mt-loading-spinner",
 
-  // Preferred color theme: 'light', 'dark' or 'auto'
-  // Default: auto
+  // Preferred color theme: "light", "dark" or "auto"
+  // Default: "auto"
   defaultTheme: "auto",
 
   // Maximum number of posts to request to the server
-  // Default: 20
+  // Default: "20"
   maxNbPostFetch: "20",
 
   // Maximum number of posts to show in the timeline
-  // Default: 20
+  // Default: "20"
   maxNbPostShow: "20",
 
   // Specifies the format of the date according to the chosen language/country
-  // Default: British English (day-month-year order)
+  // Default: "en-GB" (British English: day-month-year order)
   dateLocale: "en-GB",
 
-  // Customize the date format using the options
-  // Default: DD MMM YYYY
+  // Customize the date format using the options for day, month and year
+  // Default: day: "2-digit", month: "short", year: "numeric" (DD MMM YYYY)
   dateOptions: {
     day: "2-digit",
     month: "short",
@@ -231,64 +237,70 @@ Here you have all the options available to quickly setup and customize your time
   },
 
   // Hide unlisted posts
-  // Default: don't hide
+  // Default: false (don't hide)
   hideUnlisted: false,
 
   // Hide boosted posts
-  // Default: don't hide
+  // Default: false (don't hide)
   hideReblog: false,
 
   // Hide replies posts
-  // Default: don't hide
+  // Default: false (don't hide)
   hideReplies: false,
 
   // Hide pinned posts from the profile timeline
-  // Default: don't hide
+  // Default: false (don't hide)
   hidePinnedPosts: false,
 
   // Hide the user account under the user name
-  // Default: don't hide
+  // Default: false (don't hide)
   hideUserAccount: false,
 
+  // Limit the text content to a maximum number of lines
+  // Use "0" to show no text
+  // Default: "" (unlimited)
+  txtMaxLines: "",
+
+  // Customize the text of the button used for showing/hiding sensitive/spoiler text
+  btnShowMore: "SHOW MORE",
+  btnShowLess: "SHOW LESS",  
+
+  // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag
+  // Default: false (don't apply)
+  markdownBlockquote: false,  
+
   // Hide custom emojis available on the server
-  // Default: don't hide
-  hideEmojos: false,
+  // Default: false (don't hide)
+  hideEmojos: false,  
+
+  // Customize the text of the button used for showing sensitive/spoiler media content
+  btnShowContent: "SHOW CONTENT",  
 
   // Hide video image preview and load video player instead
-  // Default: don't hide
+  // Default: false (don't hide)
   hideVideoPreview: false,
 
   // Hide preview card if post contains a link, photo or video from a Url
-  // Default: don't hide
+  // Default: false (don't hide)
   hidePreviewLink: false,
 
+  // Limit the preview text description to a maximum number of lines
+  // Use "0" to show no text
+  // Default: "" (unlimited)
+  previewMaxLines: "",
+
   // Hide replies, boosts and favourites posts counter
-  // Default: don't hide
+  // Default: false (don't hide)
   hideCounterBar: false,
 
-  // Converts Markdown symbol ">" at the beginning of a paragraph into a blockquote HTML tag
-  // Default: don't apply
-  markdownBlockquote: false,
-
-  // Show a carousel/lightbox when the user clicks on a picture in a post
-  // Default: not disabled
+  // Disable a carousel/lightbox when the user clicks on a picture in a post
+  // Default: false (not disabled)
   disableCarousel: false,
 
   // Customize the text of the buttons used for the carousel/lightbox
   carouselCloseTxt: "Close carousel",
   carouselPrevTxt: "Previous media item",
-  carouselNextTxt: "Next media item",  
-
-  // Limit the text content to a maximum number of lines
-  // Default: 0 (unlimited)
-  txtMaxLines: "0",
-
-  // Customize the text of the button used for showing/hiding sensitive/spoiler text
-  btnShowMore: "SHOW MORE",
-  btnShowLess: "SHOW LESS",
-
-  // Customize the text of the button used for showing sensitive/spoiler media content
-  btnShowContent: "SHOW CONTENT",
+  carouselNextTxt: "Next media item", 
 
   // Customize the text of the button pointing to the Mastodon page placed at the end of the timeline
   // Leave the value empty to hide it
@@ -299,11 +311,11 @@ Here you have all the options available to quickly setup and customize your time
   btnReload: "Refresh",
 
   // Keep searching for the main <div> container before building the timeline. Useful in some cases where extra time is needed to render the page
-  // Default: don't apply
+  // Default: false (don't apply)
   insistSearchContainer: false,
 
   // Defines the maximum time to continue searching for the main <div> container
-  // Default: 3 seconds
+  // Default: "3000" (3 seconds)
   insistSearchContainerTime: "3000",
 
 ```

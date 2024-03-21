@@ -113,7 +113,7 @@
         <h1>🐘 Mastodon embed timeline</h1>
         <h2>Local timeline (customized)</h2>
         <p>
-          This example shows 10 posts from the following instance:
+          This example shows 42 posts from the following instance:
           <br />
           <a
             href="https://mastodon.social/public/local"
@@ -183,6 +183,8 @@
     const myTimeline = new MastodonTimeline.Init({
       instanceUrl: "https://mastodon.online",
       defaultTheme: "light",
+      maxNbPostFetch: "42",
+      maxNbPostShow: "42",
       dateLocale: "en-CA",
       dateOptions: {
         day: "2-digit",
@@ -219,7 +221,8 @@
       const myTimeline = new MastodonTimeline.Init({
         instanceUrl: "https://mastodon.online",
         defaultTheme: "light",
-        maxNbPostShow: "10",
+        maxNbPostFetch: "42",
+        maxNbPostShow: "42",
         dateLocale: "en-CA",
         dateOptions: {
           day: "2-digit",
