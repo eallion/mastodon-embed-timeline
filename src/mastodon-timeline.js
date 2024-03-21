@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.3.7
+ * @version 4.3.10
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -31,19 +31,20 @@ export class Init {
       hideReplies: false,
       hidePinnedPosts: false,
       hideUserAccount: false,
+      txtMaxLines: "",
+      btnShowMore: "SHOW MORE",
+      btnShowLess: "SHOW LESS",
+      markdownBlockquote: false,
       hideEmojos: false,
+      btnShowContent: "SHOW CONTENT",
       hideVideoPreview: false,
       hidePreviewLink: false,
+      previewMaxLines: "",
       hideCounterBar: false,
-      markdownBlockquote: false,
       disableCarousel: false,
       carouselCloseTxt: "Close carousel",
       carouselPrevTxt: "Previous media item",
       carouselNextTxt: "Next media item",
-      txtMaxLines: "0",
-      btnShowMore: "SHOW MORE",
-      btnShowLess: "SHOW LESS",
-      btnShowContent: "SHOW CONTENT",
       btnSeeMore: "See more posts at Mastodon",
       btnReload: "Refresh",
       insistSearchContainer: false,
@@ -52,6 +53,9 @@ export class Init {
 
     this.mtSettings = { ...this.defaultSettings, ...customSettings };
 
+    this.#checkMaxNbPost();
+
+    this.linkHeader = {};
     this.mtContainerNode = "";
     this.mtBodyNode = "";
     this.fetchedData = {};
@@ -59,6 +63,21 @@ export class Init {
     this.#onDOMContentLoaded(() => {
       this.#getContainerNode();
     });
+  }
+
+  /**
+   * Verify that the values of posts fetched and showed are consistent
+   */
+  #checkMaxNbPost() {
+    if (
+      Number(this.mtSettings.maxNbPostShow) >
+      Number(this.mtSettings.maxNbPostFetch)
+    ) {
+      console.error(
+        `Please check your settings! The maximum number of posts to show is bigger than the maximum number of posts to fetch. Changing the value of "maxNbPostFetch" to: ${this.mtSettings.maxNbPostShow}`
+      );
+      this.mtSettings.maxNbPostFetch = this.mtSettings.maxNbPostShow;
+    }
   }
 
   /**
@@ -146,7 +165,7 @@ export class Init {
 
   /**
    * Apply the color theme in the timeline
-   * @param {string} themeType Type of color theme
+   * @param {string} themeType Type of color theme ('light' or 'dark')
    */
   mtColorTheme(themeType) {
     this.#onDOMContentLoaded(() => {
@@ -178,51 +197,18 @@ export class Init {
    */
   #getTimelineData() {
     return new Promise((resolve, reject) => {
-      const instanceApiUrl = `${this.mtSettings.instanceUrl}/api/v1/`;
-      let urls = {};
-
-      if (this.mtSettings.instanceUrl) {
-        if (this.mtSettings.timelineType === "profile") {
-          if (this.mtSettings.userId) {
-            urls.timeline = `${instanceApiUrl}accounts/${this.mtSettings.userId}/statuses?limit=${this.mtSettings.maxNbPostFetch}`;
-            if (!this.mtSettings.hidePinnedPosts) {
-              urls.pinned = `${instanceApiUrl}accounts/${this.mtSettings.userId}/statuses?pinned=true`;
-            }
-          } else {
-            this.#showError(
-              "Please check your <strong>userId</strong> value",
-              "⚠️"
-            );
-          }
-        } else if (this.mtSettings.timelineType === "hashtag") {
-          if (this.mtSettings.hashtagName) {
-            urls.timeline = `${instanceApiUrl}timelines/tag/${this.mtSettings.hashtagName}?limit=${this.mtSettings.maxNbPostFetch}`;
-          } else {
-            this.#showError(
-              "Please check your <strong>hashtagName</strong> value",
-              "⚠️"
-            );
-          }
-        } else if (this.mtSettings.timelineType === "local") {
-          urls.timeline = `${instanceApiUrl}timelines/public?local=true&limit=${this.mtSettings.maxNbPostFetch}`;
-        } else {
-          this.#showError(
-            "Please check your <strong>timelineType</strong> value",
+      const instanceApiUrl = this.mtSettings.instanceUrl
+        ? `${this.mtSettings.instanceUrl}/api/v1/`
+        : this.#showError(
+            "Please check your <strong>instanceUrl</strong> value",
             "⚠️"
           );
-        }
-      } else {
-        this.#showError(
-          "Please check your <strong>instanceUrl</strong> value",
-          "⚠️"
-        );
-      }
-      if (!this.mtSettings.hideEmojos) {
-        urls.emojos = `${instanceApiUrl}custom_emojis`;
-      }
+
+      const urls = this.#setUrls(instanceApiUrl);
 
       const urlsPromises = Object.entries(urls).map(([key, url]) => {
-        return this.#fetchData(url)
+        const headers = key === "timeline";
+        return this.#fetchData(url, headers)
           .then((data) => ({ [key]: data }))
           .catch((error) => {
             reject(
@@ -234,33 +220,149 @@ export class Init {
       });
 
       // Fetch all urls simultaneously
-      Promise.all(urlsPromises).then((dataObjects) => {
+      Promise.all(urlsPromises).then(async (dataObjects) => {
         this.fetchedData = dataObjects.reduce((result, dataItem) => {
           return { ...result, ...dataItem };
         }, {});
 
-        // console.log("Mastodon timeline data fetched: ", this.fetchedData);
-        resolve();
+        // Merge pinned posts with timeline posts
+        if (
+          !this.mtSettings.hidePinnedPosts &&
+          this.fetchedData.pinned?.length !== undefined &&
+          this.fetchedData.pinned.length !== 0
+        ) {
+          const pinnedPosts = this.fetchedData.pinned.map((obj) => ({
+            ...obj,
+            pinned: true,
+          }));
+          this.fetchedData.timeline = [
+            ...pinnedPosts,
+            ...this.fetchedData.timeline,
+          ];
+        }
+
+        // Fetch more posts if maxNbPostFetch is not reached
+        if (this.#isNbPostsFulfilled()) {
+          resolve();
+        } else {
+          do {
+            await this.#fetchMorePosts();
+          } while (!this.#isNbPostsFulfilled() && this.linkHeader.next);
+          resolve();
+        }
       });
     });
   }
 
   /**
+   * Set all urls before fetching the data
+   * @param {string} Instance url api
+   * @returns {object}
+   */
+  #setUrls(i) {
+    let urls = {};
+
+    if (this.mtSettings.timelineType === "profile") {
+      if (this.mtSettings.userId) {
+        urls.timeline = `${i}accounts/${this.mtSettings.userId}/statuses?limit=${this.mtSettings.maxNbPostFetch}`;
+        if (!this.mtSettings.hidePinnedPosts) {
+          urls.pinned = `${i}accounts/${this.mtSettings.userId}/statuses?pinned=true`;
+        }
+      } else {
+        this.#showError(
+          "Please check your <strong>userId</strong> value",
+          "⚠️"
+        );
+      }
+    } else if (this.mtSettings.timelineType === "hashtag") {
+      if (this.mtSettings.hashtagName) {
+        urls.timeline = `${i}timelines/tag/${this.mtSettings.hashtagName}?limit=${this.mtSettings.maxNbPostFetch}`;
+      } else {
+        this.#showError(
+          "Please check your <strong>hashtagName</strong> value",
+          "⚠️"
+        );
+      }
+    } else if (this.mtSettings.timelineType === "local") {
+      urls.timeline = `${i}timelines/public?local=true&limit=${this.mtSettings.maxNbPostFetch}`;
+    } else {
+      this.#showError(
+        "Please check your <strong>timelineType</strong> value",
+        "⚠️"
+      );
+    }
+
+    if (!this.mtSettings.hideEmojos) {
+      urls.emojos = `${i}custom_emojis`;
+    }
+
+    return urls;
+  }
+
+  /**
    * Fetch data from server
-   * @param {string} url address to fetch
+   * @param {string} u Url address to fetch
+   * @param {boolean} h gets the link header
    * @returns {array} List of objects
    */
-  async #fetchData(url) {
-    const response = await fetch(url);
+  async #fetchData(u, h = false) {
+    const response = await fetch(u);
 
     if (!response.ok) {
       throw new Error(`
-        Failed to fetch the following Url:<br/>${url}<hr>Error status: ${response.status}<hr>Error message: ${response.statusText}
+        Failed to fetch the following Url:<br />${u}<hr />Error status: ${response.status}<hr />Error message: ${response.statusText}
         `);
     }
 
     const data = await response.json();
+
+    // Get Link headers for pagination
+    if (h && response.headers.get("Link")) {
+      this.linkHeader = this.#parseLinkHeader(response.headers.get("Link"));
+    }
+
     return data;
+  }
+
+  /**
+   * Check if there are enough posts to reach the value of maxNbPostFetch
+   * @returns {boolean}
+   */
+  #isNbPostsFulfilled() {
+    return (
+      this.fetchedData.timeline.length >= Number(this.mtSettings.maxNbPostFetch)
+    );
+  }
+
+  /**
+   * Fetch extra posts
+   */
+  #fetchMorePosts() {
+    return new Promise((resolve) => {
+      if (this.linkHeader.next) {
+        this.#fetchData(this.linkHeader.next, true).then((data) => {
+          this.fetchedData.timeline = [...this.fetchedData.timeline, ...data];
+          resolve();
+        });
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  /**
+   * Parse link header into an object
+   * @param {string} l Link header
+   * @returns {object}
+   */
+  #parseLinkHeader(l) {
+    const linkArray = l.split(", ").map((header) => header.split("; "));
+    const linkMap = linkArray.map((header) => {
+      const linkRel = header[1].replace(/"/g, "").replace("rel=", "");
+      const linkURL = header[0].slice(1, -1);
+      return [linkRel, linkURL];
+    });
+    return Object.fromEntries(linkMap);
   }
 
   /**
@@ -270,67 +372,87 @@ export class Init {
   async #buildTimeline(t) {
     await this.#getTimelineData();
 
-    // Merge pinned posts with timeline posts
-    let posts;
-    if (
-      !this.mtSettings.hidePinnedPosts &&
-      this.fetchedData.pinned?.length !== undefined &&
-      this.fetchedData.pinned.length !== 0
-    ) {
-      const pinnedPosts = this.fetchedData.pinned.map((obj) => ({
-        ...obj,
-        pinned: true,
-      }));
-      posts = [...pinnedPosts, ...this.fetchedData.timeline];
-    } else {
-      posts = this.fetchedData.timeline;
-    }
+    // console.log("Mastodon timeline data fetched: ", this.fetchedData);
 
-    // Empty container body
+    const posts = this.fetchedData.timeline;
+    let nbPostToShow = 0;
+
     this.mtBodyNode.replaceChildren();
 
-    // Set posts counter to 0
-    let nbPostShow = 0;
+    posts.forEach((post) => {
+      const isPublicOrUnlisted =
+        post.visibility === "public" ||
+        (!this.mtSettings.hideUnlisted && post.visibility === "unlisted");
+      const shouldHideReblog = this.mtSettings.hideReblog && post.reblog;
+      const shouldHideReplies =
+        this.mtSettings.hideReplies && post.in_reply_to_id;
 
-    for (let i in posts) {
-      // First filter (Public / Unlisted)
-      if (
-        posts[i].visibility == "public" ||
-        (!this.mtSettings.hideUnlisted && posts[i].visibility == "unlisted")
-      ) {
-        // Second filter (Reblog / Replies)
-        if (
-          (this.mtSettings.hideReblog && posts[i].reblog) ||
-          (this.mtSettings.hideReplies && posts[i].in_reply_to_id)
-        ) {
-          // Nothing here (Don't append posts)
+      // Filter by (Public / Unlisted)
+      if (isPublicOrUnlisted && !shouldHideReblog && !shouldHideReplies) {
+        if (nbPostToShow < this.mtSettings.maxNbPostShow) {
+          this.#appendPost(post, nbPostToShow);
+          nbPostToShow++;
         } else {
-          if (nbPostShow < this.mtSettings.maxNbPostShow) {
-            this.#appendPost(posts[i], Number(i));
-            nbPostShow++;
-          } else {
-            // Nothing here (Reached the limit of maximum number of posts to show)
-          }
+          // Reached the limit of maximum number of posts to show
         }
       }
-    }
+    });
 
-    // If there are no posts to display, show an error message
-    if (this.mtBodyNode.innerHTML === "") {
-      const errorMessage = `No posts to show<hr/>${
-        posts?.length || 0
-      } posts have been fetched from the server<hr/>This may be due to an incorrect configuration with the parameters or with the filters applied (to hide certains type of posts)`;
-      this.#showError(errorMessage, "📭");
-    } else {
+    // Check if there are posts to display or not
+    if (this.mtBodyNode.innerHTML !== "") {
       if (t === "newTimeline") {
         this.#manageSpinner();
-        this.#setPostsInteracion();
-        this.#buildFooter();
+        this.#setCSSvariables();
+        this.#addAriaSetsize(nbPostToShow);
+        this.#addPostListener();
+        if (this.mtSettings.btnSeeMore || this.mtSettings.btnReload)
+          this.#buildFooter();
       } else if (t === "updateTimeline") {
         this.#manageSpinner();
       } else {
         this.#showError("The function buildTimeline() was expecting a param");
       }
+    } else {
+      const errorMessage = `No posts to show<hr />${
+        posts?.length || 0
+      } posts have been fetched from the server<hr />This may be due to an incorrect configuration with the parameters or with the filters applied (to hide certains type of posts)`;
+      this.#showError(errorMessage, "📭");
+    }
+  }
+
+  /**
+   * Establishes the defined CSS variables
+   */
+  #setCSSvariables() {
+    if (
+      this.mtSettings.txtMaxLines !== "0" &&
+      this.mtSettings.txtMaxLines.length !== 0
+    ) {
+      this.mtBodyNode.parentNode.style.setProperty(
+        "--mt-txt-max-lines",
+        this.mtSettings.txtMaxLines
+      );
+    }
+    if (
+      this.mtSettings.previewMaxLines !== "0" &&
+      this.mtSettings.previewMaxLines.length !== 0
+    ) {
+      this.mtBodyNode.parentNode.style.setProperty(
+        "--mt-preview-max-lines",
+        this.mtSettings.previewMaxLines
+      );
+    }
+  }
+
+  /**
+   * Add the attribute Aria-setsize to all posts
+   * @param {number} n The total number of posts showed in the timeline
+   */
+  #addAriaSetsize(n) {
+    const articles = this.mtBodyNode.getElementsByTagName("article");
+
+    for (let i = 0; i < n; i++) {
+      articles[i].setAttribute("aria-setsize", n);
     }
   }
 
@@ -402,7 +524,7 @@ export class Init {
 
       if (!this.mtSettings.hideUserAccount) {
         accountName =
-          '<br/><span class="mt-post-header-user-account">@' +
+          '<br /><span class="mt-post-header-user-account">@' +
           c.reblog.account.username +
           "@" +
           new URL(c.reblog.account.url).hostname +
@@ -464,7 +586,7 @@ export class Init {
 
       if (!this.mtSettings.hideUserAccount) {
         accountName =
-          '<br/><span class="mt-post-header-user-account">@' +
+          '<br /><span class="mt-post-header-user-account">@' +
           c.account.username +
           "@" +
           new URL(c.account.url).hostname +
@@ -511,64 +633,60 @@ export class Init {
       </div>`;
 
     // Main text
-    let txtCss = "";
-    if (this.mtSettings.txtMaxLines !== "0") {
-      txtCss = " truncate";
-      this.mtBodyNode.parentNode.style.setProperty(
-        "--mt-txt-max-lines",
-        this.mtSettings.txtMaxLines
-      );
-    }
-
     let content = "";
-    if (c.spoiler_text !== "") {
-      content =
-        '<div class="mt-post-txt">' +
-        c.spoiler_text +
-        ' <button type="button" class="mt-btn-dark mt-btn-spoiler" aria-expanded="false">' +
-        this.mtSettings.btnShowMore +
-        "</button>" +
-        '<div class="spoiler-txt-hidden">' +
-        this.#formatPostText(c.content) +
-        "</div>" +
-        "</div>";
-    } else if (
-      c.reblog &&
-      c.reblog.content !== "" &&
-      c.reblog.spoiler_text !== ""
-    ) {
-      content =
-        '<div class="mt-post-txt">' +
-        c.reblog.spoiler_text +
-        ' <button type="button" class="mt-btn-dark mt-btn-spoiler" aria-expanded="false">' +
-        this.mtSettings.btnShowMore +
-        "</button>" +
-        '<div class="spoiler-txt-hidden">' +
-        this.#formatPostText(c.reblog.content) +
-        "</div>" +
-        "</div>";
-    } else if (
-      c.reblog &&
-      c.reblog.content !== "" &&
-      c.reblog.spoiler_text === ""
-    ) {
-      content =
-        '<div class="mt-post-txt' +
-        txtCss +
-        '">' +
-        '<div class="mt-post-txt-wrapper">' +
-        this.#formatPostText(c.reblog.content) +
-        "</div>" +
-        "</div>";
-    } else {
-      content =
-        '<div class="mt-post-txt' +
-        txtCss +
-        '">' +
-        '<div class="mt-post-txt-wrapper">' +
-        this.#formatPostText(c.content) +
-        "</div>" +
-        "</div>";
+    if (this.mtSettings.txtMaxLines !== "0") {
+      const txtCss =
+        this.mtSettings.txtMaxLines.length !== 0 ? " truncate" : "";
+
+      if (c.spoiler_text !== "") {
+        content =
+          '<div class="mt-post-txt">' +
+          c.spoiler_text +
+          ' <button type="button" class="mt-btn-dark mt-btn-spoiler" aria-expanded="false">' +
+          this.mtSettings.btnShowMore +
+          "</button>" +
+          '<div class="spoiler-txt-hidden">' +
+          this.#formatPostText(c.content) +
+          "</div>" +
+          "</div>";
+      } else if (
+        c.reblog &&
+        c.reblog.content !== "" &&
+        c.reblog.spoiler_text !== ""
+      ) {
+        content =
+          '<div class="mt-post-txt">' +
+          c.reblog.spoiler_text +
+          ' <button type="button" class="mt-btn-dark mt-btn-spoiler" aria-expanded="false">' +
+          this.mtSettings.btnShowMore +
+          "</button>" +
+          '<div class="spoiler-txt-hidden">' +
+          this.#formatPostText(c.reblog.content) +
+          "</div>" +
+          "</div>";
+      } else if (
+        c.reblog &&
+        c.reblog.content !== "" &&
+        c.reblog.spoiler_text === ""
+      ) {
+        content =
+          '<div class="mt-post-txt' +
+          txtCss +
+          '">' +
+          '<div class="mt-post-txt-wrapper">' +
+          this.#formatPostText(c.reblog.content) +
+          "</div>" +
+          "</div>";
+      } else {
+        content =
+          '<div class="mt-post-txt' +
+          txtCss +
+          '">' +
+          '<div class="mt-post-txt-wrapper">' +
+          this.#formatPostText(c.content) +
+          "</div>" +
+          "</div>";
+      }
     }
 
     // Media attachments
@@ -643,8 +761,6 @@ export class Init {
     const post =
       '<article class="mt-post" aria-posinset="' +
       (i + 1) +
-      '" aria-setsize="' +
-      this.mtSettings.maxNbPostFetch +
       '" data-location="' +
       url +
       '" tabindex="0">' +
@@ -795,8 +911,8 @@ export class Init {
    * @param {boolean} s Sensitive/spoiler status
    * @returns {string} Media in HTML format
    */
-  #createMedia(m, s) {
-    const spoiler = s || false;
+  #createMedia(m, s = false) {
+    const spoiler = s;
     const type = m.type;
     let media = "";
 
@@ -806,7 +922,7 @@ export class Init {
         (spoiler ? "mt-post-media-spoiler " : "") +
         this.mtSettings.spinnerClass +
         '" data-media-type="' +
-        m.type +
+        type +
         '" data-media-url-hd="' +
         m.url +
         '" data-media-alt-txt="' +
@@ -838,7 +954,7 @@ export class Init {
           (spoiler ? "mt-post-media-spoiler " : "") +
           this.mtSettings.spinnerClass +
           '" data-media-type="' +
-          m.type +
+          type +
           '" data-media-url-hd="' +
           m.preview_url +
           '" data-media-alt-txt="' +
@@ -869,7 +985,7 @@ export class Init {
           '<div class="mt-post-media ' +
           (spoiler ? "mt-post-media-spoiler " : "") +
           '" data-media-type="' +
-          m.type +
+          type +
           '">' +
           (spoiler
             ? '<button class="mt-btn-dark mt-btn-spoiler">' +
@@ -890,7 +1006,7 @@ export class Init {
           (spoiler ? "mt-post-media-spoiler " : "") +
           this.mtSettings.spinnerClass +
           '" data-media-type="' +
-          m.type +
+          type +
           '" data-media-url-hd="' +
           m.url +
           '" data-media-alt-txt="' +
@@ -919,7 +1035,7 @@ export class Init {
           '<div class="mt-post-media ' +
           (spoiler ? "mt-post-media-spoiler " : "") +
           '" data-media-type="' +
-          m.type +
+          type +
           '" data-media-url-hd="' +
           m.url +
           '" data-media-alt-txt="' +
@@ -968,7 +1084,7 @@ export class Init {
    * Build a carousel/lightbox with the media content in the post clicked
    * @param {event} e User interaction trigger
    */
-  #buildCarousel(e) {
+  #showCarousel(e) {
     // List all medias in the post and remove sensitive/spoiler medias
     const mediaSiblings = Array.from(
       e.target.parentNode.parentNode.children
@@ -1214,6 +1330,19 @@ export class Init {
    * @returns {string} Preview link in HTML format
    */
   #createPreviewLink(c) {
+    let previewDescription = "";
+    if (this.mtSettings.previewMaxLines !== "0" && c.description) {
+      const txtCss =
+        this.mtSettings.previewMaxLines.length !== 0 ? " truncate" : "";
+
+      previewDescription =
+        '<span class="mt-post-preview-description' +
+        txtCss +
+        '">' +
+        this.#parseHTMLstring(c.description) +
+        "</span>";
+    }
+
     const card =
       '<a href="' +
       c.url +
@@ -1237,6 +1366,7 @@ export class Init {
       '<span class="mt-post-preview-title">' +
       c.title +
       "</span>" +
+      previewDescription +
       (c.author_name
         ? '<span class="mt-post-preview-author">' +
           this.#parseHTMLstring(c.author_name) +
@@ -1263,69 +1393,64 @@ export class Init {
    * Build footer after last post
    */
   #buildFooter() {
-    if (this.mtSettings.btnSeeMore || this.mtSettings.btnReload) {
-      // Add footer container
-      this.mtBodyNode.parentNode.insertAdjacentHTML(
-        "beforeend",
-        '<div class="mt-footer"></div>'
-      );
+    let btnSeeMoreHTML = "";
+    let btnReloadHTML = "";
 
-      const containerFooter =
-        this.mtContainerNode.getElementsByClassName("mt-footer")[0];
-
-      // Create button to open Mastodon page
-      if (this.mtSettings.btnSeeMore) {
-        let btnSeeMorePath = "";
-        if (this.mtSettings.timelineType === "profile") {
-          if (this.mtSettings.profileName) {
-            btnSeeMorePath = this.mtSettings.profileName;
-          } else {
-            this.#showError(
-              "Please check your <strong>profileName</strong> value",
-              "⚠️"
-            );
-          }
-        } else if (this.mtSettings.timelineType === "hashtag") {
-          btnSeeMorePath = "tags/" + this.mtSettings.hashtagName;
-        } else if (this.mtSettings.timelineType === "local") {
-          btnSeeMorePath = "public/local";
+    // Create button to open Mastodon page
+    if (this.mtSettings.btnSeeMore) {
+      let btnSeeMorePath = "";
+      if (this.mtSettings.timelineType === "profile") {
+        if (this.mtSettings.profileName) {
+          btnSeeMorePath = this.mtSettings.profileName;
+        } else {
+          this.#showError(
+            "Please check your <strong>profileName</strong> value",
+            "⚠️"
+          );
         }
-        const btnSeeMoreHTML = `
+      } else if (this.mtSettings.timelineType === "hashtag") {
+        btnSeeMorePath = "tags/" + this.mtSettings.hashtagName;
+      } else if (this.mtSettings.timelineType === "local") {
+        btnSeeMorePath = "public/local";
+      }
+      btnSeeMoreHTML = `
           <a class="mt-btn-violet btn-see-more" href="${
             this.mtSettings.instanceUrl
           }/${this.#escapeHTML(
-          btnSeeMorePath
-        )}" rel="nofollow noopener noreferrer" target="_blank">
+        btnSeeMorePath
+      )}" rel="nofollow noopener noreferrer" target="_blank">
             ${this.mtSettings.btnSeeMore}
           </a>`;
+    }
 
-        containerFooter.insertAdjacentHTML("beforeend", btnSeeMoreHTML);
-      }
-
-      // Create button to refresh the timeline
-      if (this.mtSettings.btnReload) {
-        const btnReloadHTML = `
+    // Create button to refresh the timeline
+    if (this.mtSettings.btnReload) {
+      btnReloadHTML = `
           <button class="mt-btn-violet btn-refresh">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 3v5m0 0h-5m5 0l-3-2.708C16.408 3.867 14.305 3 12 3a9 9 0 1 0 0 18c4.283 0 7.868-2.992 8.777-7" stroke="var(--mt-color-btn-txt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
               ${this.mtSettings.btnReload}
           </button>`;
 
-        containerFooter.insertAdjacentHTML("beforeend", btnReloadHTML);
+      // Add footer container
+      this.mtBodyNode.parentNode.insertAdjacentHTML(
+        "beforeend",
+        '<div class="mt-footer">' + btnSeeMoreHTML + btnReloadHTML + "</div>"
+      );
 
-        const reloadBtn =
-          this.mtContainerNode.getElementsByClassName("btn-refresh")[0];
-        reloadBtn.addEventListener("click", () => {
-          this.mtUpdate();
-        });
-      }
+      // Add event listener to the button "Refresh"
+      const reloadBtn =
+        this.mtContainerNode.getElementsByClassName("btn-refresh")[0];
+      reloadBtn.addEventListener("click", () => {
+        this.mtUpdate();
+      });
     }
   }
 
   /**
    * Add EventListeners for timeline interactions and trigger functions
    */
-  #setPostsInteracion() {
+  #addPostListener() {
     this.mtBodyNode.addEventListener("click", (e) => {
       const target = e.target;
       const localName = target.localName;
@@ -1335,10 +1460,8 @@ export class Init {
       if (
         localName == "article" ||
         target.offsetParent?.localName == "article" ||
-        (localName == "img" &&
-          this.mtSettings.disableCarousel &&
-          parentNode.getAttribute("data-media-type") !== "video" &&
-          parentNode.getAttribute("data-media-type") !== "gifv")
+        (this.mtSettings.disableCarousel &&
+          parentNode.getAttribute("data-media-type") === "image")
       ) {
         this.#openPostUrl(e);
       }
@@ -1355,11 +1478,10 @@ export class Init {
       if (
         !this.mtSettings.disableCarousel &&
         localName == "img" &&
-        !parentNode.classList.contains("mt-post-preview-image") &&
-        parentNode.getAttribute("data-media-type") !== "video" &&
-        parentNode.getAttribute("data-media-type") !== "gifv"
+        (parentNode.getAttribute("data-media-type") === "image" ||
+          parentNode.getAttribute("data-media-type") === "audio")
       ) {
-        this.#buildCarousel(e);
+        this.#showCarousel(e);
       }
 
       // Check if video preview image or play icon/button was clicked
@@ -1400,6 +1522,7 @@ export class Init {
       e.target.className !== "mt-post-preview-noImage" &&
       e.target.parentNode.className !== "mt-post-avatar-image-big" &&
       e.target.parentNode.className !== "mt-post-avatar-image-small" &&
+      e.target.parentNode.className !== "mt-post-header-user-name" &&
       e.target.parentNode.className !== "mt-post-preview-image" &&
       e.target.parentNode.className !== "mt-post-preview" &&
       urlPost

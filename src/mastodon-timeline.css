@@ -1,4 +1,4 @@
-/* Mastodon embed timeline v4.3.7 */
+/* Mastodon embed timeline v4.3.10 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-timeline */
 
@@ -8,6 +8,7 @@
 .mt-container[data-theme="light"],
 .mt-dialog[data-theme="light"] {
   --mt-txt-max-lines: none;
+  --mt-preview-max-lines: none;
   --mt-color-bg: #fff;
   --mt-color-bg-hover: #d9e1e8;
   --mt-color-line-gray: #c0cdd9;
@@ -438,6 +439,23 @@ body:has(dialog.mt-dialog[open]) {
   padding: 0.5rem 1rem;
   gap: 0.5rem;
 }
+.mt-post-preview-content:has(.mt-post-preview-description.truncate) {
+  align-self: unset;
+}
+.mt-post-preview-description {
+  display: block;
+  color: var(--mt-color-contrast-gray);
+}
+.mt-post-preview-description.truncate {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-line-clamp: var(--mt-preview-max-lines);
+  -webkit-box-orient: vertical;
+}
+.mt-post-preview-description:not(.truncate) .ellipsis::after {
+  content: "...";
+}
+
 .mt-post-preview-title {
   font-weight: 600;
 }
