@@ -612,7 +612,7 @@ body:has(dialog.mt-dialog[open]) {
   display: flex;
   flex-flow: wrap;
   margin: auto auto 2rem auto;
-  padding: 0 1.5rem;
+  padding: 0 1rem;
   gap: 1.5rem;
   align-items: center;
   justify-content: center;
