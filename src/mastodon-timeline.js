@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.3.10
+ * @version 4.3.12
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -642,7 +642,7 @@ export class Init {
         content =
           '<div class="mt-post-txt">' +
           c.spoiler_text +
-          ' <button type="button" class="mt-btn-dark mt-btn-spoiler" aria-expanded="false">' +
+          ' <button type="button" class="mt-btn-dark mt-btn-spoiler-txt" aria-expanded="false">' +
           this.mtSettings.btnShowMore +
           "</button>" +
           '<div class="spoiler-txt-hidden">' +
@@ -657,7 +657,7 @@ export class Init {
         content =
           '<div class="mt-post-txt">' +
           c.reblog.spoiler_text +
-          ' <button type="button" class="mt-btn-dark mt-btn-spoiler" aria-expanded="false">' +
+          ' <button type="button" class="mt-btn-dark mt-btn-spoiler-txt" aria-expanded="false">' +
           this.mtSettings.btnShowMore +
           "</button>" +
           '<div class="spoiler-txt-hidden">' +
@@ -912,9 +912,16 @@ export class Init {
    * @returns {string} Media in HTML format
    */
   #createMedia(m, s = false) {
-    const spoiler = s;
     const type = m.type;
+    const spoiler = s;
     let media = "";
+    const spoilerBtns =
+      '<button class="mt-btn-dark mt-btn-spoiler-media mt-btn-spoiler-media-hide">' +
+      '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon icon-eye-slash" aria-hidden="true"><path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z"></path></svg>' +
+      "</button>" +
+      '<button class="mt-btn-dark mt-btn-spoiler-media mt-btn-spoiler-media-show">' +
+      this.mtSettings.btnShowContent +
+      "</button>";
 
     if (type === "image") {
       media =
@@ -934,11 +941,7 @@ export class Init {
         '" style="padding-top: calc(100%/' +
         m.meta.small.aspect +
         ')">' +
-        (spoiler
-          ? '<button class="mt-btn-dark mt-btn-spoiler">' +
-            this.mtSettings.btnShowContent +
-            "</button>"
-          : "") +
+        (spoiler ? spoilerBtns : "") +
         '<img src="' +
         m.preview_url +
         '" alt="' +
@@ -966,11 +969,7 @@ export class Init {
           '" style="padding-top: calc(100%/' +
           m.meta.small.aspect +
           ')">' +
-          (spoiler
-            ? '<button class="mt-btn-dark mt-btn-spoiler">' +
-              this.mtSettings.btnShowContent +
-              "</button>"
-            : "") +
+          (spoiler ? spoilerBtns : "") +
           '<audio controls src="' +
           m.url +
           '"></audio>' +
@@ -987,11 +986,7 @@ export class Init {
           '" data-media-type="' +
           type +
           '">' +
-          (spoiler
-            ? '<button class="mt-btn-dark mt-btn-spoiler">' +
-              this.mtSettings.btnShowContent +
-              "</button>"
-            : "") +
+          (spoiler ? spoilerBtns : "") +
           '<audio controls src="' +
           m.url +
           '"></audio>' +
@@ -1018,11 +1013,7 @@ export class Init {
           '" style="padding-top: calc(100%/' +
           m.meta.small.aspect +
           ')">' +
-          (spoiler
-            ? '<button class="mt-btn-dark mt-btn-spoiler">' +
-              this.mtSettings.btnShowContent +
-              "</button>"
-            : "") +
+          (spoiler ? spoilerBtns : "") +
           '<img src="' +
           m.preview_url +
           '" alt="' +
@@ -1047,11 +1038,7 @@ export class Init {
           '" style="padding-top: calc(100%/' +
           m.meta.small.aspect +
           ')">' +
-          (spoiler
-            ? '<button class="mt-btn-dark mt-btn-spoiler">' +
-              this.mtSettings.btnShowContent +
-              "</button>"
-            : "") +
+          (spoiler ? spoilerBtns : "") +
           '<video controls src="' +
           m.url +
           '" loop></video>' +
@@ -1293,34 +1280,36 @@ export class Init {
   }
 
   /**
-   * Spoiler button
+   * Spoiler toggle for text
    * @param {event} e User interaction trigger
    */
-  #toogleSpoiler(e) {
+  #toogleTxtSpoiler(e) {
     const target = e.target;
     const nextSibling = target.nextSibling;
-    if (
-      nextSibling.localName === "img" ||
-      nextSibling.localName === "audio" ||
-      nextSibling.localName === "video"
-    ) {
+
+    if (target.textContent == this.mtSettings.btnShowMore) {
+      nextSibling.classList.remove("spoiler-txt-hidden");
+      nextSibling.classList.add("spoiler-txt-visible");
+      target.setAttribute("aria-expanded", "true");
+      target.textContent = this.mtSettings.btnShowLess;
+    } else {
+      nextSibling.classList.remove("spoiler-txt-visible");
+      nextSibling.classList.add("spoiler-txt-hidden");
+      target.setAttribute("aria-expanded", "false");
+      target.textContent = this.mtSettings.btnShowMore;
+    }
+  }
+
+  /**
+   * Spoiler toggle for image/video
+   * @param {event} e User interaction trigger
+   */
+  #toogleMediaSpoiler(e) {
+    const target = e.target;
+    if (target.classList.contains("mt-btn-spoiler-media-show")) {
       target.parentNode.classList.remove("mt-post-media-spoiler");
-      target.style.display = "none";
-    } else if (
-      nextSibling.classList.contains("spoiler-txt-hidden") ||
-      nextSibling.classList.contains("spoiler-txt-visible")
-    ) {
-      if (target.textContent == this.mtSettings.btnShowMore) {
-        nextSibling.classList.remove("spoiler-txt-hidden");
-        nextSibling.classList.add("spoiler-txt-visible");
-        target.setAttribute("aria-expanded", "true");
-        target.textContent = this.mtSettings.btnShowLess;
-      } else {
-        nextSibling.classList.remove("spoiler-txt-visible");
-        nextSibling.classList.add("spoiler-txt-hidden");
-        target.setAttribute("aria-expanded", "false");
-        target.textContent = this.mtSettings.btnShowMore;
-      }
+    } else {
+      target.parentNode.classList.add("mt-post-media-spoiler");
     }
   }
 
@@ -1431,14 +1420,16 @@ export class Init {
             </svg>
               ${this.mtSettings.btnReload}
           </button>`;
+    }
 
-      // Add footer container
-      this.mtBodyNode.parentNode.insertAdjacentHTML(
-        "beforeend",
-        '<div class="mt-footer">' + btnSeeMoreHTML + btnReloadHTML + "</div>"
-      );
+    // Add footer container
+    this.mtBodyNode.parentNode.insertAdjacentHTML(
+      "beforeend",
+      '<div class="mt-footer">' + btnSeeMoreHTML + btnReloadHTML + "</div>"
+    );
 
-      // Add event listener to the button "Refresh"
+    // Add event listener to the button "Refresh"
+    if (this.mtSettings.btnReload) {
       const reloadBtn =
         this.mtContainerNode.getElementsByClassName("btn-refresh")[0];
       reloadBtn.addEventListener("click", () => {
@@ -1466,12 +1457,14 @@ export class Init {
         this.#openPostUrl(e);
       }
 
-      // Check if Show More/Less button was clicked
-      if (
-        localName == "button" &&
-        target.classList.contains("mt-btn-spoiler")
-      ) {
-        this.#toogleSpoiler(e);
+      // Check if spoiler text button was clicked
+      if (target.classList.contains("mt-btn-spoiler-txt")) {
+        this.#toogleTxtSpoiler(e);
+      }
+
+      // Check if spoiler media button was clicked
+      if (target.classList.contains("mt-btn-spoiler-media")) {
+        this.#toogleMediaSpoiler(e);
       }
 
       // Check if image in post was clicked

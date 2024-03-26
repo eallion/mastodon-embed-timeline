@@ -1,4 +1,4 @@
-/* Mastodon embed timeline v4.3.10 */
+/* Mastodon embed timeline v4.3.12 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-timeline */
 
@@ -548,19 +548,36 @@ body:has(dialog.mt-dialog[open]) {
   background-color: var(--mt-color-btn-bg-hover);
   text-decoration: none;
 }
-.mt-post-txt .mt-btn-spoiler {
+.mt-post-txt .mt-btn-spoiler-txt {
   display: inline-block;
   vertical-align: middle;
 }
-.mt-post-media.mt-loading-spinner > .mt-btn-spoiler {
+.mt-post-media.mt-loading-spinner > .mt-btn-spoiler-media {
   display: none;
 }
-.mt-post-media > .mt-btn-spoiler {
+.mt-post-media > .mt-btn-spoiler-media-show {
   position: absolute;
   top: 50%;
   left: 50%;
   z-index: 2;
   transform: translate(-50%, -50%);
+}
+.mt-post-media.mt-post-media-spoiler > .mt-btn-spoiler-media-hide,
+.mt-post-media:not([data-media-width-hd]) > .mt-btn-spoiler-media-hide {
+  display: none;
+}
+.mt-post-media:not(.mt-post-media-spoiler) > .mt-btn-spoiler-media-show {
+  display: none;
+}
+.mt-post-media > .mt-btn-spoiler-media-hide {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  z-index: 2;
+}
+.mt-post-media > .mt-btn-spoiler-media-hide > svg {
+  fill: var(--mt-color-content-txt);
+  pointer-events: none;
 }
 
 /* Error */
