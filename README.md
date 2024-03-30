@@ -361,3 +361,14 @@ If nothing matches with your problem, check the [open issues](https://gitlab.com
 
 Looking for a previous version of Mastodon embed timeline?  
 Check on the tags list to see all the released versions: [Tags history](https://gitlab.com/idotj/mastodon-embed-timeline/-/tags)
+
+## Alternatives
+
+Other projects to embed your Mastodon timeline:
+
+- https://gitlab.com/clvgt12/mastodon-embed-feed-timeline (fork of this project)
+- https://github.com/sampsyo/emfed
+- https://mastofeed.com
+- https://github.com/SamTherapy/fedifeed (fork of mastofeed)
+- https://github.com/DomainDrivenArchitecture/dda-masto-embed
+- https://github.com/DyosTheNerd/MastodonIFrameEmbed
