@@ -65,11 +65,11 @@ This option allows you to start without the need to upload any files on your ser
 Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.4.2/dist/mastodon-timeline.min.css" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.4.2/dist/mastodon-timeline.min.css" integrity="sha256-1UGgxsonaMCfOEnVOL89aMKSo3GEAmaRP0ISbsWa6lU=" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.4.2/dist/mastodon-timeline.umd.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.4.2/dist/mastodon-timeline.umd.js" integrity="sha256-E6WPG6iq+qQIzvu3HPJJxoAeRdum5siq13x4ITjyxu8=" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
@@ -369,9 +369,9 @@ Check on the tags list to see all the released versions: [Tags history](https://
 
 Other projects to embed your Mastodon timeline:
 
-- https://gitlab.com/clvgt12/mastodon-embed-feed-timeline (fork of this project)
-- https://github.com/sampsyo/emfed
-- https://mastofeed.com
-- https://github.com/SamTherapy/fedifeed (fork of mastofeed)
-- https://github.com/DomainDrivenArchitecture/dda-masto-embed
-- https://github.com/DyosTheNerd/MastodonIFrameEmbed
+- <https://gitlab.com/clvgt12/mastodon-embed-feed-timeline> (fork of this project)
+- <https://github.com/sampsyo/emfed>
+- <https://mastofeed.com>
+- <https://github.com/SamTherapy/fedifeed> (fork of mastofeed)
+- <https://github.com/DomainDrivenArchitecture/dda-masto-embed>
+- <https://github.com/DyosTheNerd/MastodonIFrameEmbed>
