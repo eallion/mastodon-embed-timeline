@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.3.12
+ * @version 4.4.1
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -38,6 +38,7 @@ export class Init {
       hideEmojos: false,
       btnShowContent: "SHOW CONTENT",
       hideVideoPreview: false,
+      btnPlayVideoTxt: "Load and play video",
       hidePreviewLink: false,
       previewMaxLines: "",
       hideCounterBar: false,
@@ -82,7 +83,7 @@ export class Init {
 
   /**
    * Trigger callback when DOM loaded or completed
-   * @param {function} c Callback executed
+   * @param {Function} c Callback executed
    */
   #onDOMContentLoaded(c) {
     if (typeof document !== "undefined" && document.readyState === "complete") {
@@ -165,7 +166,7 @@ export class Init {
 
   /**
    * Apply the color theme in the timeline
-   * @param {string} themeType Type of color theme ('light' or 'dark')
+   * @param {String} themeType Type of color theme ('light' or 'dark')
    */
   mtColorTheme(themeType) {
     this.#onDOMContentLoaded(() => {
@@ -193,7 +194,7 @@ export class Init {
 
   /**
    * Requests to the server to collect all the data
-   * @returns {object} Data container
+   * @returns {Object} Data container
    */
   #getTimelineData() {
     return new Promise((resolve, reject) => {
@@ -256,8 +257,8 @@ export class Init {
 
   /**
    * Set all urls before fetching the data
-   * @param {string} Instance url api
-   * @returns {object}
+   * @param {String} Instance url api
+   * @returns {Object}
    */
   #setUrls(i) {
     let urls = {};
@@ -301,9 +302,9 @@ export class Init {
 
   /**
    * Fetch data from server
-   * @param {string} u Url address to fetch
-   * @param {boolean} h gets the link header
-   * @returns {array} List of objects
+   * @param {String} u Url address to fetch
+   * @param {Boolean} h gets the link header
+   * @returns {Array} List of objects
    */
   async #fetchData(u, h = false) {
     const response = await fetch(u);
@@ -326,7 +327,7 @@ export class Init {
 
   /**
    * Check if there are enough posts to reach the value of maxNbPostFetch
-   * @returns {boolean}
+   * @returns {Boolean}
    */
   #isNbPostsFulfilled() {
     return (
@@ -352,8 +353,8 @@ export class Init {
 
   /**
    * Parse link header into an object
-   * @param {string} l Link header
-   * @returns {object}
+   * @param {String} l Link header
+   * @returns {Object}
    */
   #parseLinkHeader(l) {
     const linkArray = l.split(", ").map((header) => header.split("; "));
@@ -367,7 +368,7 @@ export class Init {
 
   /**
    * Filter all fetched posts and append them on the timeline
-   * @param {string} t Type of build (new or reload)
+   * @param {String} t Type of build (new or reload)
    */
   async #buildTimeline(t) {
     await this.#getTimelineData();
@@ -446,7 +447,7 @@ export class Init {
 
   /**
    * Add the attribute Aria-setsize to all posts
-   * @param {number} n The total number of posts showed in the timeline
+   * @param {Number} n The total number of posts showed in the timeline
    */
   #addAriaSetsize(n) {
     const articles = this.mtBodyNode.getElementsByTagName("article");
@@ -458,8 +459,8 @@ export class Init {
 
   /**
    * Add each post in the timeline container
-   * @param {object} c Post content
-   * @param {number} i Index of post
+   * @param {Object} c Post content
+   * @param {Number} i Index of post
    */
   #appendPost(c, i) {
     this.mtBodyNode.insertAdjacentHTML("beforeend", this.#assamblePost(c, i));
@@ -467,8 +468,8 @@ export class Init {
 
   /**
    * Build post structure
-   * @param {object} c Post content
-   * @param {number} i Index of post
+   * @param {Object} c Post content
+   * @param {Number} i Index of post
    */
   #assamblePost(c, i) {
     let avatar,
@@ -641,7 +642,7 @@ export class Init {
       if (c.spoiler_text !== "") {
         content =
           '<div class="mt-post-txt">' +
-          c.spoiler_text +
+          this.#formatPostText(c.spoiler_text) +
           ' <button type="button" class="mt-btn-dark mt-btn-spoiler-txt" aria-expanded="false">' +
           this.mtSettings.btnShowMore +
           "</button>" +
@@ -656,7 +657,7 @@ export class Init {
       ) {
         content =
           '<div class="mt-post-txt">' +
-          c.reblog.spoiler_text +
+          this.#formatPostText(c.reblog.spoiler_text) +
           ' <button type="button" class="mt-btn-dark mt-btn-spoiler-txt" aria-expanded="false">' +
           this.mtSettings.btnShowMore +
           "</button>" +
@@ -757,7 +758,7 @@ export class Init {
         "</div>";
     }
 
-    // Add all to main post container
+    // Put all elements together in the post container
     const post =
       '<article class="mt-post" aria-posinset="' +
       (i + 1) +
@@ -780,12 +781,96 @@ export class Init {
   }
 
   /**
+   * Sanitize an HTML string
+   * (c) Chris Ferdinandi, MIT License, https://gomakethings.com
+   * @param {String} s The HTML string to sanitize
+   * @param {Boolean} n If true, returns HTML nodes instead of a string
+   * @return {String|NodeList} The sanitized string or nodes
+   */
+  #cleanHTML(s, n) {
+    /**
+     * Convert the string to an HTML document
+     * @return {Node} An HTML document
+     */
+    function stringToHTML() {
+      let parser = new DOMParser();
+      let doc = parser.parseFromString(s, "text/html");
+      return doc.body || document.createElement("body");
+    }
+
+    /**
+     * Remove <script> elements
+     * @param {Node} html The HTML
+     */
+    function removeScripts(html) {
+      let scripts = html.querySelectorAll("script");
+      for (let script of scripts) {
+        script.remove();
+      }
+    }
+
+    /**
+     * Check if the attribute is potentially dangerous
+     * @param {String} name The attribute name
+     * @param {String} value The attribute value
+     * @return {Boolean} If true, the attribute is potentially dangerous
+     */
+    function isPossiblyDangerous(name, value) {
+      let val = value.replace(/\s+/g, "").toLowerCase();
+      if (["src", "href", "xlink:href"].includes(name)) {
+        if (val.includes("javascript:") || val.includes("data:")) return true;
+      }
+      if (name.startsWith("on")) return true;
+    }
+
+    /**
+     * Remove potentially dangerous attributes from an element
+     * @param {Node} elem The element
+     */
+    function removeAttributes(elem) {
+      // Loop through each attribute
+      // If it's dangerous, remove it
+      let atts = elem.attributes;
+      for (let { name, value } of atts) {
+        if (!isPossiblyDangerous(name, value)) continue;
+        elem.removeAttribute(name);
+      }
+    }
+
+    /**
+     * Remove dangerous stuff from the HTML document's nodes
+     * @param {Node} html The HTML document
+     */
+    function clean(html) {
+      let nodes = html.children;
+      for (let node of nodes) {
+        removeAttributes(node);
+        clean(node);
+      }
+    }
+
+    // Convert the string to HTML
+    let html = stringToHTML();
+
+    // Sanitize it
+    removeScripts(html);
+    clean(html);
+
+    // If the user wants HTML nodes back, return them
+    // Otherwise, pass a sanitized string back
+    return n ? html.childNodes : html.innerHTML;
+  }
+
+  /**
    * Handle text changes made to posts
-   * @param {string} c Text content
-   * @returns {string} Text content modified
+   * @param {String} c Text content
+   * @returns {String} Text content modified
    */
   #formatPostText(c) {
     let content = c;
+
+    // Sanitize string
+    content = this.#cleanHTML(content, false);
 
     // Format hashtags and mentions
     content = this.#addTarget2hashtagMention(content);
@@ -811,8 +896,8 @@ export class Init {
 
   /**
    * Add target="_blank" to all #hashtags and @mentions in the post
-   * @param {string} c Text content
-   * @returns {string} Text content modified
+   * @param {String} c Text content
+   * @returns {String} Text content modified
    */
   #addTarget2hashtagMention(c) {
     let content = c.replaceAll('rel="tag"', 'rel="tag" target="_blank"');
@@ -826,12 +911,12 @@ export class Init {
 
   /**
    * Find all start/end <tags> and replace them by another start/end <tags>
-   * @param {string} c Text content
-   * @param {string} initialTagOpen Start HTML tag to replace
-   * @param {string} initialTagClose End HTML tag to replace
-   * @param {string} replacedTagOpen New start HTML tag
-   * @param {string} replacedTagClose New end HTML tag
-   * @returns {string} Text in HTML format
+   * @param {String} c Text content
+   * @param {String} initialTagOpen Start HTML tag to replace
+   * @param {String} initialTagClose End HTML tag to replace
+   * @param {String} replacedTagOpen New start HTML tag
+   * @param {String} replacedTagClose New end HTML tag
+   * @returns {String} Text in HTML format
    */
   #replaceHTMLtag(
     c,
@@ -855,8 +940,8 @@ export class Init {
   /**
    * Escape quotes and other special characters, to make them safe to add
    * to HTML content and attributes as plain text
-   * @param {string} s String
-   * @returns {string} String
+   * @param {String} s String
+   * @returns {String} String
    */
   #escapeHTML(s) {
     return (s ?? "")
@@ -869,9 +954,9 @@ export class Init {
 
   /**
    * Find all custom emojis shortcode and replace by image
-   * @param {string} c Text content
-   * @param {array} e List with all custom emojis
-   * @returns {string} Text content modified
+   * @param {String} c Text content
+   * @param {Array} e List with all custom emojis
+   * @returns {String} Text content modified
    */
   #shortcode2Emojos(c, e) {
     if (c.includes(":")) {
@@ -891,8 +976,8 @@ export class Init {
 
   /**
    * Format date
-   * @param {string} d Date in ISO format (YYYY-MM-DDTHH:mm:ss.sssZ)
-   * @returns {string} Date formated
+   * @param {String} d Date in ISO format (YYYY-MM-DDTHH:mm:ss.sssZ)
+   * @returns {String} Date formated
    */
   #formatDate(d) {
     const originalDate = new Date(d);
@@ -907,9 +992,9 @@ export class Init {
 
   /**
    * Create media element
-   * @param {object} m Media content
-   * @param {boolean} s Sensitive/spoiler status
-   * @returns {string} Media in HTML format
+   * @param {Object} m Media content
+   * @param {Boolean} s Sensitive/spoiler status
+   * @returns {String} Media in HTML format
    */
   #createMedia(m, s = false) {
     const type = m.type;
@@ -1019,7 +1104,9 @@ export class Init {
           '" alt="' +
           (m.description ? this.#escapeHTML(m.description) : "") +
           '" loading="lazy" />' +
-          '<button class="mt-btn-play" title="Load video"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 14"><path d="M9.5 7l-9 6.3V.7z"/></svg></button>' +
+          '<button class="mt-btn-play" title="' +
+          this.mtSettings.btnPlayVideoTxt +
+          '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 14"><path d="M9.5 7l-9 6.3V.7z"/></svg></button>' +
           "</div>";
       } else {
         media =
@@ -1051,8 +1138,8 @@ export class Init {
 
   /**
    * Open a dialog/modal with the styles of Mastodon timeline
-   * @param {string} i Dialog Id name
-   * @param {string} c Dialog HTML content
+   * @param {String} i Dialog Id name
+   * @param {String} c Dialog HTML content
    */
   #openDialog(i, c) {
     let dialog = document.createElement("dialog");
@@ -1069,7 +1156,7 @@ export class Init {
 
   /**
    * Build a carousel/lightbox with the media content in the post clicked
-   * @param {event} e User interaction trigger
+   * @param {Event} e User interaction trigger
    */
   #showCarousel(e) {
     // List all medias in the post and remove sensitive/spoiler medias
@@ -1181,8 +1268,8 @@ export class Init {
 
   /**
    * Add interactions for the carousel
-   * @param {number} t Total number of medias loaded
-   * @param {number} m Index position of media clicked by user
+   * @param {Number} t Total number of medias loaded
+   * @param {Number} m Index position of media clicked by user
    */
   #setCarouselInteractions(t, m) {
     let currentMediaIndex = m;
@@ -1270,7 +1357,7 @@ export class Init {
 
   /**
    * Replace the video preview image by the video player
-   * @param {event} e User interaction trigger
+   * @param {Event} e User interaction trigger
    */
   #loadPostVideo(e) {
     const parentNode = e.target.closest("[data-media-type]");
@@ -1281,7 +1368,7 @@ export class Init {
 
   /**
    * Spoiler toggle for text
-   * @param {event} e User interaction trigger
+   * @param {Event} e User interaction trigger
    */
   #toogleTxtSpoiler(e) {
     const target = e.target;
@@ -1302,7 +1389,7 @@ export class Init {
 
   /**
    * Spoiler toggle for image/video
-   * @param {event} e User interaction trigger
+   * @param {Event} e User interaction trigger
    */
   #toogleMediaSpoiler(e) {
     const target = e.target;
@@ -1315,8 +1402,8 @@ export class Init {
 
   /**
    * Create preview link
-   * @param {object} c Preview link content
-   * @returns {string} Preview link in HTML format
+   * @param {Object} c Preview link content
+   * @returns {String} Preview link in HTML format
    */
   #createPreviewLink(c) {
     let previewDescription = "";
@@ -1369,8 +1456,8 @@ export class Init {
 
   /**
    * Parse HTML string
-   * @param {string} s HTML string
-   * @returns {string} Plain text
+   * @param {String} s HTML string
+   * @returns {String} Plain text
    */
   #parseHTMLstring(s) {
     const parser = new DOMParser();
@@ -1443,6 +1530,7 @@ export class Init {
    */
   #addPostListener() {
     this.mtBodyNode.addEventListener("click", (e) => {
+      console.log("click on: ", e);
       const target = e.target;
       const localName = target.localName;
       const parentNode = target.parentNode;
@@ -1487,6 +1575,7 @@ export class Init {
           (parentNode.getAttribute("data-media-type") === "video" ||
             parentNode.getAttribute("data-media-type") === "gifv"))
       ) {
+        console.log("loadPostVideo");
         this.#loadPostVideo(e);
       }
     });
@@ -1501,7 +1590,7 @@ export class Init {
 
   /**
    * Open post in a new tab/page avoiding any other natural link
-   * @param {event} e User interaction trigger
+   * @param {Event} e User interaction trigger
    */
   #openPostUrl(e) {
     const urlPost = e.target.closest(".mt-post").dataset.location;
@@ -1545,8 +1634,8 @@ export class Init {
 
   /**
    * Show an error on the timeline
-   * @param {string} e Error message
-   * @param {string} i Icon
+   * @param {String} e Error message
+   * @param {String} i Icon
    */
   #showError(t, i) {
     const icon = i || "❌";
