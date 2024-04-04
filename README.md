@@ -65,11 +65,11 @@ This option allows you to start without the need to upload any files on your ser
 Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.12/dist/mastodon-timeline.min.css" integrity="sha256-1UGgxsonaMCfOEnVOL89aMKSo3GEAmaRP0ISbsWa6lU=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.4.1/dist/mastodon-timeline.min.css" crossorigin="anonymous">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.3.12/dist/mastodon-timeline.umd.js" integrity="sha256-OrmppdyvemrOyZys4HyoXGqcaH70LbJFE7rya+glr2Q=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.4.1/dist/mastodon-timeline.umd.js" crossorigin="anonymous"></script>
 ```
 
 ### Package manager
@@ -273,12 +273,15 @@ Here you have all the options available to quickly setup and customize your time
   // Default: false (don't hide)
   hideEmojos: false,  
 
-  // Customize the text of the button used for showing sensitive/spoiler media content
+  // Customize the text of the button used for showing a sensitive/spoiler media content
   btnShowContent: "SHOW CONTENT",  
 
-  // Hide video image preview and load video player instead
+  // Hide video image preview and load the video player instead
   // Default: false (don't hide)
   hideVideoPreview: false,
+
+  // Customize the text of the button used for the image preview to play the video
+  btnPlayVideoTxt: "Load and play video",  
 
   // Hide preview card if post contains a link, photo or video from a Url
   // Default: false (don't hide)
