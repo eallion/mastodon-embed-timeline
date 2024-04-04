@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.4.1
+ * @version 4.4.2
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -1530,7 +1530,6 @@ export class Init {
    */
   #addPostListener() {
     this.mtBodyNode.addEventListener("click", (e) => {
-      console.log("click on: ", e);
       const target = e.target;
       const localName = target.localName;
       const parentNode = target.parentNode;
@@ -1575,7 +1574,6 @@ export class Init {
           (parentNode.getAttribute("data-media-type") === "video" ||
             parentNode.getAttribute("data-media-type") === "gifv"))
       ) {
-        console.log("loadPostVideo");
         this.#loadPostVideo(e);
       }
     });

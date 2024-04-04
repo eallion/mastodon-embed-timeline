@@ -1,4 +1,4 @@
-v4.4.1 - 04/04/2024
+v4.4.2 - 04/04/2024
 - Fix render emojos in warning/spoiler text
 - Sanitize post content before rendering
 - Add custom title for play video button
