@@ -86,7 +86,7 @@ or
 yarn add @idotj/mastodon-embed-timeline
 ```
 
-After installation, you can import the Javascript as follows:
+After installation, you can import it as follows:
 
 ```js
 import * as MastodonTimeline from "@idotj/mastodon-embed-timeline";
