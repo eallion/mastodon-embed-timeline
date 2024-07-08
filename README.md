@@ -344,7 +344,7 @@ Mastodon embed timeline is supported on the latest versions of the following bro
 - Firefox
 - Edge
 - Safari
-- Brave
+- Vivaldi
 - Opera
 
 ## 🚀 Improve me
