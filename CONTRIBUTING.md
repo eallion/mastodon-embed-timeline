@@ -1,6 +1,6 @@
 # Contributing to Mastodon embed timeline
 
-Thanks for your interest in contributing. Any feature and improvement from the community to make this project better is always welcome.
+Thanks for your interest in contributing, any feature and improvement from the community to make this project better is always welcome.
 
 ## 🤝 How to contribute
 
@@ -21,7 +21,7 @@ If you find any bugs, issues, or have suggestions, please [create a new issue](h
 ### Setup your environment
 
 - Choose your favorite IDE and check that the configuration matches the `.editorconfig` setup to respect the same coding styles.  
-  By default, this project is developed using [VScodium](https://vscodium.com/) with the plugins Prettier and SonarLint.
+  By default, this project is developed using [VSCodium](https://vscodium.com/) with the plugins Prettier and SonarLint.
 
 - Get [Git](https://git-scm.com/downloads) if you don't have it in your computer and after installation clone the repository by typing:
   
