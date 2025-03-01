@@ -56,7 +56,7 @@ Mastodon embed timeline is supported on the latest versions of the following bro
 ## 🚀 Improve me
 
 Feel free to add your features and improvements.  
-The [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md) document to learn more about how to modify, build and collaborate on the project.
+In the file [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md) you have detailed information that explains how to modify, build and collaborate with this project.
 
 ## ⚖️ License
 
