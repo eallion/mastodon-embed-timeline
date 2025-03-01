@@ -1,7 +1,7 @@
 {
   "name": "@idotj/mastodon-embed-timeline",
-  "version": "4.4.2",
-  "description": "Displays Mastodon timeline with posts embed in your website. Very easy to setup, no dependencies, no trackers, cross-browser, WCAG compliant and fully responsive.",
+  "version": "4.5.0",
+  "description": "Displays a Mastodon timeline with posts embed in your website. Very easy to setup, no dependencies, no trackers, cross-browser, WCAG compliant and fully responsive.",
   "license": "GNU",
   "author": {
     "name": "idotj",
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "clean-css-cli": "^5.6.3",
-    "rollup": "^4.14.0",
+    "rollup": "^4.34.8",
     "@rollup/plugin-terser": "^0.4.4"
   },
   "files": [

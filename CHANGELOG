@@ -1,3 +1,12 @@
+v4.5.0 - 01/03/2025
+- Allow to filter posts by language
+- Update documentation
+- Improve documentation content/structure
+- Update Rollup module bundler
+- Change dateLocale and dateOptions param names
+- JS refactoring
+- Improve performance
+
 v4.4.2 - 04/04/2024
 - Fix render emojos in warning/spoiler text
 - Sanitize post content before rendering

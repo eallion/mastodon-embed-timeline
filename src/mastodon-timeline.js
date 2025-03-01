@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.4.2
+ * @version 4.5.0
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -20,8 +20,8 @@ export class Init {
       defaultTheme: "auto",
       maxNbPostFetch: "20",
       maxNbPostShow: "20",
-      dateLocale: "en-GB",
-      dateOptions: {
+      dateFormatLocale: "en-GB",
+      dateFormatOptions: {
         day: "2-digit",
         month: "short",
         year: "numeric",
@@ -32,6 +32,7 @@ export class Init {
       hidePinnedPosts: false,
       hideUserAccount: false,
       txtMaxLines: "",
+      filterByLanguage: "",
       btnShowMore: "SHOW MORE",
       btnShowLess: "SHOW LESS",
       markdownBlockquote: false,
@@ -100,7 +101,10 @@ export class Init {
    * Find main container in DOM before building the timeline
    */
   #getContainerNode() {
-    // console.log("Initializing Mastodon timeline with settings: ", this.mtSettings);
+    // console.log(
+    //   "Initializing Mastodon timeline with settings: ",
+    //   this.mtSettings
+    // );
 
     const assignContainerNode = () => {
       this.mtContainerNode = document.getElementById(
@@ -261,39 +265,55 @@ export class Init {
    * @returns {Object}
    */
   #setUrls(i) {
-    let urls = {};
+    const {
+      timelineType,
+      userId,
+      hashtagName,
+      maxNbPostFetch,
+      hidePinnedPosts,
+      hideEmojos,
+    } = this.mtSettings;
 
-    if (this.mtSettings.timelineType === "profile") {
-      if (this.mtSettings.userId) {
-        urls.timeline = `${i}accounts/${this.mtSettings.userId}/statuses?limit=${this.mtSettings.maxNbPostFetch}`;
-        if (!this.mtSettings.hidePinnedPosts) {
-          urls.pinned = `${i}accounts/${this.mtSettings.userId}/statuses?pinned=true`;
+    const urls = {};
+
+    switch (timelineType) {
+      case "profile":
+        if (!userId) {
+          this.#showError(
+            "Please check your <strong>userId</strong> value",
+            "⚠️"
+          );
+          break;
         }
-      } else {
+        urls.timeline = `${i}accounts/${userId}/statuses?limit=${maxNbPostFetch}`;
+        if (!hidePinnedPosts) {
+          urls.pinned = `${i}accounts/${userId}/statuses?pinned=true`;
+        }
+        break;
+
+      case "hashtag":
+        if (!hashtagName) {
+          this.#showError(
+            "Please check your <strong>hashtagName</strong> value",
+            "⚠️"
+          );
+          break;
+        }
+        urls.timeline = `${i}timelines/tag/${hashtagName}?limit=${maxNbPostFetch}`;
+        break;
+
+      case "local":
+        urls.timeline = `${i}timelines/public?local=true&limit=${maxNbPostFetch}`;
+        break;
+
+      default:
         this.#showError(
-          "Please check your <strong>userId</strong> value",
+          "Please check your <strong>timelineType</strong> value",
           "⚠️"
         );
-      }
-    } else if (this.mtSettings.timelineType === "hashtag") {
-      if (this.mtSettings.hashtagName) {
-        urls.timeline = `${i}timelines/tag/${this.mtSettings.hashtagName}?limit=${this.mtSettings.maxNbPostFetch}`;
-      } else {
-        this.#showError(
-          "Please check your <strong>hashtagName</strong> value",
-          "⚠️"
-        );
-      }
-    } else if (this.mtSettings.timelineType === "local") {
-      urls.timeline = `${i}timelines/public?local=true&limit=${this.mtSettings.maxNbPostFetch}`;
-    } else {
-      this.#showError(
-        "Please check your <strong>timelineType</strong> value",
-        "⚠️"
-      );
     }
 
-    if (!this.mtSettings.hideEmojos) {
+    if (!hideEmojos) {
       urls.emojos = `${i}custom_emojis`;
     }
 
@@ -375,27 +395,39 @@ export class Init {
 
     // console.log("Mastodon timeline data fetched: ", this.fetchedData);
 
+    const {
+      hideUnlisted,
+      hideReblog,
+      hideReplies,
+      maxNbPostShow,
+      filterByLanguage,
+    } = this.mtSettings;
     const posts = this.fetchedData.timeline;
     let nbPostToShow = 0;
-
     this.mtBodyNode.replaceChildren();
 
-    posts.forEach((post) => {
+    const filteredPosts = posts.filter((post) => {
       const isPublicOrUnlisted =
         post.visibility === "public" ||
-        (!this.mtSettings.hideUnlisted && post.visibility === "unlisted");
-      const shouldHideReblog = this.mtSettings.hideReblog && post.reblog;
-      const shouldHideReplies =
-        this.mtSettings.hideReplies && post.in_reply_to_id;
+        (!hideUnlisted && post.visibility === "unlisted");
+      const shouldHideReblog = hideReblog && post.reblog;
+      const shouldHideReplies = hideReplies && post.in_reply_to_id;
+      const postLanguage =
+        post.language || (post.reblog ? post.reblog.language : null);
+      const matchesLanguage =
+        filterByLanguage === "" || postLanguage === filterByLanguage;
 
-      // Filter by (Public / Unlisted)
-      if (isPublicOrUnlisted && !shouldHideReblog && !shouldHideReplies) {
-        if (nbPostToShow < this.mtSettings.maxNbPostShow) {
-          this.#appendPost(post, nbPostToShow);
-          nbPostToShow++;
-        } else {
-          // Reached the limit of maximum number of posts to show
-        }
+      return (
+        isPublicOrUnlisted &&
+        !shouldHideReblog &&
+        !shouldHideReplies &&
+        matchesLanguage
+      );
+    });
+
+    filteredPosts.forEach((post, index) => {
+      if (index < maxNbPostShow) {
+        this.#appendPost(post, index);
       }
     });
 
@@ -472,312 +504,187 @@ export class Init {
    * @param {Number} i Index of post
    */
   #assamblePost(c, i) {
-    let avatar,
-      user,
-      userName,
-      accountName,
+    const isReblog = Boolean(c.reblog);
+    const post = isReblog ? c.reblog : c;
+    const {
       url,
-      date,
-      formattedDate,
-      favoritesCount,
-      reblogCount,
-      repliesCount;
+      created_at: date,
+      replies_count,
+      reblogs_count,
+      favourites_count,
+    } = post;
+    const {
+      avatar,
+      url: accountUrl,
+      username,
+      display_name,
+      emojis,
+    } = post.account;
 
-    if (c.reblog) {
-      // BOOSTED post
-      // Post url
-      url = c.reblog.url;
+    // Avatar
+    const avatarHTML =
+      '<a href="' +
+      accountUrl +
+      '" class="mt-post-avatar" rel="nofollow noopener noreferrer" target="_blank">' +
+      '<div class="mt-post-avatar-' +
+      (isReblog ? "boosted" : "standard") +
+      '">' +
+      '<div class="mt-post-avatar-image-big mt-loading-spinner">' +
+      '<img src="' +
+      avatar +
+      '" alt="' +
+      this.#escapeHTML(username) +
+      ' avatar" loading="lazy" />' +
+      "</div>" +
+      (isReblog
+        ? '<div class="mt-post-avatar-image-small">' +
+          '<img src="' +
+          c.account.avatar +
+          '" alt="' +
+          this.#escapeHTML(c.account.username) +
+          ' avatar" loading="lazy" />' +
+          "</div>"
+        : "") +
+      "</div>" +
+      "</a>";
 
-      // Boosted avatar
-      avatar =
-        '<a href="' +
-        c.reblog.account.url +
-        '" class="mt-post-avatar" rel="nofollow noopener noreferrer" target="_blank">' +
-        '<div class="mt-post-avatar-boosted">' +
-        '<div class="mt-post-avatar-image-big mt-loading-spinner">' +
-        '<img src="' +
-        c.reblog.account.avatar +
-        '" alt="' +
-        this.#escapeHTML(c.reblog.account.username) +
-        ' avatar" loading="lazy" />' +
-        "</div>" +
-        '<div class="mt-post-avatar-image-small">' +
-        '<img src="' +
-        c.account.avatar +
-        '" alt="' +
-        this.#escapeHTML(c.account.username) +
-        ' avatar" loading="lazy" />' +
-        "</div>" +
-        "</div>" +
-        "</a>";
+    // User
+    const userNameFull =
+      !this.mtSettings.hideEmojos && display_name
+        ? this.#shortcode2Emojos(display_name, emojis)
+        : display_name || username;
 
-      // User name and url
-      if (!this.mtSettings.hideEmojos && c.reblog.account.display_name) {
-        userName = this.#shortcode2Emojos(
-          c.reblog.account.display_name,
-          c.reblog.account.emojis
-        );
-      } else {
-        userName = c.reblog.account.display_name
-          ? c.reblog.account.display_name
-          : c.reblog.account.username;
-      }
+    const accountName = this.mtSettings.hideUserAccount
+      ? ""
+      : '<br /><span class="mt-post-header-user-account">@' +
+        username +
+        "@" +
+        new URL(accountUrl).hostname +
+        "</span>";
 
-      if (!this.mtSettings.hideUserAccount) {
-        accountName =
-          '<br /><span class="mt-post-header-user-account">@' +
-          c.reblog.account.username +
-          "@" +
-          new URL(c.reblog.account.url).hostname +
-          "</span>";
-      } else {
-        accountName = "";
-      }
-
-      user =
-        '<div class="mt-post-header-user">' +
-        '<a href="' +
-        c.reblog.account.url +
-        '" rel="nofollow noopener noreferrer" target="_blank"><bdi class="mt-post-header-user-name">' +
-        userName +
-        "</bdi>" +
-        accountName +
-        "</a>" +
-        "</div>";
-
-      // Date
-      date = c.reblog.created_at;
-
-      // Counter bar
-      repliesCount = c.reblog.replies_count;
-      reblogCount = c.reblog.reblogs_count;
-      favoritesCount = c.reblog.favourites_count;
-    } else {
-      // STANDARD post
-      // Post url
-      url = c.url;
-
-      // Avatar
-      avatar =
-        '<a href="' +
-        c.account.url +
-        '" class="mt-post-avatar" rel="nofollow noopener noreferrer" target="_blank">' +
-        '<div class="mt-post-avatar-standard">' +
-        '<div class="mt-post-avatar-image-big mt-loading-spinner">' +
-        '<img src="' +
-        c.account.avatar +
-        '" alt="' +
-        this.#escapeHTML(c.account.username) +
-        ' avatar" loading="lazy" />' +
-        "</div>" +
-        "</div>" +
-        "</a>";
-
-      // User name and url
-      if (!this.mtSettings.hideEmojos && c.account.display_name) {
-        userName = this.#shortcode2Emojos(
-          c.account.display_name,
-          c.account.emojis
-        );
-      } else {
-        userName = c.account.display_name
-          ? c.account.display_name
-          : c.account.username;
-      }
-
-      if (!this.mtSettings.hideUserAccount) {
-        accountName =
-          '<br /><span class="mt-post-header-user-account">@' +
-          c.account.username +
-          "@" +
-          new URL(c.account.url).hostname +
-          "</span>";
-      } else {
-        accountName = "";
-      }
-
-      user =
-        '<div class="mt-post-header-user">' +
-        '<a href="' +
-        c.account.url +
-        '" rel="nofollow noopener noreferrer" target="_blank"><bdi class="mt-post-header-user-name">' +
-        userName +
-        "</bdi>" +
-        accountName +
-        "</a>" +
-        "</div>";
-
-      // Date
-      date = c.created_at;
-
-      // Counter bar
-      repliesCount = c.replies_count;
-      reblogCount = c.reblogs_count;
-      favoritesCount = c.favourites_count;
-    }
+    const userHTML =
+      '<div class="mt-post-header-user">' +
+      '<a href="' +
+      accountUrl +
+      '" rel="nofollow noopener noreferrer" target="_blank">' +
+      '<bdi class="mt-post-header-user-name">' +
+      userNameFull +
+      "</bdi>" +
+      accountName +
+      "</a>" +
+      "</div>";
 
     // Date
-    formattedDate = this.#formatDate(date);
-    const timestamp = `
-      <div class="mt-post-header-date">
-        ${
-          c.pinned
-            ? '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="mt-post-pinned" aria-hidden="true"><path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z"></path></svg>'
-            : ""
-        }
-        <a href="${url}" rel="nofollow noopener noreferrer" target="_blank">
-          <time datetime="${date}">
-            ${formattedDate}
-          </time>
-          ${c.edited_at ? " *" : ""}
-        </a>
-      </div>`;
+    const formattedDate = this.#formatDate(date);
+    const dateHTML =
+      '<div class="mt-post-header-date">' +
+      (c.pinned ? "<svg>...</svg>" : "") +
+      '<a href="' +
+      url +
+      '" rel="nofollow noopener noreferrer" target="_blank">' +
+      '<time datetime="' +
+      date +
+      '">' +
+      formattedDate +
+      "</time>" +
+      (c.edited_at ? " *" : "") +
+      "</a>" +
+      "</div>";
 
-    // Main text
-    let content = "";
-    if (this.mtSettings.txtMaxLines !== "0") {
-      const txtCss =
-        this.mtSettings.txtMaxLines.length !== 0 ? " truncate" : "";
+    // Post text
+    const txtTruncateCss =
+      this.mtSettings.txtMaxLines !== "0" ? " truncate" : "";
+    let postTxt = "";
+    const textSource = post.spoiler_text ? post.spoiler_text : post.content;
 
-      if (c.spoiler_text !== "") {
-        content =
-          '<div class="mt-post-txt">' +
-          this.#formatPostText(c.spoiler_text) +
-          ' <button type="button" class="mt-btn-dark mt-btn-spoiler-txt" aria-expanded="false">' +
-          this.mtSettings.btnShowMore +
-          "</button>" +
-          '<div class="spoiler-txt-hidden">' +
-          this.#formatPostText(c.content) +
-          "</div>" +
-          "</div>";
-      } else if (
-        c.reblog &&
-        c.reblog.content !== "" &&
-        c.reblog.spoiler_text !== ""
-      ) {
-        content =
-          '<div class="mt-post-txt">' +
-          this.#formatPostText(c.reblog.spoiler_text) +
-          ' <button type="button" class="mt-btn-dark mt-btn-spoiler-txt" aria-expanded="false">' +
-          this.mtSettings.btnShowMore +
-          "</button>" +
-          '<div class="spoiler-txt-hidden">' +
-          this.#formatPostText(c.reblog.content) +
-          "</div>" +
-          "</div>";
-      } else if (
-        c.reblog &&
-        c.reblog.content !== "" &&
-        c.reblog.spoiler_text === ""
-      ) {
-        content =
-          '<div class="mt-post-txt' +
-          txtCss +
-          '">' +
-          '<div class="mt-post-txt-wrapper">' +
-          this.#formatPostText(c.reblog.content) +
-          "</div>" +
-          "</div>";
-      } else {
-        content =
-          '<div class="mt-post-txt' +
-          txtCss +
-          '">' +
-          '<div class="mt-post-txt-wrapper">' +
-          this.#formatPostText(c.content) +
-          "</div>" +
-          "</div>";
-      }
+    if (textSource) {
+      postTxt =
+        '<div class="mt-post-txt' +
+        txtTruncateCss +
+        '">' +
+        '<div class="mt-post-txt-wrapper">' +
+        this.#formatPostText(textSource) +
+        "</div>" +
+        "</div>";
     }
 
-    // Media attachments
-    let media = [];
-    if (c.media_attachments.length > 0) {
-      for (let i in c.media_attachments) {
-        media.push(this.#createMedia(c.media_attachments[i], c.sensitive));
-      }
-    }
-    if (c.reblog && c.reblog.media_attachments.length > 0) {
-      for (let i in c.reblog.media_attachments) {
-        media.push(
-          this.#createMedia(c.reblog.media_attachments[i], c.reblog.sensitive)
-        );
-      }
-    }
-    media = `<div class="mt-post-media-wrapper">${media.join("")}</div>`;
+    // Media
+    const media = [
+      ...c.media_attachments,
+      ...(c.reblog?.media_attachments || []),
+    ]
+      .map((attachment) => this.#createMedia(attachment, post.sensitive))
+      .join("");
+
+    const mediaHTML = media
+      ? `<div class="mt-post-media-wrapper">${media}</div>`
+      : "";
 
     // Preview link
-    let previewLink = "";
-    if (!this.mtSettings.hidePreviewLink && c.card) {
-      previewLink = this.#createPreviewLink(c.card);
-    }
+    const previewLinkHTML =
+      !this.mtSettings.hidePreviewLink && c.card
+        ? this.#createPreviewLink(c.card)
+        : "";
 
     // Poll
-    let poll = "";
-    if (c.poll) {
-      let pollOption = "";
-      for (let i in c.poll.options) {
-        pollOption += "<li>" + c.poll.options[i].title + "</li>";
-      }
-      poll =
-        '<div class="mt-post-poll ' +
+    const pollHTML = c.poll
+      ? '<div class="mt-post-poll ' +
         (c.poll.expired ? "mt-post-poll-expired" : "") +
         '">' +
         "<ul>" +
-        pollOption +
+        c.poll.options
+          .map(function (opt) {
+            return "<li>" + opt.title + "</li>";
+          })
+          .join("") +
         "</ul>" +
-        "</div>";
-    }
+        "</div>"
+      : "";
 
     // Counter bar
-    let counterBar = "";
-    if (!this.mtSettings.hideCounterBar) {
-      const repliesTag =
-        '<div class="mt-post-counter-bar-replies">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M774.913-185.869V-356q0-56.609-35.891-92.5-35.892-35.891-92.5-35.891H258.045L411.435-331l-56 56.566L105.869-524l249.566-249.566 56 56.566-153.39 153.391h388.477q88.957 0 148.566 59.609 59.608 59.609 59.608 148v170.131h-79.783Z"></path></svg>' +
-        repliesCount +
-        "</div>";
+    const counterBarHTML = !this.mtSettings.hideCounterBar
+      ? '<div class="mt-post-counter-bar">' +
+        this.#counteBarItem("replies", replies_count) +
+        this.#counteBarItem("reblog", reblogs_count) +
+        this.#counteBarItem("favorites", favourites_count) +
+        "</div>"
+      : "";
 
-      const reblogTag =
-        '<div class="mt-post-counter-bar-reblog">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M276.043-65.304 105.869-236.043l170.174-170.175 52.74 54.175-78.652 78.652h449.304v-160h75.261v235.261H250.131l78.652 78.087-52.74 54.74Zm-90.174-457.348v-235.261h524.565L631.782-836l52.74-54.74L854.696-720 684.522-549.26 631.782-604l78.652-78.652H261.13v160h-75.261Z"></path></svg>' +
-        reblogCount +
-        "</div>";
-
-      const favoritesTag =
-        '<div class="mt-post-counter-bar-favorites">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="m330.955-216.328 149.066-89 149.066 90.023-40.305-168.391 131.217-114.347-172.956-14.87L480-671.869l-67.043 158.521-172.956 14.305 131.427 113.796-40.473 168.919ZM212.086-50.608l70.652-305.305L45.52-561.305l312.645-26.579L480-876.176l121.835 288.292 312.645 26.579-237.218 205.392 71.217 305.306L480-213.173 212.086-50.607ZM480-433.87Z"></path></svg>' +
-        favoritesCount +
-        "</div>";
-
-      counterBar =
-        '<div class="mt-post-counter-bar">' +
-        repliesTag +
-        reblogTag +
-        favoritesTag +
-        "</div>";
-    }
-
-    // Put all elements together in the post container
-    const post =
+    return (
       '<article class="mt-post" aria-posinset="' +
       (i + 1) +
       '" data-location="' +
       url +
       '" tabindex="0">' +
       '<div class="mt-post-header">' +
-      avatar +
-      user +
-      timestamp +
+      avatarHTML +
+      userHTML +
+      dateHTML +
       "</div>" +
-      content +
-      media +
-      previewLink +
-      poll +
-      counterBar +
-      "</article>";
+      postTxt +
+      mediaHTML +
+      previewLinkHTML +
+      pollHTML +
+      counterBarHTML +
+      "</article>"
+    );
+  }
 
-    return post;
+  /**
+   * Build counter bar items
+   * @param {string} t Type of icon
+   * @param {Number} i Counter
+   */
+  #counteBarItem(t, c) {
+    const icons = {
+      replies:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M774.913-185.869V-356q0-56.609-35.891-92.5-35.892-35.891-92.5-35.891H258.045L411.435-331l-56 56.566L105.869-524l249.566-249.566 56 56.566-153.39 153.391h388.477q88.957 0 148.566 59.609 59.608 59.609 59.608 148v170.131h-79.783Z"></path></svg>',
+      reblog:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="M276.043-65.304 105.869-236.043l170.174-170.175 52.74 54.175-78.652 78.652h449.304v-160h75.261v235.261H250.131l78.652 78.087-52.74 54.74Zm-90.174-457.348v-235.261h524.565L631.782-836l52.74-54.74L854.696-720 684.522-549.26 631.782-604l78.652-78.652H261.13v160h-75.261Z"></path></svg>',
+      favorites:
+        '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 -960 960 960" aria-hidden="true"><path d="m330.955-216.328 149.066-89 149.066 90.023-40.305-168.391 131.217-114.347-172.956-14.87L480-671.869l-67.043 158.521-172.956 14.305 131.427 113.796-40.473 168.919ZM212.086-50.608l70.652-305.305L45.52-561.305l312.645-26.579L480-876.176l121.835 288.292 312.645 26.579-237.218 205.392 71.217 305.306L480-213.173 212.086-50.607ZM480-433.87Z"></path></svg>',
+    };
+    return `<div class="mt-post-counter-bar-${t}">${icons[t]}${c}</div>`;
   }
 
   /**
@@ -983,8 +890,8 @@ export class Init {
     const originalDate = new Date(d);
 
     const formattedDate = new Intl.DateTimeFormat(
-      this.mtSettings.dateLocale,
-      this.mtSettings.dateOptions
+      this.mtSettings.dateFormatLocale,
+      this.mtSettings.dateFormatOptions
     ).format(originalDate);
 
     return formattedDate;
@@ -1408,12 +1315,12 @@ export class Init {
   #createPreviewLink(c) {
     let previewDescription = "";
     if (this.mtSettings.previewMaxLines !== "0" && c.description) {
-      const txtCss =
+      const txtTruncateCss =
         this.mtSettings.previewMaxLines.length !== 0 ? " truncate" : "";
 
       previewDescription =
         '<span class="mt-post-preview-description' +
-        txtCss +
+        txtTruncateCss +
         '">' +
         this.#parseHTMLstring(c.description) +
         "</span>";
@@ -1591,24 +1498,37 @@ export class Init {
    * @param {Event} e User interaction trigger
    */
   #openPostUrl(e) {
-    const urlPost = e.target.closest(".mt-post").dataset.location;
+    const urlPost = e.target.closest(".mt-post")?.dataset.location;
+    if (!urlPost) return;
+
+    const tagName = e.target.localName;
     if (
-      e.target.localName !== "a" &&
-      e.target.localName !== "span" &&
-      e.target.localName !== "button" &&
-      e.target.localName !== "bdi" &&
-      e.target.localName !== "time" &&
-      !e.target.classList.contains("mt-post-media-spoiler") &&
-      e.target.className !== "mt-post-preview-noImage" &&
-      e.target.parentNode.className !== "mt-post-avatar-image-big" &&
-      e.target.parentNode.className !== "mt-post-avatar-image-small" &&
-      e.target.parentNode.className !== "mt-post-header-user-name" &&
-      e.target.parentNode.className !== "mt-post-preview-image" &&
-      e.target.parentNode.className !== "mt-post-preview" &&
-      urlPost
-    ) {
-      window.open(urlPost, "_blank", "noopener");
-    }
+      tagName === "a" ||
+      tagName === "span" ||
+      tagName === "button" ||
+      tagName === "bdi" ||
+      tagName === "time"
+    )
+      return;
+
+    const targetClass = e.target.className;
+    if (
+      targetClass === "mt-post-media-spoiler" ||
+      targetClass === "mt-post-preview-noImage"
+    )
+      return;
+
+    const parentClass = e.target.parentNode?.className;
+    if (
+      parentClass === "mt-post-avatar-image-big" ||
+      parentClass === "mt-post-avatar-image-small" ||
+      parentClass === "mt-post-header-user-name" ||
+      parentClass === "mt-post-preview-image" ||
+      parentClass === "mt-post-preview"
+    )
+      return;
+
+    window.open(urlPost, "_blank", "noopener");
   }
 
   /**

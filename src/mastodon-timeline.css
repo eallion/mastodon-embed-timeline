@@ -1,4 +1,4 @@
-/* Mastodon embed timeline v4.4.2 */
+/* Mastodon embed timeline v4.5.0 */
 /* More info at: */
 /* https://gitlab.com/idotj/mastodon-embed-timeline */
 
@@ -476,6 +476,7 @@ body:has(dialog.mt-dialog[open]) {
   gap: 0.25rem;
   align-items: center;
   opacity: 0.5;
+  cursor: default;
 }
 .mt-post-counter-bar-replies > svg,
 .mt-post-counter-bar-reblog > svg,
