@@ -21,7 +21,7 @@ If you find any bugs, issues, or have suggestions, please [create a new issue](h
 ### Setup your environment
 
 - Choose your favorite IDE and check that the configuration matches the `.editorconfig` setup to respect the same coding styles.  
-  By default, this project is developed using [VScode](https://code.visualstudio.com/) with the plugins [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) and [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode).
+  By default, this project is developed using [VScodium](https://vscodium.com/) with the plugins Prettier and SonarLint.
 
 - Get [Git](https://git-scm.com/downloads) if you don't have it in your computer and after installation clone the repository by typing:
   
