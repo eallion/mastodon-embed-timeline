@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.5.0
+ * @version 4.5.1
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
