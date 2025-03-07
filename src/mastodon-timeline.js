@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.5.1
+ * @version 4.6.0
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -392,7 +392,6 @@ export class Init {
    */
   async #buildTimeline(t) {
     await this.#getTimelineData();
-
     // console.log("Mastodon timeline data fetched: ", this.fetchedData);
 
     const {
@@ -454,7 +453,7 @@ export class Init {
   }
 
   /**
-   * Establishes the defined CSS variables
+   * Set the defined CSS variables
    */
   #setCSSvariables() {
     if (
@@ -578,7 +577,9 @@ export class Init {
     const formattedDate = this.#formatDate(date);
     const dateHTML =
       '<div class="mt-post-header-date">' +
-      (c.pinned ? '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="mt-post-pinned" aria-hidden="true"><path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z"></path></svg>' : "") +
+      (c.pinned
+        ? '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="mt-post-pinned" aria-hidden="true"><path d="m640-480 80 80v80H520v240l-40 40-40-40v-240H240v-80l80-80v-280h-40v-80h400v80h-40v280Zm-286 80h252l-46-46v-314H400v314l-46 46Zm126 0Z"></path></svg>'
+        : "") +
       '<a href="' +
       url +
       '" rel="nofollow noopener noreferrer" target="_blank">' +
@@ -592,10 +593,18 @@ export class Init {
       "</div>";
 
     // Post text
+    const hasTxtMaxLines = this.mtSettings.txtMaxLines !== "0";
     const txtTruncateCss =
-      this.mtSettings.txtMaxLines !== "0" ? " truncate" : "";
+      hasTxtMaxLines && this.mtSettings.txtMaxLines.length ? " truncate" : "";
     let postTxt = "";
     const textSource = post.spoiler_text ? post.spoiler_text : post.content;
+    const spoilerContent =
+      ' <button type="button" class="mt-btn-dark mt-btn-spoiler-txt" aria-expanded="false">' +
+      this.mtSettings.btnShowMore +
+      "</button>" +
+      '<div class="spoiler-txt-hidden">' +
+      this.#formatPostText(post.content) +
+      "</div>";
 
     if (textSource) {
       postTxt =
@@ -604,6 +613,7 @@ export class Init {
         '">' +
         '<div class="mt-post-txt-wrapper">' +
         this.#formatPostText(textSource) +
+        (post.spoiler_text ? spoilerContent : "") +
         "</div>" +
         "</div>";
     }
@@ -622,8 +632,8 @@ export class Init {
 
     // Preview link
     const previewLinkHTML =
-      !this.mtSettings.hidePreviewLink && c.card
-        ? this.#createPreviewLink(c.card)
+      !this.mtSettings.hidePreviewLink && (c.card || c.reblog?.card)
+        ? this.#createPreviewLink(!isReblog ? c.card : c.reblog.card)
         : "";
 
     // Poll
@@ -874,7 +884,6 @@ export class Init {
           `<img src="${emojo.url}" class="mt-custom-emoji" alt="Emoji ${emojo.shortcode}" />`
         );
       }
-
       return c;
     } else {
       return c;
@@ -888,12 +897,10 @@ export class Init {
    */
   #formatDate(d) {
     const originalDate = new Date(d);
-
     const formattedDate = new Intl.DateTimeFormat(
       this.mtSettings.dateFormatLocale,
       this.mtSettings.dateFormatOptions
     ).format(originalDate);
-
     return formattedDate;
   }
 
@@ -904,143 +911,101 @@ export class Init {
    * @returns {String} Media in HTML format
    */
   #createMedia(m, s = false) {
-    const type = m.type;
-    const spoiler = s;
-    let media = "";
+    const { type, url, preview_url, description, meta } = m;
+    const { original, small } = meta;
+    const { spinnerClass, btnShowContent, btnPlayVideoTxt, hideVideoPreview } =
+      this.mtSettings;
     const spoilerBtns =
       '<button class="mt-btn-dark mt-btn-spoiler-media mt-btn-spoiler-media-hide">' +
-      '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon icon-eye-slash" aria-hidden="true"><path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z"></path></svg>' +
-      "</button>" +
-      '<button class="mt-btn-dark mt-btn-spoiler-media mt-btn-spoiler-media-show">' +
-      this.mtSettings.btnShowContent +
+      '<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" class="icon icon-eye-slash" aria-hidden="true">' +
+      '<path d="m644-428-58-58q9-47-27-88t-93-32l-58-58q17-8 34.5-12t37.5-4q75 0 127.5 52.5T660-500q0 20-4 37.5T644-428Zm128 126-58-56q38-29 67.5-63.5T832-500q-50-101-143.5-160.5T480-720q-29 0-57 4t-55 12l-62-62q41-17 84-25.5t90-8.5q151 0 269 83.5T920-500q-23 59-60.5 109.5T772-302Zm20 246L624-222q-35 11-70.5 16.5T480-200q-151 0-269-83.5T40-500q21-53 53-98.5t73-81.5L56-792l56-56 736 736-56 56ZM222-624q-29 26-53 57t-41 67q50 101 143.5 160.5T480-280q20 0 39-2.5t39-5.5l-36-38q-11 3-21 4.5t-21 1.5q-75 0-127.5-52.5T300-500q0-11 1.5-21t4.5-21l-84-82Zm319 93Zm-151 75Z"></path></svg>' +
+      '</button><button class="mt-btn-dark mt-btn-spoiler-media mt-btn-spoiler-media-show">' +
+      btnShowContent +
       "</button>";
 
+    const commonAttributes =
+      ' class="mt-post-media ' +
+      (s ? "mt-post-media-spoiler " : "") +
+      (spinnerClass || "") +
+      '" data-media-type="' +
+      type +
+      '" data-media-url-hd="' +
+      url +
+      '"' +
+      (description
+        ? ' data-media-alt-txt="' + this.#escapeHTML(description) + '"'
+        : "") +
+      ' data-media-width-hd="' +
+      original.width +
+      '" data-media-height-hd="' +
+      original.height +
+      '"' +
+      ' style="padding-top: calc(100%/' +
+      small?.aspect +
+      ')">';
+
     if (type === "image") {
-      media =
-        '<div class="mt-post-media ' +
-        (spoiler ? "mt-post-media-spoiler " : "") +
-        this.mtSettings.spinnerClass +
-        '" data-media-type="' +
-        type +
-        '" data-media-url-hd="' +
-        m.url +
-        '" data-media-alt-txt="' +
-        (m.description ? this.#escapeHTML(m.description) : "") +
-        '" data-media-width-hd="' +
-        m.meta.original.width +
-        '" data-media-height-hd="' +
-        m.meta.original.height +
-        '" style="padding-top: calc(100%/' +
-        m.meta.small.aspect +
-        ')">' +
-        (spoiler ? spoilerBtns : "") +
+      return (
+        "<div" +
+        commonAttributes +
+        (s ? spoilerBtns : "") +
         '<img src="' +
-        m.preview_url +
+        preview_url +
         '" alt="' +
-        (m.description ? this.#escapeHTML(m.description) : "") +
-        '" loading="lazy" />' +
-        "</div>";
+        (description ? this.#escapeHTML(description) : "") +
+        '" loading="lazy" /></div>'
+      );
     }
 
     if (type === "audio") {
-      if (m.preview_url) {
-        media =
-          '<div class="mt-post-media ' +
-          (spoiler ? "mt-post-media-spoiler " : "") +
-          this.mtSettings.spinnerClass +
-          '" data-media-type="' +
-          type +
-          '" data-media-url-hd="' +
-          m.preview_url +
-          '" data-media-alt-txt="' +
-          (m.description ? this.#escapeHTML(m.description) : "") +
-          '" data-media-width-hd="' +
-          m.meta.small.width +
-          '" data-media-height-hd="' +
-          m.meta.small.height +
-          '" style="padding-top: calc(100%/' +
-          m.meta.small.aspect +
-          ')">' +
-          (spoiler ? spoilerBtns : "") +
-          '<audio controls src="' +
-          m.url +
-          '"></audio>' +
-          '<img src="' +
-          m.preview_url +
-          '" alt="' +
-          (m.description ? this.#escapeHTML(m.description) : "") +
-          '" loading="lazy" />' +
-          "</div>";
-      } else {
-        media =
-          '<div class="mt-post-media ' +
-          (spoiler ? "mt-post-media-spoiler " : "") +
-          '" data-media-type="' +
-          type +
-          '">' +
-          (spoiler ? spoilerBtns : "") +
-          '<audio controls src="' +
-          m.url +
-          '"></audio>' +
-          "</div>";
-      }
+      return (
+        '<div class="mt-post-media ' +
+        (s ? "mt-post-media-spoiler " : "") +
+        (preview_url ? spinnerClass : "") +
+        '" data-media-type="audio">' +
+        (s ? spoilerBtns : "") +
+        '<audio controls src="' +
+        url +
+        '"></audio>' +
+        (preview_url
+          ? '<img src="' +
+            preview_url +
+            '" alt="' +
+            (description ? this.#escapeHTML(description) : "") +
+            '" loading="lazy" />'
+          : "") +
+        "</div>"
+      );
     }
 
     if (type === "video" || type === "gifv") {
-      if (!this.mtSettings.hideVideoPreview) {
-        media =
-          '<div class="mt-post-media ' +
-          (spoiler ? "mt-post-media-spoiler " : "") +
-          this.mtSettings.spinnerClass +
-          '" data-media-type="' +
-          type +
-          '" data-media-url-hd="' +
-          m.url +
-          '" data-media-alt-txt="' +
-          (m.description ? this.#escapeHTML(m.description) : "") +
-          '" data-media-width-hd="' +
-          m.meta.original.width +
-          '" data-media-height-hd="' +
-          m.meta.original.height +
-          '" style="padding-top: calc(100%/' +
-          m.meta.small.aspect +
-          ')">' +
-          (spoiler ? spoilerBtns : "") +
+      if (!hideVideoPreview) {
+        return (
+          "<div" +
+          commonAttributes +
+          (s ? spoilerBtns : "") +
           '<img src="' +
-          m.preview_url +
+          preview_url +
           '" alt="' +
-          (m.description ? this.#escapeHTML(m.description) : "") +
+          (description ? this.#escapeHTML(description) : "") +
           '" loading="lazy" />' +
           '<button class="mt-btn-play" title="' +
-          this.mtSettings.btnPlayVideoTxt +
-          '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 14"><path d="M9.5 7l-9 6.3V.7z"/></svg></button>' +
-          "</div>";
-      } else {
-        media =
-          '<div class="mt-post-media ' +
-          (spoiler ? "mt-post-media-spoiler " : "") +
-          '" data-media-type="' +
-          type +
-          '" data-media-url-hd="' +
-          m.url +
-          '" data-media-alt-txt="' +
-          (m.description ? this.#escapeHTML(m.description) : "") +
-          '" data-media-width-hd="' +
-          m.meta.original.width +
-          '" data-media-width-hd="' +
-          m.meta.original.height +
-          '" style="padding-top: calc(100%/' +
-          m.meta.small.aspect +
-          ')">' +
-          (spoiler ? spoilerBtns : "") +
-          '<video controls src="' +
-          m.url +
-          '" loop></video>' +
-          "</div>";
+          btnPlayVideoTxt +
+          '"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 14">' +
+          '<path d="M9.5 7l-9 6.3V.7z"/></svg></button></div>'
+        );
       }
+      return (
+        "<div" +
+        commonAttributes +
+        (s ? spoilerBtns : "") +
+        '<video controls src="' +
+        url +
+        '" loop></video></div>'
+      );
     }
 
-    return media;
+    return "";
   }
 
   /**
@@ -1277,34 +1242,30 @@ export class Init {
    * Spoiler toggle for text
    * @param {Event} e User interaction trigger
    */
-  #toogleTxtSpoiler(e) {
-    const target = e.target;
-    const nextSibling = target.nextSibling;
+  #toggleTxtSpoiler(e) {
+    const button = e.target;
+    const spoilerText = button.nextSibling;
+    const isExpanded = button.getAttribute("aria-expanded") === "true";
 
-    if (target.textContent == this.mtSettings.btnShowMore) {
-      nextSibling.classList.remove("spoiler-txt-hidden");
-      nextSibling.classList.add("spoiler-txt-visible");
-      target.setAttribute("aria-expanded", "true");
-      target.textContent = this.mtSettings.btnShowLess;
-    } else {
-      nextSibling.classList.remove("spoiler-txt-visible");
-      nextSibling.classList.add("spoiler-txt-hidden");
-      target.setAttribute("aria-expanded", "false");
-      target.textContent = this.mtSettings.btnShowMore;
-    }
+    spoilerText.classList.toggle("spoiler-txt-hidden", isExpanded);
+    spoilerText.classList.toggle("spoiler-txt-visible", !isExpanded);
+    button.setAttribute("aria-expanded", !isExpanded);
+    button.textContent = isExpanded
+      ? this.mtSettings.btnShowMore
+      : this.mtSettings.btnShowLess;
   }
 
   /**
    * Spoiler toggle for image/video
    * @param {Event} e User interaction trigger
    */
-  #toogleMediaSpoiler(e) {
-    const target = e.target;
-    if (target.classList.contains("mt-btn-spoiler-media-show")) {
-      target.parentNode.classList.remove("mt-post-media-spoiler");
-    } else {
-      target.parentNode.classList.add("mt-post-media-spoiler");
-    }
+  #toggleMediaSpoiler(e) {
+    const button = e.target;
+    const mediaContainer = button.parentNode;
+    mediaContainer.classList.toggle(
+      "mt-post-media-spoiler",
+      !button.classList.contains("mt-btn-spoiler-media-show")
+    );
   }
 
   /**
@@ -1313,52 +1274,57 @@ export class Init {
    * @returns {String} Preview link in HTML format
    */
   #createPreviewLink(c) {
-    let previewDescription = "";
-    if (this.mtSettings.previewMaxLines !== "0" && c.description) {
-      const txtTruncateCss =
-        this.mtSettings.previewMaxLines.length !== 0 ? " truncate" : "";
+    const {
+      url,
+      image,
+      image_description,
+      provider_name,
+      title,
+      description,
+      author_name,
+    } = c;
+    const { previewMaxLines, spinnerClass } = this.mtSettings;
 
+    let previewDescription = "";
+    if (previewMaxLines !== "0" && description) {
       previewDescription =
         '<span class="mt-post-preview-description' +
-        txtTruncateCss +
+        (previewMaxLines.length !== 0 ? " truncate" : "") +
         '">' +
-        this.#parseHTMLstring(c.description) +
+        this.#parseHTMLstring(description) +
         "</span>";
     }
 
-    const card =
+    return (
       '<a href="' +
-      c.url +
+      url +
       '" class="mt-post-preview" target="_blank" rel="noopener noreferrer">' +
-      (c.image
+      (image
         ? '<div class="mt-post-preview-image ' +
-          this.mtSettings.spinnerClass +
+          spinnerClass +
           '"><img src="' +
-          c.image +
+          image +
           '" alt="' +
-          this.#escapeHTML(c.image_description) +
+          this.#escapeHTML(image_description) +
           '" loading="lazy" /></div>'
         : '<div class="mt-post-preview-noImage">📄</div>') +
-      "</div>" +
       '<div class="mt-post-preview-content">' +
-      (c.provider_name
+      (provider_name
         ? '<span class="mt-post-preview-provider">' +
-          this.#parseHTMLstring(c.provider_name) +
+          this.#parseHTMLstring(provider_name) +
           "</span>"
         : "") +
       '<span class="mt-post-preview-title">' +
-      c.title +
+      title +
       "</span>" +
       previewDescription +
-      (c.author_name
+      (author_name
         ? '<span class="mt-post-preview-author">' +
-          this.#parseHTMLstring(c.author_name) +
+          this.#parseHTMLstring(author_name) +
           "</span>"
         : "") +
-      "</div>" +
-      "</a>";
-
-    return card;
+      "</div></a>"
+    );
   }
 
   /**
@@ -1376,44 +1342,55 @@ export class Init {
    * Build footer after last post
    */
   #buildFooter() {
-    let btnSeeMoreHTML = "";
-    let btnReloadHTML = "";
+    const {
+      btnSeeMore,
+      btnReload,
+      timelineType,
+      profileName,
+      hashtagName,
+      instanceUrl,
+    } = this.mtSettings;
+    let btnSeeMoreHTML = "",
+      btnReloadHTML = "";
 
     // Create button to open Mastodon page
-    if (this.mtSettings.btnSeeMore) {
+    if (btnSeeMore) {
       let btnSeeMorePath = "";
-      if (this.mtSettings.timelineType === "profile") {
-        if (this.mtSettings.profileName) {
-          btnSeeMorePath = this.mtSettings.profileName;
-        } else {
-          this.#showError(
-            "Please check your <strong>profileName</strong> value",
-            "⚠️"
-          );
-        }
-      } else if (this.mtSettings.timelineType === "hashtag") {
-        btnSeeMorePath = "tags/" + this.mtSettings.hashtagName;
-      } else if (this.mtSettings.timelineType === "local") {
-        btnSeeMorePath = "public/local";
+      switch (timelineType) {
+        case "profile":
+          if (profileName) {
+            btnSeeMorePath = profileName;
+          } else {
+            this.#showError(
+              "Please check your <strong>profileName</strong> value",
+              "⚠️"
+            );
+          }
+          break;
+        case "hashtag":
+          btnSeeMorePath = "tags/" + hashtagName;
+          break;
+        case "local":
+          btnSeeMorePath = "public/local";
+          break;
       }
-      btnSeeMoreHTML = `
-          <a class="mt-btn-violet btn-see-more" href="${
-            this.mtSettings.instanceUrl
-          }/${this.#escapeHTML(
-        btnSeeMorePath
-      )}" rel="nofollow noopener noreferrer" target="_blank">
-            ${this.mtSettings.btnSeeMore}
-          </a>`;
+      btnSeeMoreHTML =
+        '<a class="mt-btn-violet btn-see-more" href="' +
+        instanceUrl +
+        "/" +
+        this.#escapeHTML(btnSeeMorePath) +
+        '" rel="nofollow noopener noreferrer" target="_blank">' +
+        btnSeeMore +
+        "</a>";
     }
 
     // Create button to refresh the timeline
-    if (this.mtSettings.btnReload) {
-      btnReloadHTML = `
-          <button class="mt-btn-violet btn-refresh">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 3v5m0 0h-5m5 0l-3-2.708C16.408 3.867 14.305 3 12 3a9 9 0 1 0 0 18c4.283 0 7.868-2.992 8.777-7" stroke="var(--mt-color-btn-txt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-              ${this.mtSettings.btnReload}
-          </button>`;
+    if (btnReload) {
+      btnReloadHTML =
+        '<button class="mt-btn-violet btn-refresh">' +
+        '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 3v5m0 0h-5m5 0l-3-2.708C16.408 3.867 14.305 3 12 3a9 9 0 1 0 0 18c4.283 0 7.868-2.992 8.777-7" stroke="var(--mt-color-btn-txt)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+        btnReload +
+        "</button>";
     }
 
     // Add footer container
@@ -1423,12 +1400,11 @@ export class Init {
     );
 
     // Add event listener to the button "Refresh"
-    if (this.mtSettings.btnReload) {
-      const reloadBtn =
-        this.mtContainerNode.getElementsByClassName("btn-refresh")[0];
-      reloadBtn.addEventListener("click", () => {
-        this.mtUpdate();
-      });
+    if (btnReload) {
+      const reloadBtn = this.mtContainerNode.querySelector(".btn-refresh");
+      if (reloadBtn) {
+        reloadBtn.addEventListener("click", () => this.mtUpdate());
+      }
     }
   }
 
@@ -1453,12 +1429,12 @@ export class Init {
 
       // Check if spoiler text button was clicked
       if (target.classList.contains("mt-btn-spoiler-txt")) {
-        this.#toogleTxtSpoiler(e);
+        this.#toggleTxtSpoiler(e);
       }
 
       // Check if spoiler media button was clicked
       if (target.classList.contains("mt-btn-spoiler-media")) {
-        this.#toogleMediaSpoiler(e);
+        this.#toggleMediaSpoiler(e);
       }
 
       // Check if image in post was clicked
