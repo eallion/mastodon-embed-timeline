@@ -1,3 +1,11 @@
+v4.6.0 - 07/03/2025
+- Show preview link content in boosted posts
+- Fix spoiler text switch button
+- Add CSS styles to #hashtags
+- Improve dark theme
+- CSS refactoring
+- JS refactoring
+
 v4.5.1 - 05/03/2025
 - Fix profile name alignment for pinned post
 
