@@ -1,7 +1,7 @@
 /**
  * Mastodon embed timeline
  * @author idotj
- * @version 4.6.0
+ * @version 4.7.0
  * @url https://gitlab.com/idotj/mastodon-embed-timeline
  * @license GNU AGPLv3
  */
@@ -101,11 +101,6 @@ export class Init {
    * Find main container in DOM before building the timeline
    */
   #getContainerNode() {
-    // console.log(
-    //   "Initializing Mastodon timeline with settings: ",
-    //   this.mtSettings
-    // );
-
     const assignContainerNode = () => {
       this.mtContainerNode = document.getElementById(
         this.mtSettings.mtContainerId
@@ -212,12 +207,11 @@ export class Init {
       const urls = this.#setUrls(instanceApiUrl);
 
       const urlsPromises = Object.entries(urls).map(([key, url]) => {
-        const headers = key === "timeline";
-        return this.#fetchData(url, headers)
+        return this.#fetchData(url, key)
           .then((data) => ({ [key]: data }))
           .catch((error) => {
             reject(
-              new Error(`Something went wrong fetching data from: ${url}`)
+              new Error(`Something went wrong getting the timeline data.`)
             );
             this.#showError(error.message);
             return { [key]: [] };
@@ -269,6 +263,8 @@ export class Init {
       timelineType,
       userId,
       hashtagName,
+      hideReblog,
+      hideReplies,
       maxNbPostFetch,
       hidePinnedPosts,
       hideEmojos,
@@ -313,6 +309,14 @@ export class Init {
         );
     }
 
+    if (hideReblog) {
+      urls.timeline += "&exclude_reblogs=true";
+    }
+
+    if (hideReplies) {
+      urls.timeline += "&exclude_replies=true";
+    }
+
     if (!hideEmojos) {
       urls.emojos = `${i}custom_emojis`;
     }
@@ -323,10 +327,10 @@ export class Init {
   /**
    * Fetch data from server
    * @param {String} u Url address to fetch
-   * @param {Boolean} h gets the link header
+   * @param {String} t Type of data to request
    * @returns {Array} List of objects
    */
-  async #fetchData(u, h = false) {
+  async #fetchData(u, t) {
     const response = await fetch(u);
 
     if (!response.ok) {
@@ -338,7 +342,7 @@ export class Init {
     const data = await response.json();
 
     // Get Link headers for pagination
-    if (h && response.headers.get("Link")) {
+    if (t === "timeline" && response.headers.get("Link")) {
       this.linkHeader = this.#parseLinkHeader(response.headers.get("Link"));
     }
 
@@ -361,10 +365,16 @@ export class Init {
   #fetchMorePosts() {
     return new Promise((resolve) => {
       if (this.linkHeader.next) {
-        this.#fetchData(this.linkHeader.next, true).then((data) => {
-          this.fetchedData.timeline = [...this.fetchedData.timeline, ...data];
-          resolve();
-        });
+        this.#fetchData(this.linkHeader.next, "timeline")
+          .then((data) => {
+            this.fetchedData.timeline = [...this.fetchedData.timeline, ...data];
+            resolve();
+          })
+          .catch((error) => {
+            reject(new Error(`Something went wrong fetching more posts.`));
+            this.#showError(error.message);
+            return { [key]: [] };
+          });
       } else {
         resolve();
       }
@@ -392,15 +402,7 @@ export class Init {
    */
   async #buildTimeline(t) {
     await this.#getTimelineData();
-    // console.log("Mastodon timeline data fetched: ", this.fetchedData);
-
-    const {
-      hideUnlisted,
-      hideReblog,
-      hideReplies,
-      maxNbPostShow,
-      filterByLanguage,
-    } = this.mtSettings;
+    const { hideUnlisted, maxNbPostShow, filterByLanguage } = this.mtSettings;
     const posts = this.fetchedData.timeline;
     let nbPostToShow = 0;
     this.mtBodyNode.replaceChildren();
@@ -409,19 +411,12 @@ export class Init {
       const isPublicOrUnlisted =
         post.visibility === "public" ||
         (!hideUnlisted && post.visibility === "unlisted");
-      const shouldHideReblog = hideReblog && post.reblog;
-      const shouldHideReplies = hideReplies && post.in_reply_to_id;
       const postLanguage =
         post.language || (post.reblog ? post.reblog.language : null);
       const matchesLanguage =
         filterByLanguage === "" || postLanguage === filterByLanguage;
 
-      return (
-        isPublicOrUnlisted &&
-        !shouldHideReblog &&
-        !shouldHideReplies &&
-        matchesLanguage
-      );
+      return isPublicOrUnlisted && matchesLanguage;
     });
 
     filteredPosts.forEach((post, index) => {
@@ -592,6 +587,12 @@ export class Init {
       "</a>" +
       "</div>";
 
+    // Preview link
+    const previewLinkHTML =
+      !this.mtSettings.hidePreviewLink && (c.card || c.reblog?.card)
+        ? this.#createPreviewLink(!isReblog ? c.card : c.reblog.card)
+        : "";
+
     // Post text
     const hasTxtMaxLines = this.mtSettings.txtMaxLines !== "0";
     const txtTruncateCss =
@@ -604,6 +605,7 @@ export class Init {
       "</button>" +
       '<div class="spoiler-txt-hidden">' +
       this.#formatPostText(post.content) +
+      previewLinkHTML +
       "</div>";
 
     if (textSource) {
@@ -629,12 +631,6 @@ export class Init {
     const mediaHTML = media
       ? `<div class="mt-post-media-wrapper">${media}</div>`
       : "";
-
-    // Preview link
-    const previewLinkHTML =
-      !this.mtSettings.hidePreviewLink && (c.card || c.reblog?.card)
-        ? this.#createPreviewLink(!isReblog ? c.card : c.reblog.card)
-        : "";
 
     // Poll
     const pollHTML = c.poll
@@ -673,8 +669,8 @@ export class Init {
       "</div>" +
       postTxt +
       mediaHTML +
-      previewLinkHTML +
       pollHTML +
+      (post.spoiler_text ? "" : previewLinkHTML) +
       counterBarHTML +
       "</article>"
     );

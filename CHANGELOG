@@ -1,3 +1,8 @@
+v4.7.0 - xx/04/2025
+- Hide preview link if post is tagged as spoiler
+- Improve posts filter via URL
+- Update Rollup module bundler (v4.39.0)
+
 v4.6.0 - 07/03/2025
 - Show preview link content in boosted posts
 - Fix spoiler text switch button

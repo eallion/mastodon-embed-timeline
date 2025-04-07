@@ -1,6 +1,5 @@
 # This is a docker compose file to demonstrate and test the Mastodon embed timeline widget
 # Run this docker CLI from the root repository directory:
-#
 # $ docker compose up
 
 version: "3.3"

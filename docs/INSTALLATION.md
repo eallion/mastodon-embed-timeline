@@ -1,6 +1,7 @@
 # 🐘 Mastodon embed timeline - 🛠️ Installation
 
 You have three different ways to install it in your project:
+
 - [Download](#download)
 - [CDN](#cdn)
 - [Package manager](#package-manager)
@@ -45,11 +46,11 @@ This option allows you to start without the need to upload any files on your ser
 Copy the following CSS and JS links to include them in your project:
 
 ```html
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.6.0/dist/mastodon-timeline.min.css" integrity="sha256-Qi3H+bdH6RuMuyR1trAlG5bMWJGl9y3jPiTc1PWQFpI=" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.7.0/dist/mastodon-timeline.min.css">
 ```
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.6.0/dist/mastodon-timeline.umd.js" integrity="sha256-atEPYqs4j5Ogqb9yl3++jbRmTIItqwZUhpnTWdNsF2c=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@idotj/mastodon-embed-timeline@4.7.0/dist/mastodon-timeline.umd.js"></script>
 ```
 
 ## Package manager
