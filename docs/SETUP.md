@@ -236,4 +236,3 @@ There is a long list of parameters that allows you to quickly customize your tim
 In the `examples/` folder there is an HTML file `local-timeline-customized.html` that you can use as a referente to see how to customize your timeline by overwriting some CSS styles and using several parameters when initializing the timeline.
 
 Also, if you need to change something in the core files (`src/` folder), I recommend you to read the document [CONTRIBUTING.md](https://gitlab.com/idotj/mastodon-embed-timeline/-/blob/master/CONTRIBUTING.md#testing) to see how to compile and test your changes.
-

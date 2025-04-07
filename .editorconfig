@@ -18,3 +18,4 @@ indent_style = ignore
 
 [**.min.css]
 indent_style = ignore
+
